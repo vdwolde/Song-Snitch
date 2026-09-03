@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Local data: SQLite database + any archived raw uploads — never commit runtime/business data
+data/
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Secrets — never commit
+.env
+.env.*.local
+*.pem
+*.key
+credentials.json
+service-account*.json

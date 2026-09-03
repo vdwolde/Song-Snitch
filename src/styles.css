@@ -1,0 +1,80 @@
+:root {
+  color-scheme: dark;
+  --bg: #14161a;
+  --panel: #1c1f26;
+  --text: #e6e8eb;
+  --muted: #8b93a1;
+  --accent: #4c8dff;
+  --border: #2a2e37;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+form {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 0.5rem 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.app-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.app-footer a {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+.app-footer a:hover {
+  color: var(--accent);
+}
