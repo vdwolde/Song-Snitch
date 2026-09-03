@@ -6,53 +6,140 @@ For system structure see [ARCHITECTURE.md](ARCHITECTURE.md); for endpoints see
 
 ## Languages & runtime
 
-<!-- Pinned language/runtime versions and where they're pinned. -->
+TypeScript (ESM) across the whole stack — one language, no compile step for
+development (`tsx` runs `.ts`/`.tsx` directly). Node `>=22.5` (pinned in
+`package.json`'s `engines`, needed for `process.loadEnvFile()`). React 19, Vite 6 for
+the client build.
 
 ## Dependencies
 
 | Concern | Choice | Version |
 | --- | --- | --- |
-| … | … | … |
+| HTTP server | `fastify` | `5.12.0` |
+| Static file serving (built client) | `@fastify/static` | `10.1.3` |
+| Response compression | `@fastify/compress` | `9.2.0` |
+| WebSocket transport | `@fastify/websocket` | `11.3.0` — runs inside Fastify's own lifecycle, so the origin guard covers the upgrade for free |
+| Room-join QR code | `qrcode` | `1.5.4` — the one real friction point in a LAN party game is typing an IP into eight phones |
+| UI | `react` / `react-dom` | `19.2.8` |
+| Dev server / build | `vite` + `@vitejs/plugin-react` | `6.0.11` / `4.3.4` |
+| Run TypeScript directly | `tsx` | `4.23.12` |
+| Concurrent dev processes | `concurrently` | `10.0.5` |
+| Cross-platform env vars in scripts | `cross-env` | `10.1.0` |
+| Spotify Web Playback SDK types | `@types/spotify-web-playback-sdk` (dev) | `0.1.19` — the SDK is a global injected by a `<script>` tag; without this, `window.Spotify` is `any` at the riskiest boundary |
 
 Pin exact versions — no ranges. Commit the lockfile. Justify any new dependency in one
 sentence in this table, in the same change that adds it.
 
-**Not in the stack:** <!-- what this project deliberately avoids — no ORM, no UI library,
-no test framework, no state library — so nobody adds one by reflex. -->
+**Not in the stack:** no database (game state is in-memory, see ADR-001), no ORM, no
+router (the whole client "route" is `location.pathname.startsWith('/host')`, see
+`src/main.tsx`), no state-management library (the server's next broadcast is the only
+source of truth — see `.claude/DESIGN.md`), no CSS framework (`src/styles.css` is one
+hand-written file), no test framework beyond Node's built-in `node:test`, no client
+Spotify SDK dependency beyond the SDK's own script tag (`src/spotify-player.ts` loads
+it directly — no npm wrapper package).
 
-Package manager: <!-- uv / npm / yarn — and "never <the other one>". -->
+Package manager: **npm** — never yarn/pnpm in this project.
 
 ## Directory conventions
 
-<!-- Where configuration and constants live, so they don't get scattered. -->
+```text
+shared/types.ts   The wire contract — types shared between server and client, dependency-free
+server/
+  net.ts          LAN/loopback guard, cookie parsing, primaryLanUrl()
+  spotify.ts      The only file that knows a Spotify URL — PKCE auth, search, play/pause
+  game.ts         The one Room; every state transition; hostState()/playerState() view builders
+  ws.ts           /ws route: socket<->identity registry, message dispatch, broadcast
+  routes.ts       HTTP routes: health, auth, search
+  index.ts        Fastify bootstrap: env, bind, register everything, serve dist/
+  game.test.ts    node:test over the pure state transitions
+src/
+  main.tsx        The whole router (host vs. player) + the attribution footer
+  HostApp.tsx     Shared-screen display — one file, all phases
+  PlayerApp.tsx   Phone screen — one file, all phases
+  net.ts          useRoom() — WS connect/reconnect/send
+  spotify-player.ts  Web Playback SDK singleton loader
+  styles.css      All styling; the 8 player-colour tokens live here (see .claude/DESIGN.md)
+```
+
+No `config/` directory — the only two config-shaped constants
+(`DEFAULT_SONGS_PER_PLAYER`, `PLAYER_COLOURS`) live in `shared/types.ts`, where both
+server and client already need them.
 
 ## Naming conventions
 
-<!-- Project-specific naming that isn't obvious from the language: blueprint/module
-     suffixes, id formats, storage keys, config tuple shapes. -->
+- WebSocket message `t` values are `role:verb` (`host:createRoom`, `player:vote`) — the
+  prefix is also the authorization boundary `server/ws.ts` checks against.
+- A player's `id` is `'p_' + 4 random bytes as hex` (e.g. `p_a1b2c3d4`); a player's
+  `token` is 16 random bytes as hex — never derived from anything client-supplied.
+- Room codes are 4 characters from `ABCDEFGHJKLMNPQRSTUVWXYZ` (no `I`/`O` — easy to read
+  aloud and unambiguous over a noisy room).
 
 ## Import patterns
 
-<!-- The canonical import block for a new file in this project. Copy-pasteable. -->
+```ts
+// server/*.ts
+import type { FastifyInstance } from 'fastify';
+import * as game from './game';
+import type { TrackInfo } from '../shared/types';
+
+// src/*.tsx
+import { useCallback, useState } from 'react';
+import type { HostState, ServerMsg } from '../shared/types';
+import { useRoom } from './net';
+```
 
 ## Code patterns
 
-<!-- The two to five patterns that every new file must follow — the response helper, the
-     logger, the decorator, the wrapper. Show real code, not prose. An agent copies what
-     it sees far more reliably than what it's told. -->
+**Server → client state is built field-by-field, never spread.** This is the mechanism
+that keeps the submitter hidden until a reveal — see `.claude/SECURITY.md`.
+
+```ts
+// server/game.ts — correct
+export function playerState(playerId: string): PlayerState | null {
+  const you = room?.players.get(playerId);
+  if (!you) return null;
+  return { code: room.code, phase: room.phase, you: { id: you.id, name: you.name, ... }, ... };
+}
+
+// NEVER do this — a Room/Player/Round object carries fields (tokens, submitterId) that
+// must never reach a client:
+// return { ...room, you };
+```
+
+**Every server mutation returns a `Result`, never throws, for anything caused by client
+input:**
+
+```ts
+type Result<T> = { ok: true; value: T } | { ok: false; code: ErrorCode; message: string };
+```
+
+**A round only ever ends through one synchronous function** — see `server/game.ts::endRound`
+and `.claude/ARCHITECTURE.md`'s concurrency model. Never call `room.phase = 'reveal'`
+anywhere else.
 
 ## Commands
 
 ```text
-<!-- dev / build / test / lint / migrate -->
+npm run dev        # Vite on :5173 + Fastify on :5178, concurrently
+npm run build       # vite build -> dist/
+npm run serve       # tsx server/index.ts (serves the built dist/)
+npm start           # build then serve
+npm run typecheck   # tsc --noEmit — the real gate, run after every edit
+npm test            # tsx --test server/*.test.ts (Node's built-in test runner)
 ```
+
+Node may not be on PATH in a fresh shell:
+`$env:Path = "$env:ProgramFiles\nodejs;" + $env:Path`
 
 ## Quality gates (required before merge)
 
-<!-- Numbered, each with the exact command. An agent cannot infer when it's done. -->
-
-1. …
-2. **`/code --commit`** run after any code change (see [../CLAUDE.md](../CLAUDE.md)).
+1. `npm run typecheck` — must stay clean.
+2. `npm test` — must stay green, including the differential leak-check in
+   `server/game.test.ts` (see ADR-003).
+3. `npm run build` succeeds.
+4. `/code --commit` (config: [REVIEW.md](REVIEW.md)) — run only when the user asks for
+   a review in that turn, never automatically after a change (see root
+   `Development/CLAUDE.md` § Briefing an agent).
 
 ## Coding principles in practice
 

@@ -1,3 +1,0 @@
-{
-  "_comment": "Business-rule thresholds and norms live here, not scattered through code. Read via server/config.ts (add one when this grows past a single file)."
-}

@@ -1,9 +1,12 @@
 # Song Snitch — agent instructions
 
-<!-- One or two sentences: what this is, the stack, the package manager. Then the
-     one-line flow, e.g.:
-     **Flow:** Form (`POST /submit`) → background task → external API → database →
-     polled by `/report/{id}`. -->
+A local-network party game: friends submit songs from Spotify, a host laptop plays each
+one out loud, everyone guesses who added it on their own phone. TypeScript (ESM)
+throughout, Fastify + WebSocket server, React client, npm.
+
+**Flow:** Host connects Spotify (PKCE) → creates a room → players join and submit songs
+(server-side Spotify search, no player login) → host starts → per round, the host plays
+a track while phones vote "who added this?" → reveal → final leaderboard.
 
 This file is always loaded (Claude Code reads it automatically from the project root).
 It is a **router**: it holds the coding principles and points to the one document that
@@ -12,16 +15,18 @@ do not duplicate its content here.
 
 ## Hard rules
 
-<!-- Numbered. The things that must never be violated silently — the ones that would
-     make you reject a PR outright. Keep this list short enough that it's actually read.
-     Examples from the projects this template is drawn from:
-     - Never write back to a source system, never modify an uploaded file.
-     - Never fabricate a value; mark inferred data and let the user override it.
-     - Vendored/engine files marked #do-not-modify.
-     - No `any` / no unchecked type escapes.
-     - Secrets never reach the client and are never logged. -->
-
-1. …
+1. Never spread (`...`) a `Room`, `Player`, or `Round` into a client-facing type in
+   `server/game.ts` — build `HostState`/`PlayerState` field by field. This is what keeps
+   the submitter hidden until a reveal; see [.claude/SECURITY.md](.claude/SECURITY.md).
+2. A round ends only through `server/game.ts::endRound` — never set `room.phase =
+   'reveal'` anywhere else.
+3. Every Spotify API call lives in `server/spotify.ts` — no other file makes one.
+4. The Spotify client secret never exists in this project (PKCE only); the access token
+   never reaches a client except through the loopback+cookie-gated `/api/host/token`,
+   and never the refresh token, ever.
+5. Server binds `0.0.0.0` only via the explicit `BIND_LAN=1` opt-in — never as a side
+   effect of `PORT` being set.
+6. Never log a Spotify token or a player's name/score beyond a length/existence check.
 
 **Attribution (every personal project):** the front-end and README must carry the
 `By vdWolde` credit — see root `Development/CLAUDE.md` § Attribution for the canonical
@@ -81,12 +86,15 @@ Delete the rows this project doesn't have; don't create an empty file to fill a 
 
 ### Routing examples
 
-<!-- Three to six concrete "task → document (+ skill)" lines. These are what make the
-     index usable; a table alone gets skimmed. Examples:
-- Changing the database schema → .claude/DOMAIN.md + the write-migration skill.
-- Adding an endpoint → .claude/API.md + .claude/STACK.md.
-- Changing styling → .claude/DESIGN.md.
-- Reviewing code you just wrote → /code --commit. -->
+- Adding a new WebSocket message → [.claude/API.md](.claude/API.md) (protocol table) +
+  [.claude/STACK.md](.claude/STACK.md) (the field-by-field wire-object pattern).
+- Changing scoring or round-end rules → [.claude/DOMAIN.md](.claude/DOMAIN.md).
+- Adding a Spotify API call → [.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md)
+  (integration points) — it belongs in `server/spotify.ts` only.
+- Changing the host or player screen's layout/colours →
+  [.claude/DESIGN.md](.claude/DESIGN.md).
+- Questioning why players don't log into Spotify, or why there's no database →
+  [.claude/DECISIONS.md](.claude/DECISIONS.md).
 
 ## How to approach…
 
@@ -113,27 +121,31 @@ Delete the rows this project doesn't have; don't create an empty file to fill a 
 
 ## Workflow & quality gates
 
-<!-- The commands that must pass before a change is done. Name them explicitly — an
-     agent can't infer your gate. E.g.:
-- Package manager is **uv** — never `pip`.
-- `npm run typecheck` must stay clean.
-- Lint/format runs via pre-commit (`uvx pre-commit install` once).
-- Tests: `<command>`. -->
-
-- **After any code change, run `/code --commit`** before considering the task done. The
-  engine is user-level (`~/.claude/`); this project supplies only
-  [.claude/REVIEW.md](.claude/REVIEW.md) — its quality gate and excluded items.
+- Package manager is **npm** — never yarn/pnpm.
+- `npm run typecheck && npm test` must stay clean — see
+  [.claude/STACK.md](.claude/STACK.md) for the full command set.
+- **`/code`, `/code-review`, `/security-review`, `/simplify`, and `/design` review modes
+  run only when the user asks for one, that same turn** — never automatically after a
+  change, never as a self-imposed finishing touch (see root
+  `Development/CLAUDE.md` § Briefing an agent). The engine is user-level
+  (`~/.claude/`); this project supplies only [.claude/REVIEW.md](.claude/REVIEW.md) —
+  its quality gate and excluded items.
 
 ## Pull requests
 
-<!-- Branch model, who reviews, what a PR description must contain. Environment mapping
-     lives in README.md — link to it, don't restate it. -->
+Solo personal project, no branch model beyond `main` — see root `Development/CLAUDE.md`
+§ Git. No PR review process; changes land directly.
 
 ## Security must-knows
 
 Full detail in [.claude/SECURITY.md](.claude/SECURITY.md). Non-negotiable:
 
-<!-- Three to five lines. The rules an agent could plausibly break without noticing. -->
+- No Spotify client secret exists anywhere in this project (PKCE only) — never add one.
+- Only the host authenticates; a phone must never obtain the host's Spotify token —
+  `/api/host/token` requires both the host cookie and a loopback source.
+- The submitter of the currently-playing track must never reach any client before its
+  `Reveal` — see Hard rules above and [.claude/SECURITY.md](.claude/SECURITY.md).
+- Every gate is enforced server-side; a client-side check is a UX affordance only.
 
 ## Maintaining these docs
 

@@ -13,7 +13,7 @@ echo ============================================================
 echo.
 
 rem ------------------------------------------------------------
-rem  Step 1: Node.js must be present (>= 22.5, for built-in node:sqlite)
+rem  Step 1: Node.js must be present (>= 22.5)
 rem ------------------------------------------------------------
 echo Step 1 of %TOTAL%: Checking Node.js...
 where node >nul 2>&1
@@ -49,15 +49,22 @@ rem ------------------------------------------------------------
 echo Step 3 of %TOTAL%: Starting Song Snitch...
 powershell -NoProfile -Command "try{ if((Invoke-WebRequest -UseBasicParsing '%URL%/api/health' -TimeoutSec 2).StatusCode -eq 200){exit 0} }catch{}; exit 1"
 if not errorlevel 1 (
-    echo Song Snitch is already running - opening the browser.
-    start "" "%URL%"
+    echo Song Snitch is already running - opening the host screen.
+    start "" "%URL%/host"
     exit /b 0
 )
 
 call npm run build
 if errorlevel 1 goto :fail
 
+echo.
+echo Phones join over your home WiFi. If this is the first time this app has
+echo reached the network, Windows Firewall will ask to allow it - choose
+echo "Private networks" (never Public) and click Allow, or phones won't connect.
+echo.
+
 set "OPEN_BROWSER=1"
+set "BIND_LAN=1"
 call npm run serve
 
 exit /b 0

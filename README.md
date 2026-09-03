@@ -1,76 +1,20 @@
-<!-- markdownlint-disable MD046 -->
-<!--
-  README TEMPLATE — modeled on AIRA's and Sales Intelligence Dashboard's READMEs, the two
-  most-developed examples in this codebase (see CLAUDE.md § Docs-first). Both independently
-  converged on the same skeleton below, so treat it as validated, not just a suggestion.
-
-  WHO THIS IS FOR: humans — a stakeholder, a new teammate, future-you after six months.
-  It owns setup, environment variables, deployment, and the pitch. The agent docs in
-  CLAUDE.md/.claude/ own conventions, architecture, and rules. Every fact has exactly ONE
-  owner — link across, never restate. When this file and a .claude/ doc disagree, that is
-  a bug in the docs; fix it in the same change.
-
-  THREE SHAPES — this template covers a deployed web app (the superset). Adapt per shape:
-    - Deployed web app (AIRA)     → keep every section, including Deployment.
-    - Local single-user tool (SID) → drop Deployment; add "Where Your Data Lives" and
-                                      "Using the App"; "Getting Started" becomes a
-                                      one-command Quick Start instead of a dev-mode walkthrough.
-    - Desktop app (WPF)            → drop Deployment and Environment Variables; "Run
-                                      Locally" becomes "Build & Run"; add a "Distribution"
-                                      section (GitHub Releases, single-file publish); if
-                                      the app elevates, say so and warn against repeatedly
-                                      launching it during development.
-  Delete sections that don't apply — don't leave a heading with nothing under it.
-
-  CONVENTIONS TO KEEP (do not simplify these away, they're load-bearing):
-    - `<a name="readme-top"></a>` at the very top, and a right-aligned
-      "(back to top)" link after every major section — the file gets long, this is the
-      only navigation.
-    - The collapsible `<details open><summary>Table of Contents</summary>` ToC, with
-      nested <ul> for a section's subsections. Keep its anchors in sync with real headings.
-    - `---` between every major section.
-    - GitHub alert syntax for callouts: `> [!NOTE]` for the AI-agent pointer,
-      `> [!TIP]` for an optional manual/advanced path, `> [!WARNING]` for a placeholder
-      or an accepted risk the reader must not mistake for finished work.
-    - Badges via shields.io `for-the-badge` style, referenced by [label]: syntax and
-      collected under a single `<!-- MARKDOWN LINKS & IMAGES -->` comment at the very
-      bottom of the file — keeps the prose readable.
-    - Mermaid diagrams render natively on GitHub — use `flowchart LR` for architecture,
-      `gitGraph` for the branch model.
-    - Tables over prose wherever there's more than three of anything (capabilities, env
-      vars, brand colors, branches).
--->
-<!-- markdownlint-enable MD046 -->
-
 <a name="readme-top"></a>
 
 <!-- HEADER -->
 <div align="center">
-  <!-- Drop the <a><img> logo block entirely if there's no logo yet. -->
-  <a href="https://example.com">
-    <img src="static/img/logo.svg" alt="Song Snitch logo" height="72">
-  </a>
-
   <h1>Song Snitch</h1>
-  <h3><!-- One-line promise, not a description. What changes for the user. --></h3>
+  <h3>Turn a room's own Spotify library into a party guessing game.</h3>
 
-  <p><!-- Audience + confidentiality marking if internal, e.g.
-         🔒 Internal tool for <org> · C2 - Restricted Use
-         For a personal project, keep the credit line below instead: --></p>
   <p>🔒 Personal project — <a href="https://vdwolde.com/">By vdWolde</a></p>
   <p>
-    <!-- Omit "View App" if there's nothing deployed to link to. -->
-    <a href="https://example.com">View App</a>
+    <a href="https://github.com/vdwolde/Song-Snitch/issues/new?labels=bug">Report a Bug</a>
     &middot;
-    <a href="https://github.com/OWNER/song-snitch/issues/new?labels=bug">Report a Bug</a>
-    &middot;
-    <a href="https://github.com/OWNER/song-snitch/issues/new?labels=enhancement">Request a Feature</a>
+    <a href="https://github.com/vdwolde/Song-Snitch/issues/new?labels=enhancement">Request a Feature</a>
   </p>
 </div>
 
 ---
 
-<!-- TABLE OF CONTENTS — delete <li> rows for sections you removed -->
 <details open>
   <summary><strong>Table of Contents</strong></summary>
   <ol>
@@ -81,12 +25,12 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#run-locally">Run Locally</a></li>
+        <li><a href="#quick-start">Quick Start</a></li>
+        <li><a href="#using-the-app">Using the App</a></li>
         <li><a href="#troubleshooting">Troubleshooting</a></li>
       </ul>
     </li>
     <li><a href="#project-workflow">Project Workflow</a></li>
-    <li><a href="#deployment">Deployment</a></li>
     <li><a href="#design-language--brand">Design Language &amp; Brand</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
     <li><a href="#contributing--code-quality">Contributing &amp; Code Quality</a></li>
@@ -100,29 +44,26 @@
 
 ## About The Project
 
-**Song Snitch** is <!-- one dense paragraph: what it does, for whom, and the core
-flow, the way AIRA's opener names the actor, the action, and the mechanism in one
-sentence ("An employee enters an organization name... AIRA then runs parallel
-deep-research queries... assembles a sourced, structured brief"). If the project is a
-local-only tool, say so here plainly (SID: "Everything runs entirely on your laptop.
-There is no cloud, no external API..."). If content/identity is still a placeholder,
-say that too instead of inventing a name or copy — a `> [!WARNING]` callout beats a
-README that quietly lies. -->
+**Song Snitch** turns a room's own Spotify library into a party game. One host laptop
+with a Spotify Premium account plays each submitted track out loud; everyone else joins
+from their own phone's browser — no app install, no Spotify account needed — and
+guesses who added the song that's playing. Runs entirely on the host's home WiFi for
+the length of one evening: no cloud, no server to deploy, no data that outlives the
+process (see [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-001).
 
 ### Key Capabilities
 
-<!-- One emoji + bold capability name + plain description per row. Five to eight rows.
-     Pull these from PRODUCT.md's feature table — don't invent scope that isn't built. -->
-
 | Capability | Description |
 | --- | --- |
-| 🔎 **…** | … |
+| 🔍 **Search, don't log in** | Players search Spotify's catalog through the host's own account — no Spotify login needed to play |
+| 📺 **Shared screen + phone controllers** | One host laptop shows the game; everyone else's phone is just a controller — plays like Kahoot or Jackbox |
+| 🏆 **Live scoring & reveal** | Points update and the answer reveals after every round, not just at the end |
+| 📱 **QR code join** | Scan once instead of typing an IP address into eight phones |
 
 > [!NOTE]
 > For AI coding agents, start at **[CLAUDE.md](CLAUDE.md)** — Claude Code loads it
-> automatically, and it routes to the document that owns each topic (in `.claude/` for
-> the full-docs tier). See the [Documentation](#documentation) table below for the full
-> map.
+> automatically, and it routes to the document that owns each topic under `.claude/`.
+> See the [Documentation](#documentation) table below for the full map.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -130,20 +71,17 @@ README that quietly lies. -->
 
 ## Architecture at a Glance
 
-<!-- Omit this whole section for a single-file script or a trivial tool — keep it for
-     anything with more than one moving part. -->
-
 ```mermaid
 flowchart LR
-    U["Client"] -->|protocol| S["Server / App"]
-    S --> D[("Data store")]
+    H["Host browser<br/>(Web Playback SDK)"] <-->|WebSocket| S["Fastify server<br/>(in-memory room)"]
+    P["Player phones"] <-->|WebSocket| S
+    S -->|host token only| SP[("Spotify Web API")]
 ```
 
-The flow: **<!-- one bolded sentence, the same shape as AIRA's "Form (`POST /submit`) →
-background task → Perplexity API (parallel) → PostgreSQL → polled by `/report/{id}`."
-Name the real steps, not generic ones. --></strong>. Full diagrams live in
-[ARCHITECTURE.md](.claude/ARCHITECTURE.md) <!-- or the lean CLAUDE.md's architecture
-section for the lean tier -->.
+The flow: **Host connects Spotify → creates a room → players join and submit songs →
+host starts → each round plays on the host's speakers while phones vote → reveal →
+final leaderboard.** Full diagrams and the round-end race condition live in
+[.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -151,15 +89,15 @@ section for the lean tier -->.
 
 ## Built With
 
-<!-- Badge row via shields.io for-the-badge style, references collected at the bottom
-     of this file. Only badge what's actually load-bearing — five to ten, not every
-     transitive dependency. -->
+[![Node.js][Node.badge]][Node-url]
+[![TypeScript][TypeScript.badge]][TypeScript-url]
+[![React][React.badge]][React-url]
+[![Fastify][Fastify.badge]][Fastify-url]
 
-[![Tech][Tech.badge]][Tech-url]
-
-- **Backend:** <!-- language, framework, version, package manager -->
-- **Frontend:** <!-- if any -->
-- **Data:** <!-- storage, if any -->
+- **Backend:** Node.js 22+, TypeScript (ESM, no compile step via `tsx`), Fastify 5 +
+  `@fastify/websocket`, npm
+- **Frontend:** React 19, Vite 6, plain CSS (no framework)
+- **Data:** none — game state is in-memory only, nothing persists past the process
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -169,68 +107,56 @@ section for the lean tier -->.
 
 ### Prerequisites
 
-<!-- A table for anything with more than one prerequisite; a sentence for one. Say what's
-     mocked/optional so a reader doesn't chase a credential they don't need yet — AIRA's
-     "Local development runs against a throwaway PostgreSQL container with Perplexity
-     mocked — no API key... required just to run the app" is the model. -->
-
 | Tool | Purpose | Notes |
 | --- | --- | --- |
-| … | … | … |
+| Node.js 22.5+ | Runtime | Needed for `process.loadEnvFile()` |
+| Spotify Premium account (host only) | Required for the Web Playback SDK to play audio | Players need no Spotify account of their own |
+| A Spotify Developer app | Provides `SPOTIFY_CLIENT_ID` | Register at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) with redirect URI exactly `http://127.0.0.1:5178/callback` — see `.env.example` |
 
-### Run Locally
-
-<!-- Rename to "Quick Start" for a local tool (SID), "Build & Run" for a desktop app.
-     Numbered code block, then a plain-language list of exactly what the one-click
-     launcher does, in order — not "it sets things up", the actual numbered steps. -->
+### Quick Start
 
 ```sh
-# 1. Clone
-git clone https://github.com/OWNER/song-snitch.git
-cd song-snitch
-
-# 2. Start everything
-<launcher>
+git clone https://github.com/vdwolde/Song-Snitch.git
+cd Song-Snitch
 ```
 
-`<launcher>` does the following:
+Copy `.env.example` to `.env` and fill in `SPOTIFY_CLIENT_ID`, then run
+**`Start-Project.bat`**.
 
-1. …
+`Start-Project.bat` does the following:
+
+1. Checks Node.js is on `PATH` (22+).
+2. Installs dependencies on first run, or whenever `package.json` has changed.
+3. Builds the client, then starts the server bound to your LAN — printing both the
+   host's own URL and the URL phones should join. The first LAN connection may trigger
+   a Windows Firewall prompt; choose **Private networks** and **Allow**, or phones won't
+   connect.
 
 > [!TIP]
-> **Manual fallback** (no script): <!-- the raw commands, for when the launcher can't be
-> used — matches AIRA's pattern of never making the one-click path the only path. -->
+> **Manual fallback** (no script): `npm install && npm run build`, then
+> `set BIND_LAN=1&& set OPEN_BROWSER=1&& npm run serve` (PowerShell:
+> `$env:BIND_LAN=1; $env:OPEN_BROWSER=1; npm run serve`). Omit `BIND_LAN` to stay
+> loopback-only, e.g. while developing alone.
 
-<!-- Only for a project with a distinct local/mock dev mode (AIRA-shaped):
-### What Local Mode Does
-
-| Concern | Local behavior |
-| --- | --- |
-| **Authentication** | … |
--->
-
-<!-- Only for a local data tool (SID-shaped):
 ### Using the App
 
-1. …
-
-### Where Your Data Lives
-
-| Path | Contents |
-| --- | --- |
-| … | … |
-
-To **back up**: … To **start fresh**: …
--->
+1. On the host laptop, open `http://127.0.0.1:5178/host` and connect Spotify (Premium).
+2. Set songs-per-player and create the room — note the room code and QR code shown.
+3. Each player opens the LAN URL shown (or scans the QR) on their phone, picks a name
+   and colour, and submits that many songs.
+4. Once everyone's submitted enough, tap **Start game** on the host screen.
+5. Each round, the host plays a track while everyone guesses on their phone who added
+   it. The host can tap **Skip to next song** at any time.
+6. After the last round, the final leaderboard shows the winner.
 
 ### Troubleshooting
 
-<!-- Real symptoms you've actually hit, not hypothetical ones. -->
-
 | Symptom | Fix |
 | --- | --- |
-| `node`/`dotnet` "is not recognized" | Prepend it to PATH for this shell — see the launcher header |
-| … | … |
+| `node` "is not recognized" | Prepend it to `PATH` for this shell — see the Development base's `CLAUDE.md` § Windows dev-machine hygiene |
+| Phones can't reach the join URL | Check for a dismissed Windows Firewall prompt; also confirm the router doesn't have AP/client (guest network) isolation enabled — test this before the party, not at it |
+| "Spotify Premium is required to host" | The Web Playback SDK needs a full Premium plan — Premium Mini/Lite aren't supported |
+| **Start game** stays disabled | Every player needs exactly `songsPerPlayer` submissions, and the host's Spotify playback device must finish connecting first |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -238,11 +164,9 @@ To **back up**: … To **start fresh**: …
 
 ## Project Workflow
 
-All work is committed and pushed from **VS Code Source Control** to the GitHub
-repository. Default branch is **`main`** (never `master` — enforced by
-`git config --global init.defaultBranch main`, see the root
-[CLAUDE.md](../CLAUDE.md#git) if this is a personal project, or state the rule inline
-here if this repo stands alone).
+Default branch is **`main`** — see the Development base's
+[CLAUDE.md § Git](../../CLAUDE.md#git). Solo personal project: no PR review process,
+changes land directly.
 
 ```mermaid
 gitGraph
@@ -251,43 +175,13 @@ gitGraph
    checkout feature/example
    commit id: "build feature"
    checkout main
-   merge feature/example tag: "PR review → main"
+   merge feature/example tag: "review → main"
 ```
 
 | Branch | Purpose | Auto-deploys to |
 | --- | --- | --- |
-| **`main`** | Stable, production-ready code | <!-- URL, or "—" if nothing deploys --> |
-| **`feature/*`** | Larger changes, branched off `main`, merged back via PR | — |
-
-<!-- If there's a real dev/staging environment with its own branch and its own deploy
-     target (AIRA's `development` → aira-dev.ssghosting.net), add that row and describe
-     who reviews PRs into `main` and what triggers a production deploy. -->
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
----
-
-## Deployment
-
-<!-- DELETE this whole section for a local-only tool or a desktop app that ships via
-     GitHub Releases instead — replace it with a short "Distribution" section for
-     desktop apps (publish command, where the exe lands, code-signing status). -->
-
-<!-- Host/config table (AIRA's Deployment Center table, or SID's railway.toml summary),
-     the exact start command (migrations run BEFORE the server boots), and the runtime
-     infrastructure bullets. -->
-
-### Environment Variables
-
-All secrets come from the platform's environment settings — **never hardcoded**. See
-`.env.example` or the config module for the full list and defaults.
-
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| … | … | … |
-
-> [!TIP]
-> **Health check:** `GET /health` <!-- or /api/health --> → `<!-- exact response body -->`.
+| **`main`** | Stable code | — (no deployment target — this runs on the host's own laptop) |
+| **`feature/*`** | Larger changes, merged back into `main` | — |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -295,23 +189,24 @@ All secrets come from the platform's environment settings — **never hardcoded*
 
 ## Design Language & Brand
 
-<!-- Only if there's a UI with an actual brand — delete for a headless tool or an
-     unbranded internal script. -->
-
-Design tokens are defined in `<!-- tailwind.config.js / globals.css / a
-ResourceDictionary -->` and consumed through <!-- utility classes / a theme provider -->.
+Design tokens are CSS custom properties in `src/styles.css`'s `:root` block — the only
+source of color in this project; never hardcode a hex value in a component. Full
+palette (including the 8 fixed player colours) and interaction rules live in
+[.claude/DESIGN.md](.claude/DESIGN.md).
 
 ### Brand Colors
 
 | Token | Hex | Swatch |
 | --- | --- | :---: |
-| `…` | `#……` | ![swatch](https://placehold.co/48x18/______/______.png) |
+| `--bg` | `#0f172a` | ![swatch](https://placehold.co/48x18/0f172a/0f172a.png) |
+| `--accent` | `#3b82f6` | ![swatch](https://placehold.co/48x18/3b82f6/3b82f6.png) |
+| `--gold` | `#eab308` | ![swatch](https://placehold.co/48x18/eab308/eab308.png) |
+| `--good` | `#22c55e` | ![swatch](https://placehold.co/48x18/22c55e/22c55e.png) |
+| `--bad` | `#f43f5e` | ![swatch](https://placehold.co/48x18/f43f5e/f43f5e.png) |
 
-### Typography
-
-| Role | Typeface | Fallback |
-| --- | --- | --- |
-| … | … | … |
+Typography: **Anton** (display — room code, brand title, result banners) paired with
+**Epilogue** (body/UI, including all Spotify track data), both via Google Fonts. See
+[.claude/DESIGN.md](.claude/DESIGN.md) for exactly where each is scoped.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -320,12 +215,15 @@ ResourceDictionary -->` and consumed through <!-- utility classes / a theme prov
 ## Project Structure
 
 ```text
-<!-- Annotated top-level tree, one line per folder — not every file. Depth belongs in
-     ARCHITECTURE.md; this is the orientation view. -->
+shared/       Wire contract shared between client and server (types.ts)
+server/       Fastify + WebSocket backend, Spotify integration, in-memory game state
+src/          React client — host screen, player screen, shared styles
+.claude/      Agent-facing docs — architecture, security, decisions, and more
 ```
 
-A fully annotated file map and code patterns live in **[CLAUDE.md](CLAUDE.md)**
-<!-- or .claude/ARCHITECTURE.md for the full-docs tier -->.
+A fully annotated file map and code patterns live in
+[.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md) and
+[.claude/STACK.md](.claude/STACK.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -333,12 +231,11 @@ A fully annotated file map and code patterns live in **[CLAUDE.md](CLAUDE.md)**
 
 ## Contributing & Code Quality
 
-- **Quality gate:** <!-- the exact command that must stay clean, e.g. `npm run
-  typecheck`, `ruff check`, `dotnet test` -->.
-- **Code review:** after writing or modifying code, run **`/code --commit`**
-  (configured by [.claude/REVIEW.md](.claude/REVIEW.md))
-  before considering the task done.
-- **AI agent guides** live under <!-- .claude/ or the root CLAUDE.md -->.
+- **Quality gate:** `npm run typecheck && npm test`.
+- **Code review:** run `/code --commit` (configured by
+  [.claude/REVIEW.md](.claude/REVIEW.md)) when you actually want a review that turn —
+  not automatically after every change.
+- **AI agent guides** live under [.claude/](.claude/), routed from [CLAUDE.md](CLAUDE.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -346,17 +243,18 @@ A fully annotated file map and code patterns live in **[CLAUDE.md](CLAUDE.md)**
 
 ## Documentation
 
-<!-- Mirror CLAUDE.md's routing table in human terms. Delete rows for docs this project
-     doesn't have — don't pad the table to look complete. -->
-
 | Document | What's inside |
 | --- | --- |
 | [CLAUDE.md](CLAUDE.md) | Entry point for AI agents: hard rules + routing index |
 | [.claude/PRODUCT.md](.claude/PRODUCT.md) | Goals, non-goals, known gaps |
 | [.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md) | Structure, data flow, deployment topology |
+| [.claude/DOMAIN.md](.claude/DOMAIN.md) | Game state model, scoring, round lifecycle |
+| [.claude/API.md](.claude/API.md) | HTTP routes and the full WebSocket protocol |
 | [.claude/STACK.md](.claude/STACK.md) | Conventions, patterns, commands, quality gates |
 | [.claude/SECURITY.md](.claude/SECURITY.md) | Threat model, controls, secrets |
+| [.claude/DESIGN.md](.claude/DESIGN.md) | Brand tokens, layout, accessibility |
 | [.claude/DECISIONS.md](.claude/DECISIONS.md) | ADR log — why things are the way they are |
+| [.claude/GLOSSARY.md](.claude/GLOSSARY.md) | Project-specific terms |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -366,8 +264,6 @@ A fully annotated file map and code patterns live in **[CLAUDE.md](CLAUDE.md)**
 
 All rights reserved — Thomas van der Wolde (vdWolde). Personal project, not licensed
 for reuse or redistribution.
-<!-- Replace with "Proprietary — internal use only." for a work project (see AIRA's
-     exact wording), or the actual OSS license terms if this one is open source. -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -379,6 +275,12 @@ for reuse or redistribution.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- MARKDOWN LINKS & IMAGES — shields.io for-the-badge style. Only badge what's real. -->
-[Tech.badge]: https://img.shields.io/badge/Tech-000000?style=for-the-badge&logo=tech&logoColor=white
-[Tech-url]: https://example.com
+<!-- MARKDOWN LINKS & IMAGES -->
+[Node.badge]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white
+[Node-url]: https://nodejs.org/
+[TypeScript.badge]: https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[React.badge]: https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black
+[React-url]: https://react.dev/
+[Fastify.badge]: https://img.shields.io/badge/Fastify-000000?style=for-the-badge&logo=fastify&logoColor=white
+[Fastify-url]: https://fastify.dev/

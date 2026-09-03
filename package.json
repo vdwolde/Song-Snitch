@@ -3,33 +3,34 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Song Snitch — local single-user data tool",
+  "description": "Song Snitch — local-network party game: guess who submitted the song",
   "author": "Thomas van der Wolde (vdWolde) <https://vdwolde.com/>",
   "engines": {
     "node": ">=22.5"
   },
   "scripts": {
-    "dev": "concurrently -k -n web,api -c blue,green \"vite\" \"cross-env NODE_OPTIONS=--disable-warning=ExperimentalWarning tsx watch server/index.ts\"",
+    "dev": "concurrently -k -n web,api -c blue,green \"vite\" \"cross-env UI_ORIGIN=http://127.0.0.1:5173 tsx watch server/index.ts\"",
     "build": "vite build",
-    "serve": "cross-env NODE_OPTIONS=--disable-warning=ExperimentalWarning tsx server/index.ts",
+    "serve": "tsx server/index.ts",
     "start": "npm run build && npm run serve",
     "typecheck": "tsc --noEmit",
-    "test": "cross-env NODE_OPTIONS=--disable-warning=ExperimentalWarning tsx --test server/*.test.ts"
+    "test": "tsx --test server/*.test.ts"
   },
   "dependencies": {
     "@fastify/compress": "9.2.0",
-    "@fastify/multipart": "10.1.1",
     "@fastify/static": "10.1.3",
-    "exceljs": "4.4.0",
+    "@fastify/websocket": "11.3.0",
     "fastify": "5.12.0",
+    "qrcode": "1.5.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8",
-    "zustand": "5.0.15"
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@types/node": "26.2.0",
+    "@types/qrcode": "1.5.6",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
+    "@types/spotify-web-playback-sdk": "0.1.19",
     "@vitejs/plugin-react": "4.3.4",
     "concurrently": "10.0.5",
     "cross-env": "10.1.0",
