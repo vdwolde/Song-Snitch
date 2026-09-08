@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { DEFAULT_SONGS_PER_PLAYER, type HostState, type Reveal, type ServerMsg } from '../shared/types';
+import { DEFAULT_SONGS_PER_PLAYER, type ClientMsg, type HostState, type Reveal, type ServerMsg } from '../shared/types';
 import { useRoom } from './net';
 import { initPlayer } from './spotify-player';
 
@@ -32,7 +32,13 @@ export function HostApp() {
     }
   }, []);
 
-  const { send } = useRoom(onMessage);
+  const onOpen = useCallback(
+    (send: (msg: ClientMsg) => void) => {
+      if (status?.authed) send({ t: 'host:hello' });
+    },
+    [status?.authed],
+  );
+  const { send } = useRoom(onMessage, onOpen);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -45,13 +51,21 @@ export function HostApp() {
 
   useEffect(() => {
     if (!status?.authed) return;
+    // Covers the ordering race `onOpen` can't: the socket often finishes connecting
+    // before this `/api/host/status` fetch resolves, so the connect-time `onOpen`
+    // fires while `status` is still null and skips sending 'host:hello'. This re-sends
+    // it once auth is known — redundant with onOpen on some orderings, but 'host:hello'
+    // is a read-only status ping, so sending it twice is harmless.
     send({ t: 'host:hello' });
     void initPlayer({
       onReady: (deviceId) => send({ t: 'host:deviceReady', deviceId }),
       onTrackEnded: () => send({ t: 'host:trackEnded' }),
       onError: setError,
     });
-  }, [status?.authed, send]);
+    // initPlayer starts the SDK once per authed session — it must not restart on
+    // every `send` re-creation, only when auth state actually changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status?.authed]);
 
   useEffect(() => {
     if (!state?.lanUrl) {

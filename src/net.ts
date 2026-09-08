@@ -4,10 +4,22 @@
 import { useEffect, useRef } from 'react';
 import type { ClientMsg, ServerMsg } from '../shared/types';
 
-export function useRoom(onMessage: (msg: ServerMsg) => void): { send: (msg: ClientMsg) => void } {
+// onOpen fires after every successful connect, including a reconnect — the server
+// forgets which player/host owned a socket as soon as it closes, so identity (a
+// player's rejoin, the host's hello) must be re-sent every time, not just on mount.
+export function useRoom(
+  onMessage: (msg: ServerMsg) => void,
+  onOpen?: (send: (msg: ClientMsg) => void) => void,
+): { send: (msg: ClientMsg) => void } {
   const wsRef = useRef<WebSocket | null>(null);
   const onMessageRef = useRef(onMessage);
   onMessageRef.current = onMessage;
+  const onOpenRef = useRef(onOpen);
+  onOpenRef.current = onOpen;
+
+  function send(msg: ClientMsg): void {
+    if (wsRef.current?.readyState === WebSocket.OPEN) wsRef.current.send(JSON.stringify(msg));
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -16,6 +28,9 @@ export function useRoom(onMessage: (msg: ServerMsg) => void): { send: (msg: Clie
     function connect(): void {
       socket = new WebSocket(`ws://${location.host}/ws`);
       wsRef.current = socket;
+      socket.onopen = () => {
+        if (!cancelled) onOpenRef.current?.(send);
+      };
       socket.onmessage = (ev) => {
         if (cancelled) return;
         onMessageRef.current(JSON.parse(ev.data as string) as ServerMsg);
@@ -31,10 +46,6 @@ export function useRoom(onMessage: (msg: ServerMsg) => void): { send: (msg: Clie
       socket.close();
     };
   }, []);
-
-  function send(msg: ClientMsg): void {
-    wsRef.current?.send(JSON.stringify(msg));
-  }
 
   return { send };
 }

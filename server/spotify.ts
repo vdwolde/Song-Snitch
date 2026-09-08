@@ -168,7 +168,7 @@ interface SpotifyApiTrack {
 // no client secret, carries the host's market so results are actually playable on the
 // host's device, and reuses the one token manager instead of a second refresh path.
 export async function search(q: string): Promise<TrackInfo[]> {
-  const params = new URLSearchParams({ q, type: 'track', limit: '12' });
+  const params = new URLSearchParams({ q, type: 'track', limit: '10' });
   const res = await spotifyFetch(`/search?${params}`);
   if (!res.ok) throw new Error(`Spotify search failed (${res.status})`);
   const data = (await res.json()) as { tracks: { items: SpotifyApiTrack[] } };

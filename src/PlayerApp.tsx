@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
-import { PLAYER_COLOURS, type PlayerColour, type PlayerState, type Reveal, type ServerMsg, type TrackInfo } from '../shared/types';
+import {
+  PLAYER_COLOURS,
+  type ClientMsg,
+  type PlayerColour,
+  type PlayerState,
+  type Reveal,
+  type ServerMsg,
+  type TrackInfo,
+} from '../shared/types';
 import { useRoom } from './net';
 
 interface StoredIdentity {
@@ -71,13 +79,13 @@ export function PlayerApp() {
     [joinCode],
   );
 
-  const { send } = useRoom(onMessage);
-
-  useEffect(() => {
-    if (identity) send({ t: 'player:rejoin', code: identity.code, token: identity.token });
-    // Only re-run when identity itself changes — not on every `send` re-creation.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [identity]);
+  const onOpen = useCallback(
+    (send: (msg: ClientMsg) => void) => {
+      if (identity) send({ t: 'player:rejoin', code: identity.code, token: identity.token });
+    },
+    [identity],
+  );
+  const { send } = useRoom(onMessage, onOpen);
 
   useEffect(() => {
     if (!identity || !query.trim()) {

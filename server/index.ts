@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { constants as zlibConstants } from 'node:zlib';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyCompress from '@fastify/compress';
@@ -24,7 +25,15 @@ const HOST = process.env.BIND_LAN === '1' ? '0.0.0.0' : '127.0.0.1';
 const app = Fastify({ logger: false, bodyLimit: 64 * 1024 });
 
 registerGuard(app);
-await app.register(fastifyCompress, { global: true, encodings: ['br', 'gzip'] });
+// Brotli's default quality (11, max) is CPU-heavy enough to visibly stall Node's
+// single event loop when several phones fetch the JS bundle around the same time (a
+// LAN party's normal case) — quality 4 trades a little payload size for staying
+// responsive, which matters far more than a few KB on a local network.
+await app.register(fastifyCompress, {
+  global: true,
+  encodings: ['br', 'gzip'],
+  brotliOptions: { params: { [zlibConstants.BROTLI_PARAM_QUALITY]: 4 } },
+});
 await app.register(fastifyWebsocket);
 await registerRoutes(app);
 registerWs(app);
