@@ -7,16 +7,23 @@ dependencies and commands see [STACK.md](STACK.md).
 
 ## System overview
 
-One Fastify process serves the whole game: two React entry points (host screen, player
-screen) over HTTP, one WebSocket for all real-time state, and it's the only thing that
-ever talks to Spotify.
+One Fastify process on the host's own laptop runs the whole game: two React entry
+points (host screen, player screen), one WebSocket for all real-time state, and it's
+the only server-side thing that ever talks to Spotify. The BUILT CLIENT is now also
+published to GitHub Pages (see [DECISIONS.md](DECISIONS.md) ADR-005) — a different,
+public origin players load the app shell from — but the game server itself is never
+deployed anywhere; every player's browser still opens a WebSocket straight to the
+host's own LAN-bound Fastify process for actual gameplay.
 
 <!-- markdownlint-disable MD046 -->
 ```mermaid
 graph LR
-    H["Host browser<br/>(Web Playback SDK)"] <-->|"WS /ws"| S["Fastify server<br/>(in-memory Room)"]
-    P["Player browsers<br/>(phones, LAN)"] <-->|"WS /ws"| S
+    GP["GitHub Pages<br/>(static client shell)"] -.->|"served once,<br/>no server logic"| H
+    GP -.->|"served once,<br/>no server logic"| P
+    H["Host browser<br/>(Web Playback SDK)"] <-->|"WS /ws"| S["Fastify server<br/>(in-memory Room,<br/>host's own laptop)"]
+    P["Player browsers<br/>(phones, anywhere with internet)"] <-->|"WS /ws, cross-origin"| S
     H -->|"host token only"| SP["Spotify Web API"]
+    P -.->|"top-tracks mode only,<br/>player's own token"| SP
     S -->|"search + play/pause,<br/>host token"| SP
 ```
 <!-- markdownlint-enable MD046 -->
@@ -62,8 +69,12 @@ already set and no-ops.
 
 ## Request & data flow
 
-1. **Host auth** — `/auth/login` → Spotify consent → `/callback` exchanges the PKCE code,
-   checks the account is Premium, sets an `HttpOnly` cookie, redirects back to `/host`.
+1. **Host auth** — `/auth/login` → Spotify consent → the shared GitHub Pages bounce page
+   (`public/callback.html`) → back to `/host#code=&state=` (a URL fragment, invisible
+   to any server) → `HostApp.tsx` reads it and `POST /api/host/complete-login`
+   exchanges the PKCE code, checks the account is Premium, sets an `HttpOnly` cookie.
+   See [DECISIONS.md](DECISIONS.md) ADR-005 for why this moved off a server-rendered
+   `/callback` redirect.
 2. **Room creation** — host's WS sends `host:createRoom`; `game.createRoom()` replaces
    the module's `room` wholesale and broadcasts the new `HostState`.
 3. **Player join** — player's WS sends `player:join`; `game.joinRoom()` validates
@@ -84,21 +95,31 @@ already set and no-ops.
 | I am adding… | It goes in… |
 | --- | --- |
 | A new WS message type | `shared/types.ts` (`ClientMsg`/`ServerMsg`), `server/ws.ts` (dispatch), `server/game.ts` (the actual transition) |
-| A new Spotify API call | `server/spotify.ts` only |
+| A new Spotify API call the SERVER makes | `server/spotify.ts` only |
 | A new host-screen or player-screen UI piece | `src/HostApp.tsx` or `src/PlayerApp.tsx` — both are intentionally single-file, see [STACK.md](STACK.md) |
 
 ## Integration points
 
 | Integration | Purpose | Auth |
 | --- | --- | --- |
-| Spotify Web API + Web Playback SDK | Catalog search, playback control, in-browser audio | Host's own PKCE user token only — no client secret exists in this project |
+| Spotify Web API + Web Playback SDK | Catalog search, playback control, in-browser audio | Host's own PKCE user token — no client secret exists in this project |
+| Spotify Web API, `top-tracks` mode only | A player's own top-tracks fetch, direct from their phone (`src/spotify-top-tracks.ts`) | That player's own PKCE user token, held only in their browser's memory — see [SECURITY.md](SECURITY.md) |
+| GitHub Pages | Publishes the built client shell (both screens + the OAuth bounce page) — no server logic | Public, no auth — see [DECISIONS.md](DECISIONS.md) ADR-005 |
 
 ## Deployment topology
 
-There is no deployment target. Song Snitch runs entirely on the host's own laptop for
-the length of one game night: `Start-Project.bat` (or `npm start`) builds and serves on
-`0.0.0.0:5178`, phones join over the same WiFi. No TLS termination, no health-check
-platform — `/api/health` exists only for the launcher's own single-instance check.
+The GAME SERVER has no deployment target and never will — Song Snitch runs entirely on
+the host's own laptop for the length of one game night: `Start-Project.bat` (or
+`npm start`) builds and serves on `0.0.0.0:5178`, phones join over the same WiFi. No TLS
+termination, no health-check platform — `/api/health` exists only for the launcher's
+own single-instance check.
+
+The CLIENT SHELL (both screens' built HTML/JS/CSS, plus the OAuth bounce page) is
+separately published to **GitHub Pages** via `.github/workflows/pages.yml`, triggered
+on push to `main` — `npm run build:pages` (a `--base=/Song-Snitch/` build to a separate
+`dist-pages/`, never colliding with the host's own local `dist/`). This is a static
+publish only: no server, no secrets, nothing that talks to a database or holds state.
+See [DECISIONS.md](DECISIONS.md) ADR-005.
 
 ## Not in the architecture (yet)
 

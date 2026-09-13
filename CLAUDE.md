@@ -5,8 +5,12 @@ one out loud, everyone guesses who added it on their own phone. TypeScript (ESM)
 throughout, Fastify + WebSocket server, React client, npm.
 
 **Flow:** Host connects Spotify (PKCE) → creates a room → players join and submit songs
-(server-side Spotify search, no player login) → host starts → per round, the host plays
-a track while phones vote "who added this?" → reveal → final leaderboard.
+(server-side Spotify search, no player login — or, in top-tracks mode, each player
+connects their own Spotify and their most-played songs are auto-submitted) → host
+starts → per round, the host plays a track while phones vote "who added this?" →
+reveal → final leaderboard. The built client (both screens) is published to GitHub
+Pages; the game server itself only ever runs on the host's own laptop — see
+[.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-005.
 
 This file is always loaded (Claude Code reads it automatically from the project root).
 It is a **router**: it holds the coding principles and points to the one document that
@@ -20,7 +24,12 @@ do not duplicate its content here.
    the submitter hidden until a reveal; see [.claude/SECURITY.md](.claude/SECURITY.md).
 2. A round ends only through `server/game.ts::endRound` — never set `room.phase =
    'reveal'` anywhere else.
-3. Every Spotify API call lives in `server/spotify.ts` — no other file makes one.
+3. Every Spotify API call the **server** makes lives in `server/spotify.ts` — no other
+   server file makes one. A browser-side Spotify call is permitted only where the token
+   itself must live in the browser — today that's `src/spotify-player.ts` (the Web
+   Playback SDK) and `src/spotify-top-tracks.ts` (a player's own top-tracks import, see
+   [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-004/ADR-005) — never add a third
+   without a documented reason.
 4. The Spotify client secret never exists in this project (PKCE only); the access token
    never reaches a client except through the loopback+cookie-gated `/api/host/token`,
    and never the refresh token, ever.
@@ -89,8 +98,9 @@ Delete the rows this project doesn't have; don't create an empty file to fill a 
 - Adding a new WebSocket message → [.claude/API.md](.claude/API.md) (protocol table) +
   [.claude/STACK.md](.claude/STACK.md) (the field-by-field wire-object pattern).
 - Changing scoring or round-end rules → [.claude/DOMAIN.md](.claude/DOMAIN.md).
-- Adding a Spotify API call → [.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md)
-  (integration points) — it belongs in `server/spotify.ts` only.
+- Adding a Spotify API call the server makes → [.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md)
+  (integration points) — it belongs in `server/spotify.ts` only; see Hard rule 3 for the
+  narrow browser-side exceptions.
 - Changing the host or player screen's layout/colours →
   [.claude/DESIGN.md](.claude/DESIGN.md).
 - Questioning why players don't log into Spotify, or why there's no database →
@@ -143,6 +153,7 @@ Full detail in [.claude/SECURITY.md](.claude/SECURITY.md). Non-negotiable:
 - No Spotify client secret exists anywhere in this project (PKCE only) — never add one.
 - Only the host authenticates; a phone must never obtain the host's Spotify token —
   `/api/host/token` requires both the host cookie and a loopback source.
+  `/api/host/complete-login` (which mints that cookie) is loopback-gated the same way.
 - The submitter of the currently-playing track must never reach any client before its
   `Reveal` — see Hard rules above and [.claude/SECURITY.md](.claude/SECURITY.md).
 - Every gate is enforced server-side; a client-side check is a UX affordance only.

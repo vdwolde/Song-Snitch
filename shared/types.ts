@@ -1,6 +1,11 @@
 // Types shared between server and client. Keep this file dependency-free (no imports
 // from server/ or src/) so both sides can import it without pulling in the other's code.
 
+// Where the built client (and the Spotify OAuth bounce page, public/callback.html) is
+// published — see .claude/DECISIONS.md ADR-005. No trailing slash; callers append their
+// own '/'.
+export const PAGES_URL = 'https://vdwolde.github.io/Song-Snitch';
+
 export const PLAYER_COLOURS = [
   'crimson',
   'amber',
@@ -19,6 +24,11 @@ export const DEFAULT_SONGS_PER_PLAYER = 3;
 
 export type Phase = 'lobby' | 'playing' | 'reveal' | 'finished';
 export type RoundEndReason = 'all-voted' | 'track-ended' | 'skipped';
+
+// 'manual' — everyone searches and picks their own songs (the original, default mode).
+// 'top-tracks' — each player connects their own Spotify and their most-played tracks
+// are submitted automatically. See .claude/DECISIONS.md ADR-004.
+export type RoomMode = 'manual' | 'top-tracks';
 
 export interface TrackInfo {
   id: string;
@@ -44,7 +54,11 @@ export interface HostState {
   code: string; // '' before a room has been created
   phase: Phase;
   songsPerPlayer: number;
-  lanUrl: string;
+  mode: RoomMode;
+  // The full player-facing URL to show/QR-encode — a PAGES_URL link carrying the
+  // host's LAN address as a ?server= param, not a bare LAN address. See
+  // server/net.ts::playerJoinUrl and .claude/DECISIONS.md ADR-005.
+  joinUrl: string;
   players: PlayerView[];
   needsDevice: boolean; // Spotify Web Playback SDK device not yet connected
   spotifyUser: string | null;
@@ -66,6 +80,7 @@ export interface PlayerState {
   code: string;
   phase: Phase;
   songsPerPlayer: number;
+  mode: RoomMode;
   you: { id: string; name: string; colour: PlayerColour; score: number };
   players: PlayerView[];
   yourSubmissions: { id: string; name: string; artists: string }[];
@@ -101,11 +116,14 @@ export type ErrorCode =
   | 'game-in-progress'
   | 'not-host'
   | 'not-premium'
-  | 'spotify';
+  | 'spotify'
+  // Something about THIS action was rejected but the player's identity/session is
+  // still fine — unlike 'bad-room', a client must never treat this as "log me out."
+  | 'submit-rejected';
 
 export type ClientMsg =
   | { t: 'host:hello' }
-  | { t: 'host:createRoom'; songsPerPlayer: number }
+  | { t: 'host:createRoom'; songsPerPlayer: number; mode: RoomMode }
   | { t: 'host:deviceReady'; deviceId: string }
   | { t: 'host:start' }
   | { t: 'host:skip' }
@@ -115,6 +133,10 @@ export type ClientMsg =
   | { t: 'player:rejoin'; code: string; token: string }
   | { t: 'player:submit'; track: TrackInfo }
   | { t: 'player:unsubmit'; trackId: string }
+  // top-tracks mode only — the player's own ordered candidate list (built client-side
+  // from their Spotify top tracks); the server takes the first songsPerPlayer that are
+  // playable and not already submitted room-wide. See server/game.ts::autoSubmit.
+  | { t: 'player:autoSubmit'; candidates: TrackInfo[] }
   | { t: 'player:vote'; guessId: string };
 
 export type ServerMsg =

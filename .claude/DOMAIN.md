@@ -23,7 +23,7 @@ All in-memory (`Map`/array), never normalized, never persisted:
 | | `seq` | Monotonic, never reset — guards a stale timer/play callback from a superseded round, safely even across a `createRoom()` reset. |
 | | `votes` | `Map<voterId, guessedPlayerId>`. |
 | | `endReason` | `null` until the round is over; non-null makes `endRound()` idempotent. |
-| `Room` | `code`, `songsPerPlayer`, `phase` | — |
+| `Room` | `code`, `songsPerPlayer`, `mode`, `phase` | `mode` is `'manual'` or `'top-tracks'` (see [DECISIONS.md](DECISIONS.md) ADR-004), set once at `createRoom()` and never changed after |
 | | `players`, `rounds`, `roundIndex` | `rounds` is built and shuffled once, at `startGame()`. |
 | | `lastReveal` | Kept so a reconnecting client during the `reveal` phase gets resent the answer. |
 
@@ -73,12 +73,20 @@ All server-side, client checks are UX only (`.claude/SECURITY.md`):
 - Search query (`server/routes.ts`): capped at 100 characters.
 - `songsPerPlayer`: clamped to 1–5 at room creation (`server/game.ts::createRoom`).
 - A submitted track's Spotify id must be unique across the whole room, not just per player.
+- `top-tracks` mode only: a candidate must also be playable in the **host's** Spotify
+  market (`server/spotify.ts::playableIds`, `server/game.ts::autoSubmit`) — the
+  player's own top-tracks fetch carries their own market, but the host's device is what
+  actually plays the song. See [DECISIONS.md](DECISIONS.md) ADR-004.
 
 ## Source data & normalization
 
-No imported files or feeds. Track data comes live from the Spotify Search API per query
-(`server/spotify.ts::search`) and is never cached or stored beyond the single
-`TrackInfo` snapshot attached to a submission.
+No imported files or feeds. In manual mode, track data comes live from the Spotify
+Search API per query (`server/spotify.ts::search`). In `top-tracks` mode, each
+player's phone fetches their own Spotify top tracks directly
+(`src/spotify-top-tracks.ts`) and sends an ordered candidate list; the server never
+queries Spotify for the tracks themselves in this mode, only to re-check playability.
+Either way, track data is never cached or stored beyond the single `TrackInfo` snapshot
+attached to a submission.
 
 ## Extending the domain
 

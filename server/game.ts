@@ -15,6 +15,7 @@ import {
   type PlayerColour,
   type PlayerState,
   type Reveal,
+  type RoomMode,
   type RoundEndReason,
   type TrackInfo,
 } from '../shared/types';
@@ -45,6 +46,7 @@ interface Round {
 interface Room {
   code: string;
   songsPerPlayer: number;
+  mode: RoomMode;
   phase: Phase;
   players: Map<string, Player>;
   rounds: Round[];
@@ -120,11 +122,12 @@ function expectedVoters(r: Round): number {
   return n;
 }
 
-export function createRoom(songsPerPlayer: number): void {
+export function createRoom(songsPerPlayer: number, mode: RoomMode = 'manual'): void {
   const n = Math.min(5, Math.max(1, Math.round(songsPerPlayer) || DEFAULT_SONGS_PER_PLAYER));
   room = {
     code: randomRoomCode(),
     songsPerPlayer: n,
+    mode: mode === 'top-tracks' ? 'top-tracks' : 'manual',
     phase: 'lobby',
     players: new Map(),
     rounds: [],
@@ -231,10 +234,12 @@ export function submitTrack(playerId: string, track: TrackInfo): Result<void> {
   if (!room || room.phase !== 'lobby') return err('bad-room', 'Submissions are closed');
   const p = room.players.get(playerId);
   if (!p) return err('bad-room', 'Unknown player');
-  if (p.submissions.length >= room.songsPerPlayer) return err('bad-room', "You've submitted enough songs");
+  // 'submit-rejected', not 'bad-room' — the player is still valid, only this particular
+  // song was; PlayerApp must not treat these as "your session is dead."
+  if (p.submissions.length >= room.songsPerPlayer) return err('submit-rejected', "You've submitted enough songs");
   for (const other of room.players.values()) {
     if (other.submissions.some((t) => t.id === track.id)) {
-      return err('bad-room', 'Someone already submitted that song');
+      return err('submit-rejected', 'Someone already submitted that song');
     }
   }
   p.submissions.push(track);
@@ -244,10 +249,68 @@ export function submitTrack(playerId: string, track: TrackInfo): Result<void> {
 
 export function unsubmitTrack(playerId: string, trackId: string): Result<void> {
   if (!room || room.phase !== 'lobby') return err('bad-room', 'Submissions are closed');
+  // Removing an auto-imported song would just have it re-imported on the next
+  // top-tracks submit — there's nothing to remove it FOR in this mode.
+  if (room.mode === 'top-tracks') return err('submit-rejected', 'Songs are auto-imported in this mode');
   const p = room.players.get(playerId);
   if (!p) return err('bad-room', 'Unknown player');
   p.submissions = p.submissions.filter((t) => t.id !== trackId);
   notifyState?.();
+  return ok(undefined);
+}
+
+// top-tracks mode: the player's phone sends its whole ordered candidate list (already
+// built by shared/top-tracks.ts from their own Spotify top tracks); this takes the
+// first songsPerPlayer that are playable in the HOST's market (see
+// spotify.ts::playableIds) and not already submitted by anyone else in the room.
+// Async because it calls Spotify — re-checks the room/player after the await, since
+// the room can move on while a phone is mid-request.
+export async function autoSubmit(playerId: string, candidates: TrackInfo[]): Promise<Result<void>> {
+  if (!room || room.phase !== 'lobby' || room.mode !== 'top-tracks') {
+    return err('bad-room', 'Submissions are closed');
+  }
+  const requestingRoom = room;
+  const p = requestingRoom.players.get(playerId);
+  if (!p) return err('bad-room', 'Unknown player');
+  if (p.submissions.length >= requestingRoom.songsPerPlayer) return ok(undefined);
+
+  const capped = candidates.slice(0, 50);
+  let playable: Set<string>;
+  try {
+    playable = await spotify.playableIds(
+      capped.map((c) => c.id),
+      spotify.getHostCountry(),
+    );
+  } catch {
+    // Not authenticated, or Spotify unreachable — don't block a party game over this;
+    // treat every candidate as playable (a genuine 403 at playback still falls back to
+    // the host's existing Skip button).
+    playable = new Set(capped.map((c) => c.id));
+  }
+
+  if (room !== requestingRoom || room.phase !== 'lobby') return err('bad-room', 'Submissions are closed');
+  const stillP = room.players.get(playerId);
+  if (!stillP) return err('bad-room', 'Unknown player');
+
+  const takenIds = new Set<string>();
+  for (const other of room.players.values()) for (const t of other.submissions) takenIds.add(t.id);
+
+  const remaining = room.songsPerPlayer - stillP.submissions.length;
+  let added = 0;
+  for (const track of capped) {
+    if (added >= remaining) break;
+    if (!playable.has(track.id) || takenIds.has(track.id)) continue;
+    stillP.submissions.push(track);
+    takenIds.add(track.id);
+    added++;
+  }
+  notifyState?.();
+  if (added < remaining) {
+    return err(
+      'submit-rejected',
+      `Only found ${stillP.submissions.length}/${room.songsPerPlayer} playable songs — pick the rest yourself`,
+    );
+  }
   return ok(undefined);
 }
 
@@ -366,7 +429,8 @@ export function hostState(): HostState {
     code: room?.code ?? '',
     phase: room?.phase ?? 'lobby',
     songsPerPlayer: room?.songsPerPlayer ?? DEFAULT_SONGS_PER_PLAYER,
-    lanUrl: net.primaryLanUrl(PORT),
+    mode: room?.mode ?? 'manual',
+    joinUrl: net.playerJoinUrl(PORT),
     players: playerViews(),
     needsDevice: !deviceId,
     spotifyUser: spotify.getHostUser(),
@@ -386,6 +450,7 @@ export function playerState(playerId: string): PlayerState | null {
     code: room.code,
     phase: room.phase,
     songsPerPlayer: room.songsPerPlayer,
+    mode: room.mode,
     you: { id: you.id, name: you.name, colour: you.colour, score: you.score },
     players: playerViews(),
     yourSubmissions: you.submissions.map((t) => ({ id: t.id, name: t.name, artists: t.artists })),

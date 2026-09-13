@@ -8,7 +8,7 @@ import fastifyCompress from '@fastify/compress';
 import fastifyWebsocket from '@fastify/websocket';
 import { registerRoutes } from './routes';
 import { registerWs } from './ws';
-import { primaryLanUrl, registerGuard } from './net';
+import { playerJoinUrl, registerGuard } from './net';
 
 try {
   process.loadEnvFile(); // reads .env if present; no error if it doesn't exist
@@ -80,7 +80,7 @@ try {
   console.log(`\n  Song Snitch\n  Host screen : ${url}/host${mode}`);
   if (HOST === '0.0.0.0') {
     // eslint-disable-next-line no-console
-    console.log(`  Players join: ${primaryLanUrl(PORT)}\n`);
+    console.log(`  Players join: ${playerJoinUrl(PORT)}\n`);
   } else {
     // eslint-disable-next-line no-console
     console.log('');

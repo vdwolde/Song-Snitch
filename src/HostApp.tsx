@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { DEFAULT_SONGS_PER_PLAYER, type ClientMsg, type HostState, type Reveal, type ServerMsg } from '../shared/types';
+import { DEFAULT_SONGS_PER_PLAYER, type ClientMsg, type HostState, type Reveal, type RoomMode, type ServerMsg } from '../shared/types';
 import { useRoom } from './net';
 import { initPlayer } from './spotify-player';
 
@@ -15,6 +15,7 @@ export function HostApp() {
   const [reveal, setReveal] = useState<Reveal | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [songsPerPlayer, setSongsPerPlayer] = useState(DEFAULT_SONGS_PER_PLAYER);
+  const [mode, setMode] = useState<RoomMode>('manual');
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   const onMessage = useCallback((msg: ServerMsg) => {
@@ -49,6 +50,32 @@ export function HostApp() {
       .then((d: HostStatus) => setStatus(d));
   }, []);
 
+  // Returning from the Spotify bounce page (public/callback.html, see
+  // .claude/DECISIONS.md ADR-005) lands here as a #code=&state= fragment — a fragment
+  // never reaches a server, so this posts it to complete the login instead of Spotify
+  // ever redirecting straight to a GET route.
+  useEffect(() => {
+    if (!location.hash.includes('code=')) return;
+    const hash = new URLSearchParams(location.hash.slice(1));
+    history.replaceState(null, '', location.pathname); // strip it immediately — single-use
+    const code = hash.get('code');
+    const authState = hash.get('state');
+    if (!code || !authState) return;
+    fetch('/api/host/complete-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, state: authState }),
+    })
+      .then((r) => r.json())
+      .then((d: { ok: boolean; message?: string }) => {
+        if (!d.ok) setError(d.message ?? 'Spotify login failed — try again.');
+        return fetch('/api/host/status')
+          .then((r) => r.json())
+          .then((s: HostStatus) => setStatus(s));
+      })
+      .catch(() => setError('Could not complete Spotify login — try again.'));
+  }, []);
+
   useEffect(() => {
     if (!status?.authed) return;
     // Covers the ordering race `onOpen` can't: the socket often finishes connecting
@@ -68,14 +95,14 @@ export function HostApp() {
   }, [status?.authed]);
 
   useEffect(() => {
-    if (!state?.lanUrl) {
+    if (!state?.joinUrl) {
       setQrDataUrl(null);
       return;
     }
-    QRCode.toDataURL(state.lanUrl, { margin: 1, width: 240 })
+    QRCode.toDataURL(state.joinUrl, { margin: 1, width: 240 })
       .then(setQrDataUrl)
       .catch(() => setQrDataUrl(null));
-  }, [state?.lanUrl]);
+  }, [state?.joinUrl]);
 
   if (!status) return <main className="host status-line pulsing">Loading</main>;
 
@@ -116,7 +143,14 @@ export function HostApp() {
               onChange={(e) => setSongsPerPlayer(Number(e.target.value))}
             />
           </label>
-          <button onClick={() => send({ t: 'host:createRoom', songsPerPlayer })}>Create room</button>
+          <label>
+            Mode
+            <select value={mode} onChange={(e) => setMode(e.target.value as RoomMode)}>
+              <option value="manual">Everyone picks songs</option>
+              <option value="top-tracks">Auto — everyone's top tracks</option>
+            </select>
+          </label>
+          <button onClick={() => send({ t: 'host:createRoom', songsPerPlayer, mode })}>Create room</button>
         </section>
       )}
 
@@ -124,9 +158,12 @@ export function HostApp() {
         <section className="host-lobby">
           <div className="room-code-card card-enter">
             <h1 className="room-code">{state.code}</h1>
-            <p className="lan-url">Join at {state.lanUrl}</p>
+            <p className="lan-url">Scan to join, or visit {state.joinUrl}</p>
           </div>
-          {qrDataUrl && <img className="qr" src={qrDataUrl} alt={`QR code for ${state.lanUrl}`} />}
+          {qrDataUrl && <img className="qr" src={qrDataUrl} alt={`QR code to join at ${state.joinUrl}`} />}
+          {state.mode === 'top-tracks' && (
+            <p className="status-line">Players may briefly show as disconnected while they connect Spotify.</p>
+          )}
           <ul className="roster">
             {state.players.map((p) => (
               <li key={p.id} data-colour={p.colour}>

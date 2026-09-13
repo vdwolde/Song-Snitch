@@ -31,6 +31,7 @@
       </ul>
     </li>
     <li><a href="#project-workflow">Project Workflow</a></li>
+    <li><a href="#deployment">Deployment</a></li>
     <li><a href="#design-language--brand">Design Language &amp; Brand</a></li>
     <li><a href="#project-structure">Project Structure</a></li>
     <li><a href="#contributing--code-quality">Contributing &amp; Code Quality</a></li>
@@ -46,16 +47,20 @@
 
 **Song Snitch** turns a room's own Spotify library into a party game. One host laptop
 with a Spotify Premium account plays each submitted track out loud; everyone else joins
-from their own phone's browser — no app install, no Spotify account needed — and
-guesses who added the song that's playing. Runs entirely on the host's home WiFi for
-the length of one evening: no cloud, no server to deploy, no data that outlives the
-process (see [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-001).
+from their own phone's browser — no app install, no Spotify account needed (unless the
+host turns on auto-import mode, see below) — and guesses who added the song that's
+playing. The actual game runs entirely on the host's own WiFi for the length of one
+evening: no game server to deploy, no data that outlives the process (see
+[.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-001). The app itself, though, is
+published to GitHub Pages so players load it from the internet instead of typing a LAN
+address (see ADR-005) — see [Deployment](#deployment) below.
 
 ### Key Capabilities
 
 | Capability | Description |
 | --- | --- |
 | 🔍 **Search, don't log in** | Players search Spotify's catalog through the host's own account — no Spotify login needed to play |
+| 🔁 **Auto-import top tracks** | Optional mode: each player connects their own Spotify and their most-played songs are submitted automatically, picking a different set on repeat games |
 | 📺 **Shared screen + phone controllers** | One host laptop shows the game; everyone else's phone is just a controller — plays like Kahoot or Jackbox |
 | 🏆 **Live scoring & reveal** | Points update and the answer reveals after every round, not just at the end |
 | 📱 **QR code join** | Scan once instead of typing an IP address into eight phones |
@@ -73,15 +78,19 @@ process (see [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-001).
 
 ```mermaid
 flowchart LR
-    H["Host browser<br/>(Web Playback SDK)"] <-->|WebSocket| S["Fastify server<br/>(in-memory room)"]
-    P["Player phones"] <-->|WebSocket| S
+    GP[("GitHub Pages<br/>static client")] -.->|served once| H
+    GP -.->|served once| P
+    H["Host browser<br/>(Web Playback SDK)"] <-->|WebSocket| S["Fastify server<br/>(host's own laptop)"]
+    P["Player phones<br/>(anywhere with internet)"] <-->|WebSocket| S
     S -->|host token only| SP[("Spotify Web API")]
 ```
 
 The flow: **Host connects Spotify → creates a room → players join and submit songs →
 host starts → each round plays on the host's speakers while phones vote → reveal →
-final leaderboard.** Full diagrams and the round-end race condition live in
-[.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md).
+final leaderboard.** The app shell (both screens) loads from GitHub Pages; every
+player's phone still talks directly to the host's own laptop over WebSocket for actual
+gameplay — see [Deployment](#deployment). Full diagrams and the round-end race
+condition live in [.claude/ARCHITECTURE.md](.claude/ARCHITECTURE.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -111,7 +120,14 @@ final leaderboard.** Full diagrams and the round-end race condition live in
 | --- | --- | --- |
 | Node.js 22.5+ | Runtime | Needed for `process.loadEnvFile()` |
 | Spotify Premium account (host only) | Required for the Web Playback SDK to play audio | Players need no Spotify account of their own |
-| A Spotify Developer app | Provides `SPOTIFY_CLIENT_ID` | Register at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) with redirect URI exactly `http://127.0.0.1:5178/callback` — see `.env.example` |
+| A Spotify Developer app | Provides `SPOTIFY_CLIENT_ID` | Register at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) with redirect URI exactly `https://vdwolde.github.io/Song-Snitch/callback.html` — see `.env.example` |
+
+> [!NOTE]
+> That's the only redirect URI ever registered — used for both the host's own login
+> and, in **top-tracks mode** (each player's own Spotify top tracks, auto-imported —
+> see [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-005), a player's login too. It's
+> a static page (`public/callback.html`) published automatically as part of the GitHub
+> Pages deploy — see [Deployment](#deployment) — nothing to upload by hand.
 
 ### Quick Start
 
@@ -140,10 +156,15 @@ Copy `.env.example` to `.env` and fill in `SPOTIFY_CLIENT_ID`, then run
 
 ### Using the App
 
-1. On the host laptop, open `http://127.0.0.1:5178/host` and connect Spotify (Premium).
-2. Set songs-per-player and create the room — note the room code and QR code shown.
-3. Each player opens the LAN URL shown (or scans the QR) on their phone, picks a name
-   and colour, and submits that many songs.
+1. On the host laptop, open `http://127.0.0.1:5178/host` (the host's OWN copy, always
+   this address — never the GitHub Pages one, see [Deployment](#deployment)) and
+   connect Spotify (Premium).
+2. Set songs-per-player, pick a mode (**everyone picks songs**, or **auto — everyone's
+   top tracks**), and create the room — note the room code and QR code shown.
+3. Each player scans the QR (or opens the join link shown, a `vdwolde.github.io` URL)
+   on their phone, picks a name and colour. In manual mode they search for and submit
+   that many songs; in top-tracks mode they tap **Connect Spotify** and their
+   most-played songs are added automatically.
 4. Once everyone's submitted enough, tap **Start game** on the host screen.
 5. Each round, the host plays a track while everyone guesses on their phone who added
    it. The host can tap **Skip to next song** at any time.
@@ -155,6 +176,7 @@ Copy `.env.example` to `.env` and fill in `SPOTIFY_CLIENT_ID`, then run
 | --- | --- |
 | `node` "is not recognized" | Prepend it to `PATH` for this shell — see the Development base's `CLAUDE.md` § Windows dev-machine hygiene |
 | Phones can't reach the join URL | Check for a dismissed Windows Firewall prompt; also confirm the router doesn't have AP/client (guest network) isolation enabled — test this before the party, not at it |
+| A phone has no internet (can't load the GitHub Pages join link) | It can still join if it's on the host's WiFi: open the LAN address the host screen prints in its own terminal directly — same app, served by the host's own laptop instead of GitHub Pages |
 | "Spotify Premium is required to host" | The Web Playback SDK needs a full Premium plan — Premium Mini/Lite aren't supported |
 | **Start game** stays disabled | Every player needs exactly `songsPerPlayer` submissions, and the host's Spotify playback device must finish connecting first |
 
@@ -180,8 +202,32 @@ gitGraph
 
 | Branch | Purpose | Auto-deploys to |
 | --- | --- | --- |
-| **`main`** | Stable code | — (no deployment target — this runs on the host's own laptop) |
+| **`main`** | Stable code | GitHub Pages (client shell only — see [Deployment](#deployment); the game server itself never deploys anywhere) |
 | **`feature/*`** | Larger changes, merged back into `main` | — |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## Deployment
+
+There is still no deployment target for the actual GAME — it only ever runs on the
+host's own laptop, for the length of one game night (see
+[.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-001). What IS deployed is the built
+CLIENT SHELL — both screens plus the Spotify OAuth bounce page — published to
+**GitHub Pages** at `https://vdwolde.github.io/Song-Snitch/`, so a player's phone loads
+the app from the internet instead of needing to know the host's LAN address. See
+ADR-005 for the full reasoning.
+
+| What | Where | Trigger |
+| --- | --- | --- |
+| Client shell (`npm run build:pages`) | GitHub Pages | `.github/workflows/pages.yml`, on every push to `main` |
+| Game server | The host's own laptop, always | `Start-Project.bat` / `npm start` — never deployed anywhere |
+
+A player's phone still opens a WebSocket straight to the host's own LAN-bound server
+for actual gameplay — loading the app from a public CDN doesn't change who can *play*,
+only where the HTML/JS/CSS bytes come from. See [Troubleshooting](#troubleshooting) for
+the no-internet fallback.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -215,10 +261,12 @@ Typography: **Anton** (display — room code, brand title, result banners) paire
 ## Project Structure
 
 ```text
-shared/       Wire contract shared between client and server (types.ts)
-server/       Fastify + WebSocket backend, Spotify integration, in-memory game state
-src/          React client — host screen, player screen, shared styles
-.claude/      Agent-facing docs — architecture, security, decisions, and more
+shared/               Wire contract shared between client and server, and the top-tracks picker
+server/               Fastify + WebSocket backend, Spotify integration, in-memory game state
+src/                  React client — host screen, player screen, shared styles
+public/               Static files Vite publishes verbatim — the Spotify OAuth bounce page
+.github/workflows/    CI (typecheck + build) and the GitHub Pages deploy
+.claude/              Agent-facing docs — architecture, security, decisions, and more
 ```
 
 A fully annotated file map and code patterns live in

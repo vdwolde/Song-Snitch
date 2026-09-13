@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="referrer" content="no-referrer" />
+<title>Song Snitch — Spotify login</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+    background: #0f172a;
+    color: #f1f5fb;
+    font-family: system-ui, sans-serif;
+  }
+  a.button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 1.4rem;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+  p.error {
+    color: #f43f5e;
+  }
+</style>
+</head>
+<body>
+<div id="app"><p>Loading…</p></div>
+<script>
+  // The ONE Spotify redirect_uri registered for this whole app — used by both the
+  // host's own login (server/routes.ts) and a top-tracks-mode player's login
+  // (src/spotify-top-tracks.ts). Neither a LAN address nor a loopback address is a
+  // valid redirect_uri, so this static page (served alongside the built app itself —
+  // it lives in Vite's public/, so it publishes to the same GitHub Pages deploy) is
+  // the one real HTTPS host Spotify redirects to; it then bounces the browser back to
+  // wherever the login actually started. See .claude/DECISIONS.md ADR-005.
+  //
+  // Validates the return address before redirecting, since this is a page on a public
+  // domain and could otherwise be used as an open redirector. A return target is
+  // trusted if it's EITHER this exact origin (the app itself — the player case, now
+  // that the app is served from here) OR a private-LAN/loopback address (the host's own
+  // machine, which can never be a redirect_uri directly). Mirrors
+  // server/net.ts::isPrivateHost; keep the two in sync if either changes.
+  var THIS_ORIGIN = location.origin;
+
+  function isPrivateOrLoopback(host) {
+    var h = host.replace(/^\[|\]$/g, '');
+    var colon = h.lastIndexOf(':');
+    if (colon > 0 && h.indexOf(':') === colon) h = h.slice(0, colon); // strip :port, not an IPv6 literal
+    if (h === 'localhost' || h === '::1' || h === '127.0.0.1') return true;
+    var m = /^(\d{1,3})\.(\d{1,3})\.\d{1,3}\.\d{1,3}$/.exec(h);
+    if (!m) return false;
+    var a = Number(m[1]);
+    var b = Number(m[2]);
+    return a === 127 || a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168);
+  }
+
+  var app = document.getElementById('app');
+
+  function fail(message) {
+    app.innerHTML = '<p class="error"></p>';
+    app.querySelector('p').textContent = message;
+  }
+
+  var params = new URLSearchParams(location.search);
+  var code = params.get('code');
+  var rawState = params.get('state');
+  var error = params.get('error');
+
+  if (error) {
+    fail('Spotify login failed: ' + error);
+  } else if (!code || !rawState) {
+    fail('Missing login data — go back to Song Snitch and try again.');
+  } else {
+    var state = null;
+    try {
+      state = JSON.parse(rawState);
+    } catch (e) {
+      state = null;
+    }
+    var target = state && typeof state.r === 'string' ? state.r : null;
+    var targetOrigin = null;
+    if (target) {
+      try {
+        targetOrigin = new URL(target).origin;
+      } catch (e) {
+        targetOrigin = null;
+      }
+    }
+    var trusted = targetOrigin && (targetOrigin === THIS_ORIGIN || isPrivateOrLoopback(new URL(target).host));
+    if (!target || !trusted) {
+      fail('This link did not come from a Song Snitch game.');
+    } else {
+      var base = target.endsWith('/') ? target.slice(0, -1) : target;
+      var dest = base + '/#code=' + encodeURIComponent(code) + '&state=' + encodeURIComponent(rawState);
+      var link = document.createElement('a');
+      link.className = 'button';
+      link.href = dest;
+      link.textContent = 'Continue to the game';
+      app.innerHTML = '<p>Signed in with Spotify.</p>';
+      app.appendChild(link);
+    }
+  }
+</script>
+</body>
+</html>

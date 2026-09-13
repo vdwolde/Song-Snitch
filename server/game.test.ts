@@ -5,7 +5,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import * as game from './game';
-import { MAX_PLAYERS, type PlayerColour } from '../shared/types';
+import { MAX_PLAYERS, type PlayerColour, type RoomMode } from '../shared/types';
 
 function join(code: string, name: string, colour: PlayerColour) {
   const r = game.joinRoom(code, name, colour);
@@ -14,8 +14,8 @@ function join(code: string, name: string, colour: PlayerColour) {
   return r.value;
 }
 
-function freshRoom(songsPerPlayer = 1): string {
-  game.createRoom(songsPerPlayer);
+function freshRoom(songsPerPlayer = 1, mode: RoomMode = 'manual'): string {
+  game.createRoom(songsPerPlayer, mode);
   return game.getRoom()!.code;
 }
 
@@ -194,4 +194,67 @@ test('the submitter appears in the reveal, and only there', () => {
 
   game.skipRound();
   assert.equal(game.getRoom()!.lastReveal!.submitterId, submitterId);
+});
+
+test('createRoom mode defaults to manual and rejects an unknown value', () => {
+  game.createRoom(2);
+  assert.equal(game.getRoom()!.mode, 'manual');
+  game.createRoom(2, 'top-tracks');
+  assert.equal(game.getRoom()!.mode, 'top-tracks');
+  game.createRoom(2, 'nonsense' as unknown as RoomMode);
+  assert.equal(game.getRoom()!.mode, 'manual');
+});
+
+test('duplicate and over-cap submitTrack return submit-rejected, not bad-room', () => {
+  const code = freshRoom(1);
+  const a = join(code, 'Alice', 'crimson');
+  const b = join(code, 'Bob', 'amber');
+  game.submitTrack(a.playerId, track('shared'));
+
+  const dup = game.submitTrack(b.playerId, track('shared'));
+  assert.equal(dup.ok, false);
+  assert.equal(!dup.ok && dup.code, 'submit-rejected');
+
+  const overCap = game.submitTrack(a.playerId, track('a2'));
+  assert.equal(overCap.ok, false);
+  assert.equal(!overCap.ok && overCap.code, 'submit-rejected');
+});
+
+test('unsubmit is rejected in top-tracks mode, leaving the submission untouched', () => {
+  const code = freshRoom(1, 'top-tracks');
+  const a = join(code, 'Alice', 'crimson');
+  // Seed a submission directly, matching how other tests seed state without going
+  // through submitTrack's own validation.
+  game.getRoom()!.players.get(a.playerId)!.submissions.push(track('a1'));
+
+  const r = game.unsubmitTrack(a.playerId, 'a1');
+  assert.equal(r.ok, false);
+  assert.equal(!r.ok && r.code, 'submit-rejected');
+  assert.equal(game.getRoom()!.players.get(a.playerId)!.submissions.length, 1);
+});
+
+test('autoSubmit is refused outside top-tracks mode', async () => {
+  const code = freshRoom(1); // manual mode
+  const a = join(code, 'Alice', 'crimson');
+  const r = await game.autoSubmit(a.playerId, [track('x')]);
+  assert.equal(r.ok, false);
+});
+
+test('autoSubmit fills from candidates, skips room-wide duplicates, and reports a short pool', async () => {
+  const code = freshRoom(2, 'top-tracks');
+  const a = join(code, 'Alice', 'crimson');
+  const b = join(code, 'Bob', 'amber');
+  game.getRoom()!.players.get(b.playerId)!.submissions.push(track('shared'));
+
+  // No Spotify session in tests, so playableIds throws 'not-authed' and autoSubmit
+  // fails open — every candidate counts as playable. The room-wide duplicate scan
+  // still filters out 'shared'.
+  const short = await game.autoSubmit(a.playerId, [track('shared'), track('only-one')]);
+  assert.equal(short.ok, false);
+  assert.equal(!short.ok && short.code, 'submit-rejected');
+  assert.equal(game.getRoom()!.players.get(a.playerId)!.submissions.length, 1);
+
+  const filled = await game.autoSubmit(a.playerId, [track('second')]);
+  assert.equal(filled.ok, true);
+  assert.equal(game.getRoom()!.players.get(a.playerId)!.submissions.length, 2);
 });

@@ -8,7 +8,8 @@ import {
   type ServerMsg,
   type TrackInfo,
 } from '../shared/types';
-import { useRoom } from './net';
+import { apiBase, useRoom } from './net';
+import { completeImport, hasAuthReturn, rememberSubmitted, startImport } from './spotify-top-tracks';
 
 interface StoredIdentity {
   code: string;
@@ -50,6 +51,15 @@ export function PlayerApp() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<TrackInfo[]>([]);
   const [searching, setSearching] = useState(false);
+
+  // top-tracks mode: the phone's own Spotify import (src/spotify-top-tracks.ts) — see
+  // .claude/DECISIONS.md ADR-004.
+  const [autoCandidates, setAutoCandidates] = useState<TrackInfo[] | null>(null);
+  const [autoImporting, setAutoImporting] = useState(false);
+  const [autoSubmitted, setAutoSubmitted] = useState(false);
+  const [autoError, setAutoError] = useState<string | null>(null);
+  const [spotifyUserId, setSpotifyUserId] = useState<string | null>(null);
+  const [remembered, setRemembered] = useState(false);
 
   const onMessage = useCallback(
     (msg: ServerMsg) => {
@@ -94,13 +104,51 @@ export function PlayerApp() {
     }
     setSearching(true);
     const handle = setTimeout(() => {
-      fetch(`/api/search?q=${encodeURIComponent(query.trim())}&token=${identity.token}`)
+      fetch(`${apiBase()}/api/search?q=${encodeURIComponent(query.trim())}&token=${identity.token}`)
         .then((r) => r.json())
         .then((d: { tracks?: TrackInfo[] }) => setResults(d.tracks ?? []))
         .finally(() => setSearching(false));
     }, 300);
     return () => clearTimeout(handle);
   }, [query, identity]);
+
+  // Runs once per mount: if we've just landed back from the Spotify bounce page, finish
+  // the exchange and pull top tracks. completeImport() strips the #code fragment
+  // immediately, so a re-render can't accidentally retry a consumed (single-use) code.
+  useEffect(() => {
+    if (!identity || !hasAuthReturn()) return;
+    setAutoImporting(true);
+    completeImport()
+      .then(({ candidates, spotifyUserId: id }) => {
+        setAutoCandidates(candidates);
+        setSpotifyUserId(id);
+      })
+      .catch((e: Error) => setAutoError(e.message))
+      .finally(() => setAutoImporting(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [identity]);
+
+  // Sends the imported candidates the moment we have both them AND a live, identified
+  // connection (a player:state has arrived) — sending earlier risks net.ts silently
+  // dropping the message if the socket isn't OPEN yet. autoSubmitted guards against
+  // resending on a later, unrelated reconnect.
+  useEffect(() => {
+    if (!autoCandidates || !state || autoSubmitted) return;
+    setAutoSubmitted(true);
+    send({ t: 'player:autoSubmit', candidates: autoCandidates });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoCandidates, state, autoSubmitted]);
+
+  // Records what actually landed (not what was merely offered) so a future game
+  // excludes it — see src/spotify-top-tracks.ts::rememberSubmitted.
+  useEffect(() => {
+    if (remembered || !spotifyUserId || !state || state.yourSubmissions.length === 0) return;
+    setRemembered(true);
+    rememberSubmitted(
+      spotifyUserId,
+      state.yourSubmissions.map((t) => t.id),
+    );
+  }, [remembered, spotifyUserId, state]);
 
   if (!identity) {
     return (
@@ -147,6 +195,12 @@ export function PlayerApp() {
 
   if (!state) return <main className="player status-line pulsing">Connecting</main>;
 
+  const songsComplete = state.yourSubmissions.length >= state.songsPerPlayer;
+  // top-tracks mode fell short of songsPerPlayer (a new account, or a heavily-excluded
+  // pool) — fall back to the same manual search every other mode uses, rather than
+  // leaving the room permanently unable to start.
+  const needsManualFallback = state.mode === 'top-tracks' && autoSubmitted && !autoImporting && !songsComplete;
+
   return (
     <main className="player" data-colour={state.you.colour}>
       {error && (
@@ -166,14 +220,36 @@ export function PlayerApp() {
                 <span>
                   {t.name} — {t.artists}
                 </span>
-                <button onClick={() => send({ t: 'player:unsubmit', trackId: t.id })}>Remove</button>
+                {state.mode !== 'top-tracks' && (
+                  <button onClick={() => send({ t: 'player:unsubmit', trackId: t.id })}>Remove</button>
+                )}
               </li>
             ))}
           </ul>
           <p className="status-line">
             {state.yourSubmissions.length}/{state.songsPerPlayer} songs added
           </p>
-          {state.yourSubmissions.length < state.songsPerPlayer && (
+
+          {autoError && <p className="error">{autoError}</p>}
+
+          {state.mode === 'top-tracks' && !songsComplete && !autoSubmitted && (
+            <div className="top-tracks-import">
+              {autoImporting ? (
+                <p className="status-line pulsing">Importing your top tracks</p>
+              ) : (
+                <button
+                  onClick={() => {
+                    setAutoError(null);
+                    void startImport().catch((e: Error) => setAutoError(e.message));
+                  }}
+                >
+                  Connect Spotify
+                </button>
+              )}
+            </div>
+          )}
+
+          {(state.mode === 'manual' ? !songsComplete : needsManualFallback) && (
             <div className="search">
               <input placeholder="Search a song…" value={query} onChange={(e) => setQuery(e.target.value)} />
               {searching && <p className="status-line pulsing">Searching</p>}

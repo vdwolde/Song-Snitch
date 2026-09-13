@@ -97,7 +97,7 @@ function handle(conn: Conn, msg: ClientMsg): void {
       return;
     }
     case 'host:createRoom':
-      game.createRoom(msg.songsPerPlayer);
+      game.createRoom(msg.songsPerPlayer, msg.mode);
       return;
     case 'host:deviceReady':
       game.setDeviceReady(msg.deviceId);
@@ -150,6 +150,14 @@ function handle(conn: Conn, msg: ClientMsg): void {
       if (!conn.playerId) return;
       const r = game.unsubmitTrack(conn.playerId, msg.trackId);
       if (!r.ok) sendError(conn.socket, r.code, r.message);
+      return;
+    }
+    case 'player:autoSubmit': {
+      if (!conn.playerId) return;
+      const playerId = conn.playerId;
+      void game.autoSubmit(playerId, msg.candidates).then((r) => {
+        if (!r.ok) sendError(conn.socket, r.code, r.message);
+      });
       return;
     }
     case 'player:vote': {

@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "concurrently -k -n web,api -c blue,green \"vite\" \"cross-env UI_ORIGIN=http://127.0.0.1:5173 tsx watch server/index.ts\"",
     "build": "vite build",
+    "build:pages": "vite build --base=/Song-Snitch/ --outDir dist-pages",
     "serve": "tsx server/index.ts",
     "start": "npm run build && npm run serve",
     "typecheck": "tsc --noEmit",
