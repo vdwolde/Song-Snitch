@@ -11,8 +11,6 @@ dist-pages/
 Thumbs.db
 
 # Secrets — never commit
-.env
-.env.*.local
 *.pem
 *.key
 credentials.json
