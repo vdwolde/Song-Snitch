@@ -81,7 +81,7 @@ they are choices, not omissions.
 | AP/client isolation on some routers blocks phone-to-host LAN traffic entirely | Game unplayable on that network | Untested — verify a phone can reach `/api/health` days before a party, not at it |
 | `npm audit` reports vulnerabilities in dev-only transitive deps (esbuild/Vite's dev server) | None at runtime — dev-server only, LAN-only tool | Open, low priority |
 | Never verified end-to-end with real phones (only desktop multi-tab) | Phone-only failure modes (screen-lock WS drop, iOS Safari layout) unconfirmed | Open — see README's phone-test checklist |
-| Top-tracks mode needs internet on every phone (`vdwolde.com` + Spotify itself) | "LAN-only party game" doesn't hold for this mode specifically | Accepted for this mode only — see ADR-004; manual mode is unaffected and stays the default |
+| Top-tracks mode's player login needs internet on that phone (GitHub Pages + Spotify itself) | "LAN-only party game" doesn't hold for that one login step specifically | Accepted for that step only — see ADR-004/ADR-006; manual mode and the rest of the game are unaffected and LAN-only |
 | Top-tracks mode's recently-used exclusion list (`localStorage`) is keyed to the phone's origin | A new DHCP lease for the host, or using `npm run dev` instead of `npm start`, silently resets a player's variety history with no error shown | Open, low priority |
 | Top-tracks mode's OAuth bounce page has not been tested against Chrome's Local Network Access prompt | May eventually gate the page's return navigation to the LAN | Untested |
 | Top-tracks mode's login round trip through iOS's "Open in Spotify?" interstitial is untested | If it returns the player in a new tab, they lose their `sessionStorage` identity | Untested |

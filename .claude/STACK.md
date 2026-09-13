@@ -48,11 +48,11 @@ shared/
   types.ts        The wire contract — types shared between server and client, dependency-free
   top-tracks.ts   Pure, RNG-injected top-tracks picker + the Spotify track -> TrackInfo mapper
 server/
-  net.ts          LAN/loopback guard, cookie parsing, primaryLanUrl(), playerJoinUrl()
+  net.ts          LAN/loopback guard, cookie parsing, primaryLanUrl()
   spotify.ts      The only SERVER file that knows a Spotify URL — PKCE auth, search, play/pause, playableIds
   game.ts         The one Room; every state transition; hostState()/playerState() view builders
   ws.ts           /ws route: socket<->identity registry, message dispatch, broadcast
-  routes.ts       HTTP routes: health, auth, host login completion, search, pkce
+  routes.ts       HTTP routes: health, auth, callback, search, pkce
   index.ts        Fastify bootstrap: env, bind, register everything, serve dist/
   game.test.ts    node:test over the pure state transitions
   top-tracks.test.ts  node:test over the picker in shared/top-tracks.ts
@@ -60,24 +60,25 @@ src/
   main.tsx        The whole router (host vs. player) + the attribution footer
   HostApp.tsx     Shared-screen display — one file, all phases
   PlayerApp.tsx   Phone screen — one file, all phases
-  net.ts          useRoom() — WS connect/reconnect/send; apiBase()/wsHost() resolve the
-                  game server's address from a ?server= param (see ADR-005)
+  net.ts          useRoom() — WS connect/reconnect/send, surfaces a `stalled` flag if
+                  connecting keeps failing
   spotify-player.ts     Web Playback SDK singleton loader (host tab)
   spotify-top-tracks.ts A player's own Spotify PKCE login + top-tracks import (top-tracks mode only)
   styles.css      All styling; the 8 player-colour tokens live here (see .claude/DESIGN.md)
-public/
-  callback.html   The one shared Spotify OAuth bounce page — Vite copies this verbatim
-                  into every build, so it publishes to GitHub Pages automatically; see
-                  .claude/DECISIONS.md ADR-005
+github-pages/
+  callback.html   The Spotify OAuth bounce page for a top-tracks player's own login —
+                  deliberately NOT in Vite's public/ (an index.html there can clobber the
+                  real build, see below); published standalone. See ADR-006.
+  index.html      Tiny landing page for anyone who visits the bare Pages URL directly.
 .github/workflows/
   ci.yml          typecheck + build on every push/PR
-  pages.yml       Builds the client (npm run build:pages) and deploys dist-pages/ to
-                  GitHub Pages on push to main — see ADR-005
+  pages.yml       Publishes github-pages/ as-is (no build step) whenever it changes —
+                  see .claude/DECISIONS.md ADR-006
 ```
 
-No `config/` directory — the config-shaped constants (`DEFAULT_SONGS_PER_PLAYER`,
-`PLAYER_COLOURS`, `PAGES_URL`) live in `shared/types.ts`, where both server and client
-already need them.
+No `config/` directory — the only two config-shaped constants
+(`DEFAULT_SONGS_PER_PLAYER`, `PLAYER_COLOURS`) live in `shared/types.ts`, where both
+server and client already need them.
 
 ## Naming conventions
 
@@ -134,9 +135,8 @@ anywhere else.
 ## Commands
 
 ```text
-npm run dev         # Vite on :5173 + Fastify on :5178, concurrently
-npm run build       # vite build -> dist/ (base '/', served by the host's own server)
-npm run build:pages # vite build --base=/Song-Snitch/ -> dist-pages/ (GitHub Pages deploy)
+npm run dev        # Vite on :5173 + Fastify on :5178, concurrently
+npm run build       # vite build -> dist/
 npm run serve       # tsx server/index.ts (serves the built dist/)
 npm start           # build then serve
 npm run typecheck   # tsc --noEmit — the real gate, run after every edit

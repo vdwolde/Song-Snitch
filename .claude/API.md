@@ -14,36 +14,30 @@ exhaustive discriminated unions on `t`.
 
 ## Conventions
 
-- Every HTTP route is `GET`, except `POST /api/host/complete-login` — no request body
-  otherwise, query params only.
+- Every HTTP route is `GET` — no request body, query params only.
 - The origin/host guard (`server/net.ts::registerGuard`) runs before every HTTP and WS
   request; a request whose `Host` header isn't loopback or a private-LAN address never
-  reaches a route handler at all. A request whose `Origin` is the published GitHub
-  Pages client (see [DECISIONS.md](DECISIONS.md) ADR-005) is allowed through
-  regardless of `Host` being private — the `Host` check still applies independently.
+  reaches a route handler at all.
 - Errors never leak internals — a caught exception becomes a generic message and status.
 
 ## Page routes
 
-Both now served TWICE: once by the host's own Fastify server (`dist/`, base path `/`),
-and once published to GitHub Pages (`dist-pages/`, base path `/Song-Snitch/` — see
-ADR-005). The host is expected to keep using their own server's copy (auth reasons,
-see [SECURITY.md](SECURITY.md)); players are expected to use the Pages copy via the
-`joinUrl` link/QR the host screen shows.
-
 | Method | Path | Purpose | Auth |
 | --- | --- | --- | --- |
-| GET | `/host` | Host screen (shared display) | Loopback source only, on the host's own server — a phone gets a 403 before the JS even loads |
+| GET | `/host` | Host screen (shared display) | Loopback source only — a phone gets a 403 before the JS even loads |
 | GET | `/` | Player screen | None |
-| GET | `/callback.html` | The Spotify OAuth bounce page (`public/callback.html`) — validates the return address, then hands the browser a link back to wherever the login started, with the code in a URL fragment | None — static, no server logic at all |
+
+`github-pages/callback.html` is a separate static page published to GitHub Pages (not
+served by this server at all) — the Spotify OAuth bounce page for a top-tracks-mode
+player's own login. See [DECISIONS.md](DECISIONS.md) ADR-006.
 
 ## HTTP API routes
 
 | Method | Path | Purpose | Auth |
 | --- | --- | --- | --- |
 | GET | `/api/health` | Liveness check; also the launcher's single-instance detector — don't change the response shape without updating `Start-Project.bat` | None |
-| GET | `/auth/login` | Redirects to Spotify's consent screen (PKCE); the registered `redirect_uri` is the shared bounce page, not this server | None — self-limiting anyway, since only the host's own machine can ever complete the loopback-gated step below |
-| POST | `/api/host/complete-login` | `{ code, state }` in the body → exchanges the code, verifies Premium, sets the host cookie. Completes the login the bounce page redirected back to (see ADR-005) — replaces the old `GET /callback` | Loopback source only |
+| GET | `/auth/login` | Redirects to Spotify's consent screen (PKCE) | Self-limiting: the registered `redirect_uri` is fixed to `127.0.0.1`, so only a request that originated there can ever complete |
+| GET | `/callback` | Spotify's OAuth redirect target — exchanges the code, verifies Premium, sets the host cookie | Must match the `redirect_uri` used to start the flow, exactly |
 | GET | `/api/host/status` | `{ authed: boolean, user: string \| null }` | None |
 | GET | `/api/host/token` | `{ accessToken: string }` — a short-lived Spotify token for the Web Playback SDK | Host cookie **and** loopback source, both required |
 | GET | `/api/search?q=&token=` | `{ tracks: TrackInfo[] }` — Spotify catalog search, run on the host's token | Loopback, **or** a valid player token for the current room |

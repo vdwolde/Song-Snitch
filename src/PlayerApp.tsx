@@ -8,7 +8,7 @@ import {
   type ServerMsg,
   type TrackInfo,
 } from '../shared/types';
-import { apiBase, useRoom } from './net';
+import { useRoom } from './net';
 import { completeImport, hasAuthReturn, rememberSubmitted, startImport } from './spotify-top-tracks';
 
 interface StoredIdentity {
@@ -95,7 +95,7 @@ export function PlayerApp() {
     },
     [identity],
   );
-  const { send } = useRoom(onMessage, onOpen);
+  const { send, stalled } = useRoom(onMessage, onOpen);
 
   useEffect(() => {
     if (!identity || !query.trim()) {
@@ -104,7 +104,7 @@ export function PlayerApp() {
     }
     setSearching(true);
     const handle = setTimeout(() => {
-      fetch(`${apiBase()}/api/search?q=${encodeURIComponent(query.trim())}&token=${identity.token}`)
+      fetch(`/api/search?q=${encodeURIComponent(query.trim())}&token=${identity.token}`)
         .then((r) => r.json())
         .then((d: { tracks?: TrackInfo[] }) => setResults(d.tracks ?? []))
         .finally(() => setSearching(false));
@@ -189,11 +189,24 @@ export function PlayerApp() {
           <button type="submit">Join</button>
         </form>
         {error && <p className="error">{error}</p>}
+        {stalled && <p className="error">Can't reach the game — make sure you're on the host's WiFi.</p>}
       </main>
     );
   }
 
-  if (!state) return <main className="player status-line pulsing">Connecting</main>;
+  if (!state) {
+    return (
+      <main className="player status-line pulsing">
+        Connecting
+        {error && (
+          <p className="error" onClick={() => setError(null)}>
+            {error}
+          </p>
+        )}
+        {stalled && <p className="error">Lost the connection — check you're still on the host's WiFi.</p>}
+      </main>
+    );
+  }
 
   const songsComplete = state.yourSubmissions.length >= state.songsPerPlayer;
   // top-tracks mode fell short of songsPerPlayer (a new account, or a heavily-excluded

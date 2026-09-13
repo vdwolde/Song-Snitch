@@ -1,15 +1,17 @@
 // Phone-side of top-tracks mode: the player's OWN Spotify PKCE login, routed through
-// the shared GitHub Pages bounce page (a phone on the LAN can't be a redirect_uri —
-// see .claude/DECISIONS.md ADR-005), then a top-tracks fetch turned into a ranked
+// a GitHub Pages bounce page (a phone on the LAN can't be a redirect_uri — see
+// .claude/DECISIONS.md ADR-006), then a top-tracks fetch turned into a ranked
 // submission list. The access token lives only in this module's memory — it is never
 // sent to the server, never stored — see .claude/SECURITY.md.
-import { PAGES_URL, type TrackInfo } from '../shared/types';
+import type { TrackInfo } from '../shared/types';
 import { buildPool, orderByWeightedRandom, toTrackInfo, type RankedTracks, type SpotifyTrackLike, type TimeRange } from '../shared/top-tracks';
-import { apiBase } from './net';
 
-// The one redirect_uri registered in the Spotify dashboard, shared with the host's own
-// login (server/routes.ts) — see .claude/DECISIONS.md ADR-005.
-const REDIRECT_URI = `${PAGES_URL}/callback.html`;
+// Registered in the Spotify dashboard as a SECOND redirect_uri, alongside the host's
+// own loopback one (server/routes.ts) — a player's phone is served by the host's LAN
+// server, which can never be a valid redirect_uri, so this points at a small static
+// page instead. Not shared with the host's login (that reverted to a direct
+// server-side redirect, see ADR-006) — this one is player-only.
+const REDIRECT_URI = 'https://vdwolde.github.io/Song-Snitch/callback.html';
 const SESSION_KEY = 'songsnitch-pkce';
 const RECENT_KEY_PREFIX = 'songsnitch-recent-';
 const RECENT_LIMIT = 30;
@@ -87,14 +89,14 @@ export function hasAuthReturn(): boolean {
 // Kicks off the flow — navigates the tab away, so nothing after the returned promise
 // resolves actually runs on this page.
 export async function startImport(): Promise<void> {
-  const res = await fetch(`${apiBase()}/api/pkce`);
+  const res = await fetch('/api/pkce');
   if (!res.ok) throw new Error('Could not reach the server to start Spotify login.');
   const { clientId, verifier, challenge } = (await res.json()) as { clientId: string; verifier: string; challenge: string };
   const nonce = randomNonce();
   saveSession({ verifier, nonce, clientId });
-  // origin + pathname, not just origin: the app lives under /Song-Snitch/, not at the
-  // bare vdwolde.github.io root, so the bounce page needs the full path to send us back to.
-  const state = JSON.stringify({ r: location.origin + location.pathname, n: nonce });
+  // The player's own LAN address — the bounce page validates it's private/loopback
+  // before sending anyone back (never an open redirector), then forwards there.
+  const state = JSON.stringify({ r: location.origin, n: nonce });
   const params = new URLSearchParams({
     client_id: clientId,
     response_type: 'code',

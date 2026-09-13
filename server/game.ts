@@ -430,7 +430,7 @@ export function hostState(): HostState {
     phase: room?.phase ?? 'lobby',
     songsPerPlayer: room?.songsPerPlayer ?? DEFAULT_SONGS_PER_PLAYER,
     mode: room?.mode ?? 'manual',
-    joinUrl: net.playerJoinUrl(PORT),
+    lanUrl: net.primaryLanUrl(PORT),
     players: playerViews(),
     needsDevice: !deviceId,
     spotifyUser: spotify.getHostUser(),

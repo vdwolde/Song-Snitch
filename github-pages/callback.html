@@ -36,22 +36,18 @@
 <body>
 <div id="app"><p>Loading…</p></div>
 <script>
-  // The ONE Spotify redirect_uri registered for this whole app — used by both the
-  // host's own login (server/routes.ts) and a top-tracks-mode player's login
-  // (src/spotify-top-tracks.ts). Neither a LAN address nor a loopback address is a
-  // valid redirect_uri, so this static page (served alongside the built app itself —
-  // it lives in Vite's public/, so it publishes to the same GitHub Pages deploy) is
-  // the one real HTTPS host Spotify redirects to; it then bounces the browser back to
-  // wherever the login actually started. See .claude/DECISIONS.md ADR-005.
+  // The redirect_uri for a top-tracks-mode player's own Spotify login
+  // (src/spotify-top-tracks.ts) — a player's phone is served by the host's LAN server,
+  // which can never be a valid redirect_uri, so this static page (published to GitHub
+  // Pages from this repo's public/ folder) is a real HTTPS host Spotify can redirect
+  // to; it then bounces the browser back to the LAN address the login actually started
+  // from. The HOST's own login is unrelated — it redirects straight to the host's own
+  // loopback server instead. See .claude/DECISIONS.md ADR-006.
   //
-  // Validates the return address before redirecting, since this is a page on a public
-  // domain and could otherwise be used as an open redirector. A return target is
-  // trusted if it's EITHER this exact origin (the app itself — the player case, now
-  // that the app is served from here) OR a private-LAN/loopback address (the host's own
-  // machine, which can never be a redirect_uri directly). Mirrors
-  // server/net.ts::isPrivateHost; keep the two in sync if either changes.
-  var THIS_ORIGIN = location.origin;
-
+  // Validates the return address is private-LAN/loopback before redirecting, since
+  // this page lives on a public domain and could otherwise be used as an open
+  // redirector. Mirrors server/net.ts::isPrivateHost; keep the two in sync if either
+  // changes.
   function isPrivateOrLoopback(host) {
     var h = host.replace(/^\[|\]$/g, '');
     var colon = h.lastIndexOf(':');
@@ -88,17 +84,16 @@
       state = null;
     }
     var target = state && typeof state.r === 'string' ? state.r : null;
-    var targetOrigin = null;
+    var targetHost = null;
     if (target) {
       try {
-        targetOrigin = new URL(target).origin;
+        targetHost = new URL(target).host;
       } catch (e) {
-        targetOrigin = null;
+        targetHost = null;
       }
     }
-    var trusted = targetOrigin && (targetOrigin === THIS_ORIGIN || isPrivateOrLoopback(new URL(target).host));
-    if (!target || !trusted) {
-      fail('This link did not come from a Song Snitch game.');
+    if (!target || !targetHost || !isPrivateOrLoopback(targetHost)) {
+      fail('This link did not come from a Song Snitch game on your network.');
     } else {
       var base = target.endsWith('/') ? target.slice(0, -1) : target;
       var dest = base + '/#code=' + encodeURIComponent(code) + '&state=' + encodeURIComponent(rawState);

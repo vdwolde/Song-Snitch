@@ -5,14 +5,8 @@
 import { networkInterfaces } from 'node:os';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import * as spotify from './spotify';
-import { PAGES_URL } from '../shared/types';
 
 const HOST_COOKIE = 'songsnitch_host';
-// The one public origin allowed through the guard below — the GitHub Pages copy of
-// this app (see .claude/DECISIONS.md ADR-005). Everything else public is still
-// rejected; a private-LAN/loopback Host header is still required regardless of Origin,
-// so this alone can't reach a LAN server it isn't already on the same network as.
-const ALLOWED_PUBLIC_ORIGIN = new URL(PAGES_URL).origin;
 
 function stripPort(hostHeader: string): string {
   if (hostHeader.startsWith('[')) return hostHeader.slice(1, hostHeader.indexOf(']'));
@@ -46,14 +40,6 @@ export function primaryLanUrl(port: number): string {
   return `http://127.0.0.1:${port}`;
 }
 
-// The link shown/QR-encoded for players: the GitHub-Pages-hosted client, carrying this
-// host's bare LAN address (no scheme) so the client knows which server to open its
-// WebSocket and API calls against — see src/net.ts::apiBase. See ADR-005.
-export function playerJoinUrl(port: number): string {
-  const bareLan = primaryLanUrl(port).replace(/^https?:\/\//, '');
-  return `${PAGES_URL}/?server=${encodeURIComponent(bareLan)}`;
-}
-
 export function parseCookie(header: string | undefined, name: string): string | undefined {
   if (!header) return undefined;
   for (const part of header.split(';')) {
@@ -84,13 +70,7 @@ export function registerGuard(app: FastifyInstance): void {
     const origin = req.headers.origin;
     if (origin) {
       try {
-        if (origin === ALLOWED_PUBLIC_ORIGIN) {
-          // A browser also needs this on the RESPONSE to actually use it cross-origin —
-          // the check above only gates whether the request reaches a handler at all.
-          // No credentials are ever sent this way (no cookie-gated route accepts this
-          // origin), so a plain, non-wildcard allow is enough — see ADR-005.
-          reply.header('Access-Control-Allow-Origin', ALLOWED_PUBLIC_ORIGIN);
-        } else if (!isPrivateHost(new URL(origin).host)) {
+        if (!isPrivateHost(new URL(origin).host)) {
           reply.code(403).send({ error: 'Forbidden' });
           return reply;
         }

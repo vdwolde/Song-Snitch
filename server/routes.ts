@@ -2,51 +2,44 @@ import type { FastifyInstance } from 'fastify';
 import * as spotify from './spotify';
 import * as game from './game';
 import { hostCookieHeader, isHostRequest, isLoopback } from './net';
-import { PAGES_URL } from '../shared/types';
 
-// Registered once in the Spotify dashboard, exactly this — the shared GitHub Pages
-// bounce page, used by BOTH the host and top-tracks-mode players (see
-// .claude/DECISIONS.md ADR-005). Spotify no longer redirects to this server directly
-// at all: it can't (a LAN address isn't a valid redirect_uri), so this is a real HTTPS
-// host the bounce page then forwards back down to whichever loopback/LAN address
-// actually started the flow.
-const REDIRECT_URI = `${PAGES_URL}/callback.html`;
-// Where the bounce page sends the host's browser back to after Spotify — this server's
-// own origin. The UI can be Vite's dev server (:5173) or this server itself (prod).
-const UI_ORIGIN = process.env.UI_ORIGIN ?? `http://127.0.0.1:${Number(process.env.PORT ?? 5178)}`;
+const PORT = Number(process.env.PORT ?? 5178);
+// Registered once in the Spotify dashboard, exactly this — Spotify only permits HTTP
+// for the literal loopback IP, and 'localhost' is explicitly disallowed. Only the host
+// ever uses this; top-tracks-mode players use a separate GitHub Pages redirect_uri
+// (src/spotify-top-tracks.ts) since a LAN/loopback address can never work for them —
+// see .claude/DECISIONS.md ADR-006.
+const REDIRECT_URI = `http://127.0.0.1:${PORT}/callback`;
+// The UI can be Vite's dev server (:5173) or this server itself (prod) — Spotify
+// always redirects to REDIRECT_URI, then this sends the browser on to wherever the
+// UI actually lives.
+const UI_ORIGIN = process.env.UI_ORIGIN ?? `http://127.0.0.1:${PORT}`;
 
 export async function registerRoutes(app: FastifyInstance): Promise<void> {
   app.get('/api/health', async () => ({ ok: true }));
 
-  // Only the host ever completes this — the bounce page validates the return address
-  // is private/loopback before sending anyone back, so a phone that opens this link
-  // gets nowhere useful.
+  // Only the host ever completes this — REDIRECT_URI is fixed to 127.0.0.1, so a
+  // phone that opens this link gets sent back to itself and the flow just fails.
   app.get('/auth/login', async (_req, reply) => {
-    reply.redirect(spotify.loginUrl(REDIRECT_URI, `${UI_ORIGIN}/host`));
+    reply.redirect(spotify.loginUrl(REDIRECT_URI));
+  });
+
+  app.get('/callback', async (req, reply) => {
+    const { code, state, error } = req.query as { code?: string; state?: string; error?: string };
+    if (error || !code || !state) {
+      reply.redirect(`${UI_ORIGIN}/host?error=${encodeURIComponent(error ?? 'login_failed')}`);
+      return;
+    }
+    const result = await spotify.handleCallback(code, state);
+    if (!result.ok) {
+      reply.redirect(`${UI_ORIGIN}/host?error=${encodeURIComponent(result.message)}`);
+      return;
+    }
+    reply.header('Set-Cookie', hostCookieHeader(result.sessionToken));
+    reply.redirect(`${UI_ORIGIN}/host`);
   });
 
   app.get('/api/host/status', async () => ({ authed: spotify.isAuthed(), user: spotify.getHostUser() }));
-
-  // Completes the host's login. The bounce page returns the code+state in a URL
-  // FRAGMENT (never reaches a server), so HostApp.tsx reads it client-side and POSTs it
-  // here instead of Spotify ever redirecting straight to a GET route. Loopback-gated
-  // like /api/host/token — this sets the host session cookie, so a phone on the LAN
-  // must never be able to call it.
-  app.post('/api/host/complete-login', async (req, reply) => {
-    if (!isLoopback(req.ip)) {
-      reply.code(403);
-      return { error: 'Forbidden' };
-    }
-    const { code, state } = (req.body ?? {}) as { code?: string; state?: string };
-    if (!code || !state) {
-      reply.code(400);
-      return { ok: false, message: 'Missing login data — try connecting again.' };
-    }
-    const result = await spotify.handleCallback(code, state);
-    if (!result.ok) return result;
-    reply.header('Set-Cookie', hostCookieHeader(result.sessionToken));
-    return { ok: true };
-  });
 
   // top-tracks mode: a player's own phone completes its own PKCE exchange (never the
   // server — see .claude/SECURITY.md), so it needs a fresh verifier/challenge pair.

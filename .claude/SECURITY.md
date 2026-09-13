@@ -6,35 +6,31 @@ reality, not with aspiration. Rationale for trust-boundary choices belongs in
 
 ## Threat model
 
-LAN-only, semi-trusted, for the actual game server: the realistic "attacker" is a
-curious or competitive player on the same home WiFi, not an internet adversary. The
-server binds `0.0.0.0` only when `Start-Project.bat` sets `BIND_LAN=1`; a bare
-`npm run serve` stays loopback-only. The game server itself is never deployed anywhere
-(see [ARCHITECTURE.md](ARCHITECTURE.md)).
+LAN-only, semi-trusted: the realistic "attacker" is a curious or competitive player on
+the same home WiFi, not an internet adversary. The server binds `0.0.0.0` only when
+`Start-Project.bat` sets `BIND_LAN=1`; a bare `npm run serve` stays loopback-only. The
+game itself — server, host screen, player screen — is never internet-exposed; there is
+no deployment target (see [ARCHITECTURE.md](ARCHITECTURE.md)).
 
-The one thing that IS now internet-exposed is the static client shell (host/player
-screens, the OAuth bounce page), published to GitHub Pages — see
-[DECISIONS.md](DECISIONS.md) ADR-005. That's plain static HTML/JS/CSS with no server
-logic and no secret embedded in it (the Spotify client id is not a secret under PKCE);
-it changes nothing about the threat model above, since reaching the actual game still
-requires being on the host's own WiFi to talk to the WebSocket.
+The one thing that IS on the public internet is `github-pages/callback.html` — a single
+static page with no server logic and no secret in it (a Spotify client id isn't secret
+under PKCE), whose only job is bouncing a top-tracks-mode player's phone back to the
+LAN after Spotify login (see [DECISIONS.md](DECISIONS.md) ADR-006). It changes nothing
+about the threat model above.
 
 ## Authentication & authorization
 
-The **host** authenticates via Spotify's Authorization Code + PKCE flow, completed at
-`POST /api/host/complete-login` (loopback-gated, same-origin to the host's own server —
-see [DECISIONS.md](DECISIONS.md) ADR-005 for why login now completes client-side
-instead of a server-rendered `/callback` redirect). The source of truth for "is this
-the host" is **two things together**, both required (`server/net.ts::isHostRequest`):
-an `HttpOnly; SameSite=Lax` `songsnitch_host` cookie set there, **and** the request
-originating from `127.0.0.1`. Neither alone is trusted — a phone that somehow read the
-cookie still can't pass the loopback check.
+The **host** authenticates via Spotify's Authorization Code + PKCE flow. The source of
+truth for "is this the host" is **two things together**, both required
+(`server/net.ts::isHostRequest`): an `HttpOnly; SameSite=Lax` `songsnitch_host` cookie
+set at `/callback`, **and** the request originating from `127.0.0.1`. Neither alone is
+trusted — a phone that somehow read the cookie still can't pass the loopback check.
 
 Players have no account of Song Snitch's own. A player's identity is a random
 32-hex-char token (`crypto.randomBytes(16)`), minted server-side at join and never
 client-supplied for authentication — only echoed back for reconnect (`player:rejoin`).
 
-In `top-tracks` mode only (see [DECISIONS.md](DECISIONS.md) ADR-004/ADR-005), a player
+In `top-tracks` mode only (see [DECISIONS.md](DECISIONS.md) ADR-004), a player
 additionally authenticates **directly with Spotify, entirely client-side** —
 `src/spotify-top-tracks.ts` completes its own PKCE exchange and calls the Spotify Web
 API from the phone's browser. This is unrelated to Song Snitch's own player identity
@@ -47,9 +43,8 @@ that message is sent.
 | Layer | Mechanism | Notes |
 | --- | --- | --- |
 | Authentication | Spotify PKCE, host only | No client secret anywhere in this project — see Secrets below |
-| Authorization | `HttpOnly` cookie + loopback source | Gates every `host:*` WS message, `/api/host/token`, and `/api/host/complete-login` |
-| CSRF | Not meaningfully exploitable | `/api/host/complete-login` is a side-effecting `POST`, but forging one buys an attacker nothing: it's loopback-gated (a remote site can't reach it at all), and a forged request without a genuine Spotify `code` matching the server's own pending PKCE state just gets "Login attempt expired" |
-| Cross-origin access | Exact-origin allowlist | `server/net.ts::registerGuard` allows `https://vdwolde.github.io` (the published client, ADR-005) alongside private-LAN/loopback origins; the `Host` header must still be a private/loopback address regardless — the allowlist alone can't reach a LAN server it isn't already on the same network as. No cookie-gated route accepts this origin, so no `Access-Control-Allow-Credentials` is ever sent |
+| Authorization | `HttpOnly` cookie + loopback source | Gates every `host:*` WS message and `/api/host/token` |
+| CSRF | Not applicable | The only cookie-gated route is a side-effect-free `GET` |
 | Rate limiting | None | Threat model doesn't call for it — see Known accepted gaps |
 | Input validation | Name/colour/track/vote validated server-side in `server/game.ts` | Client-side checks are a UX affordance only |
 | Output escaping | React's default JSX escaping | No `dangerouslySetInnerHTML` anywhere in this project |
@@ -61,13 +56,6 @@ that message is sent.
 
 - **Browser → server:** every WS message is revalidated server-side in `game.ts`,
   regardless of what the client claims (its own `phase`, its own `songsPerPlayer`, etc.).
-- **Public origin → LAN server:** the player client is now served from a public origin
-  (GitHub Pages, ADR-005), a different one than the LAN server it must still reach for
-  actual gameplay. `server/net.ts::registerGuard` allowlists exactly that one origin
-  for the WS handshake and the unauthenticated `/api/search`/`/api/pkce` GETs — never
-  for anything cookie-gated, and never loosening the separate `Host`-header check that
-  requires the request's actual DESTINATION to be a private/loopback address regardless
-  of where the page asking for it came from.
 - **Server → Spotify:** only the host's short-lived access token ever leaves the server
   process. `/api/host/token` and `/api/search`'s loopback path both require a loopback
   source; a phone gets a valid `/api/search` response only with a real player token for
@@ -121,22 +109,14 @@ that message is sent.
 
 ## Known accepted gaps
 
-- **No HTTPS on the LAN, in manual mode.** Accepted because per-player Spotify login —
-  the thing that would have required it — was cut for `manual` mode: Spotify rejects
-  private-LAN redirect URIs even over HTTPS (see ADR-001, ADR-002). Nothing else on the
-  wire is sensitive enough to justify the mkcert/cert-install friction for a
-  living-room game. `top-tracks` mode's player-Spotify traffic goes over real HTTPS,
-  direct from the phone to Spotify (see ADR-004/ADR-005) — the LAN itself still carries
-  no HTTPS, but the sensitive leg (the login) never crosses it in the first place. Same
-  reasoning is why the host's own login stays same-origin/loopback rather than moving
-  to GitHub Pages too — a `SameSite=None` cookie needed for cross-origin auth requires
-  `Secure`, which requires HTTPS, which the LAN server doesn't have (ADR-005).
-- **The GitHub Pages origin allowlist can't distinguish repos.** An `Origin` header
-  never carries a path, so `https://vdwolde.github.io` is indistinguishable from any
-  OTHER public repo this account also publishes to GitHub Pages — any of them could
-  also reach a LAN Song Snitch server the same way Song Snitch's own client does.
-  Accepted (ADR-005): the threat model is already "someone on the same WiFi," and nothing
-  this grants isn't already reachable from that same network some other way.
+- **No HTTPS on the LAN.** Accepted because per-player Spotify login — the thing that
+  would have required it — was cut for `manual` mode: Spotify rejects private-LAN
+  redirect URIs even over HTTPS (see ADR-001, ADR-002). Nothing else on the wire is
+  sensitive enough to justify the mkcert/cert-install friction for a living-room game.
+  `top-tracks` mode's player-Spotify traffic goes over real HTTPS, direct from the
+  phone to Spotify (see ADR-004) — the LAN itself still carries no HTTPS, but the
+  sensitive leg (the login) never crosses it in the first place. A GitHub-Pages-hosted
+  client shell was tried and reverted for exactly this reason — see ADR-006.
 - **No rate limiting on `/api/search`.** It proxies the host's Spotify token, but is
   gated to loopback or a valid player token for the *current* room — a room only ever
   has as many valid tokens as players who joined it.

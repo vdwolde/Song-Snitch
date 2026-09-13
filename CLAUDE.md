@@ -8,9 +8,10 @@ throughout, Fastify + WebSocket server, React client, npm.
 (server-side Spotify search, no player login — or, in top-tracks mode, each player
 connects their own Spotify and their most-played songs are auto-submitted) → host
 starts → per round, the host plays a track while phones vote "who added this?" →
-reveal → final leaderboard. The built client (both screens) is published to GitHub
-Pages; the game server itself only ever runs on the host's own laptop — see
-[.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-005.
+reveal → final leaderboard. Everything runs on the host's own laptop; nothing is
+deployed anywhere except one static page unrelated to gameplay (a top-tracks player's
+Spotify login bounce, `github-pages/callback.html`) — see
+[.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-006.
 
 This file is always loaded (Claude Code reads it automatically from the project root).
 It is a **router**: it holds the coding principles and points to the one document that
@@ -28,8 +29,8 @@ do not duplicate its content here.
    server file makes one. A browser-side Spotify call is permitted only where the token
    itself must live in the browser — today that's `src/spotify-player.ts` (the Web
    Playback SDK) and `src/spotify-top-tracks.ts` (a player's own top-tracks import, see
-   [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-004/ADR-005) — never add a third
-   without a documented reason.
+   [.claude/DECISIONS.md](.claude/DECISIONS.md) ADR-004) — never add a third without a
+   documented reason.
 4. The Spotify client secret never exists in this project (PKCE only); the access token
    never reaches a client except through the loopback+cookie-gated `/api/host/token`,
    and never the refresh token, ever.
@@ -153,7 +154,6 @@ Full detail in [.claude/SECURITY.md](.claude/SECURITY.md). Non-negotiable:
 - No Spotify client secret exists anywhere in this project (PKCE only) — never add one.
 - Only the host authenticates; a phone must never obtain the host's Spotify token —
   `/api/host/token` requires both the host cookie and a loopback source.
-  `/api/host/complete-login` (which mints that cookie) is loopback-gated the same way.
 - The submitter of the currently-playing track must never reach any client before its
   `Reveal` — see Hard rules above and [.claude/SECURITY.md](.claude/SECURITY.md).
 - Every gate is enforced server-side; a client-side check is a UX affordance only.

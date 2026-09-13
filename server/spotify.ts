@@ -51,18 +51,10 @@ export function newPkcePair(): { verifier: string; challenge: string } {
   return { verifier, challenge };
 }
 
-// redirectUri now points at the shared GitHub Pages bounce page (public/callback.html,
-// see ADR-005), not at this server directly — so `state` carries the return address
-// (`returnTo`, e.g. this server's own `${UI_ORIGIN}/host`) the same way the player
-// flow's does (src/spotify-top-tracks.ts), and the bounce page sends the browser back
-// there with the code in a URL FRAGMENT. A fragment never reaches this server, so the
-// login is completed client-side by HostApp.tsx posting {code, state} to
-// /api/host/complete-login — see server/routes.ts.
-export function loginUrl(redirectUri: string, returnTo: string): string {
+export function loginUrl(redirectUri: string): string {
   const { verifier, challenge } = newPkcePair();
-  const nonce = base64url(randomBytes(12));
-  pending = { verifier, state: nonce, redirectUri };
-  const state = JSON.stringify({ r: returnTo, n: nonce });
+  const state = base64url(randomBytes(12));
+  pending = { verifier, state, redirectUri };
   const params = new URLSearchParams({
     client_id: clientId(),
     response_type: 'code',
@@ -77,17 +69,9 @@ export function loginUrl(redirectUri: string, returnTo: string): string {
 
 export async function handleCallback(
   code: string,
-  rawState: string,
+  state: string,
 ): Promise<{ ok: true; sessionToken: string } | { ok: false; message: string }> {
-  let nonce: string | undefined;
-  try {
-    nonce = (JSON.parse(rawState) as { n?: string }).n;
-  } catch {
-    // malformed state — nonce stays undefined, falls through to the mismatch check below
-  }
-  if (!pending || !nonce || pending.state !== nonce) {
-    return { ok: false, message: 'Login attempt expired — try again.' };
-  }
+  if (!pending || pending.state !== state) return { ok: false, message: 'Login attempt expired — try again.' };
   const { verifier, redirectUri } = pending;
   pending = null;
 

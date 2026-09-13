@@ -9,7 +9,79 @@ storage shape, an accepted trade-off, or anything you had to argue yourself out 
 
 ---
 
+## ADR-006 — Reverted: player client back on the LAN; host login back to a direct redirect
+
+- **Decision:** ADR-005's two changes are both reverted. (1) The player-facing app is
+  served by the host's own Fastify server again (same-origin, plain HTTP, exactly the
+  pre-ADR-005 design) — GitHub Pages no longer hosts the game client at all, only
+  `github-pages/callback.html` (moved out of Vite's `public/` — see Consequence). The
+  join link/QR is a bare LAN address again (`HostState.lanUrl`, not `joinUrl`). (2) The
+  host's own Spotify login reverts to a direct server-side redirect
+  (`http://127.0.0.1:5178/callback`, `server/spotify.ts::loginUrl`/`handleCallback` back
+  to a bare-nonce `state`) instead of sharing the GitHub Pages bounce page — `POST
+  /api/host/complete-login` and `HostApp.tsx`'s fragment-reading effect are gone.
+  GitHub Pages keeps exactly one job: the OAuth bounce page for a **player's own**
+  top-tracks-mode login (`src/spotify-top-tracks.ts`), which still cannot use a LAN
+  address as a redirect_uri and has no other option.
+- **Context:** ADR-005 shipped, and real-world testing (a real phone, then confirmed
+  directly in Chrome DevTools against the live deployment) found the design had a hard,
+  unfixable wall: a page loaded over HTTPS (GitHub Pages) cannot open a plain `ws://`
+  connection to a private LAN address — browsers treat it as mixed content. Desktop
+  Chrome merely warns and still connects, which is exactly why this wasn't caught
+  before shipping; iOS (every iOS browser, including Chrome, runs on WebKit) blocks it
+  outright, with **no** JavaScript-visible error and no override — the join button
+  simply did nothing. This is a browser security policy, not a bug reachable by more
+  client-side code. Separately, sharing one redirect_uri surfaced two real bugs in the
+  host's login specifically: the bounce-page round trip let a `not-host` WS error get
+  silently swallowed by the `Connecting` screen (fixed independently, see the `stalled`
+  connection-state work below, which stays), and — the harder one — the host's page
+  (and its WebSocket) load and connect *before* the OAuth round trip even starts, since
+  `/host` is where the "Connect Spotify" button itself lives; a cookie only attaches to
+  a WebSocket's initial handshake, never retroactively, so the socket already open at
+  that point could never become "the host" once the cookie was set moments later. That
+  needed a forced `location.reload()` to paper over — a real fix, but one that only
+  existed because of the redirect-URI unification in the first place.
+- **Consequence:** The join link is short and simple again (a bare LAN address, e.g.
+  `http://192.168.1.50:5178`), the game works identically on every browser (no
+  mixed-content wall possible when the page and the WebSocket share the same scheme),
+  and the host's login is back to the simpler, previously-battle-tested direct-redirect
+  mechanism with no reload workaround needed. The cost, explicitly accepted: the
+  Spotify dashboard needs **two** registered redirect URIs again (the host's loopback
+  one and the player's GitHub Pages one) — the "leave localhost out of the dashboard
+  entirely" goal from ADR-005 doesn't survive this reversal for the host specifically.
+  `useRoom`'s `stalled` connection-state flag (surfacing "can't reach the game" after 3
+  failed connection attempts instead of retrying forever in silence) is a genuine,
+  independent improvement and was kept — it's just no longer covering for a
+  mixed-content wall, only for a genuinely dead/unreachable server. The `github-pages/`
+  folder (not Vite's `public/`) holds the one remaining file GitHub Pages serves,
+  deliberately kept OUT of Vite's `public/` dir — Vite's own docs warn that an
+  `index.html` there can clobber the real build's `dist/index.html`; it happened not to
+  in the Vite version this project pins, but that's an implementation detail not worth
+  depending on.
+- **Rejected:** Making the GitHub-Pages-hosted design actually work instead of
+  reverting it — via TLS on the LAN server (a valid certificate for a private/dynamic
+  IP needs either a self-signed cert with a scary per-device browser warning, or a
+  DNS-01 wildcard cert plus a way to map an arbitrary subdomain to whatever LAN IP the
+  host currently has — real, ongoing infrastructure for a party game, not a one-time
+  fix) or an mDNS-based friendly hostname (`songsnitch.local`) instead of a raw IP
+  (rejected on its own merits too: Android has historically lacked reliable OS-level
+  `.local` hostname resolution for ordinary browser requests, which would have traded
+  one platform's hard failure for a different, less predictable one on another —
+  directly against the explicit ask that this work on "all other combinations").
+  Serving player traffic from GitHub Pages only on browsers known to tolerate the
+  mixed-content warning (Chrome) while falling back to the LAN address on others (a
+  browser-sniffing split experience) — rejected as exactly the kind of inconsistent,
+  hard-to-support behavior a personal party game should never need.
+
 ## ADR-005 — Player client served from GitHub Pages; host+player OAuth unified onto one bounce page
+
+> **Superseded by [ADR-006](#adr-006--reverted-player-client-back-on-the-lan-host-login-back-to-a-direct-redirect).**
+> Both changes below were reverted after real-world testing found the mixed-content
+> wall was a hard browser-level block (confirmed on iOS), not a client-side bug — see
+> ADR-006 for the reasoning. This entry is kept for the historical record and because
+> its player-login-bounce-page mechanism (item 2's `{r, n}` state shape, the
+> validate-then-forward pattern) is still exactly how `src/spotify-top-tracks.ts`'s own
+> login works today; only the HOST's half of this decision is gone.
 
 - **Decision:** The built client (host and player screens) is now published to GitHub
   Pages at `https://vdwolde.github.io/Song-Snitch/` via `.github/workflows/pages.yml`
@@ -79,6 +151,21 @@ storage shape, an accepted trade-off, or anything you had to argue yourself out 
      embed/parse a `{r, n}` JSON `state` (matching the player flow's shape) instead of
      a bare nonce, so the bounce page can read `.r` regardless of which flow it's
      serving.
+     **Gotcha found the hard way after shipping this:** the host's page — and its
+     WebSocket — load and connect BEFORE the bounce round-trip ever starts, since
+     `/host` is where the "Connect Spotify" button itself lives. A cookie only rides
+     along on a WebSocket's *initial* handshake, never retroactively, so the socket
+     that was already open when `/api/host/complete-login` finally sets the session
+     cookie can never become "the host" — every `host:*` message on it fails
+     `not-host` forever, and (see the drive-by fix a few lines below the top of this
+     file's newest entries) that error used to be silently swallowed by the
+     `Connecting` screen too, so it looked like an infinite hang with zero feedback.
+     Fixed with `location.reload()` in `HostApp.tsx` right after a successful
+     `complete-login` — a full reload opens a fresh socket that picks up the cookie
+     from the start, mirroring what the old server-redirect flow got for free (the
+     page never loaded until after the cookie already existed). **Don't "simplify"
+     this into just re-fetching `/api/host/status` without reloading** — that was the
+     original bug.
 - **Consequence:** The player-facing app now loads from a public CDN instead of the
   LAN, which is faster/more reliable to reach and removes any need to know a domain at
   all beyond scanning the host's QR code — but real GAMEPLAY reachability is unchanged:

@@ -1,11 +1,6 @@
 // Types shared between server and client. Keep this file dependency-free (no imports
 // from server/ or src/) so both sides can import it without pulling in the other's code.
 
-// Where the built client (and the Spotify OAuth bounce page, public/callback.html) is
-// published — see .claude/DECISIONS.md ADR-005. No trailing slash; callers append their
-// own '/'.
-export const PAGES_URL = 'https://vdwolde.github.io/Song-Snitch';
-
 export const PLAYER_COLOURS = [
   'crimson',
   'amber',
@@ -55,10 +50,7 @@ export interface HostState {
   phase: Phase;
   songsPerPlayer: number;
   mode: RoomMode;
-  // The full player-facing URL to show/QR-encode — a PAGES_URL link carrying the
-  // host's LAN address as a ?server= param, not a bare LAN address. See
-  // server/net.ts::playerJoinUrl and .claude/DECISIONS.md ADR-005.
-  joinUrl: string;
+  lanUrl: string;
   players: PlayerView[];
   needsDevice: boolean; // Spotify Web Playback SDK device not yet connected
   spotifyUser: string | null;
