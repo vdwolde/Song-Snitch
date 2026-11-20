@@ -1,0 +1,90 @@
+/* vdWolde, web recipe. Brand Guide v1.1.
+ * Load order: fonts/sora/sora.css, fonts/dm-sans/dm-sans.css, tokens/tokens.css (all from Branding/), then this file.
+ * Set <html data-signal="pink"> for the app's signal colour (pink, orange, amber, yellow, green, sky, violet) and, when the
+ * app lets the person choose, <html data-mode="dark|light"> (without it the system colour scheme decides; Dark Mode is the default).
+ * Glow: add .vdw-glow-low | .vdw-glow-middle | .vdw-glow-high to the element that carries .vdw-backlight (default Middle).
+ * Rules this file cannot enforce: one signal per app, one backlight per view (root surface only, never on cards,
+ * never animated), status always icon plus word, 14 px body text minimum, targets 32 px (40 px for the main action).
+ */
+
+:root {
+  --signal: var(--signal-violet-vivid);
+  --signal-rgb: 123 97 255;
+  --signal-ui: var(--signal-violet-ui-fill);
+  --signal-text-dark: var(--signal-violet-light);
+  --signal-text-light: var(--signal-violet-deep);
+  --signal-text: var(--signal-text-dark);
+  --glow-mode: 1;
+  --k: var(--glow-middle);
+  color-scheme: dark light;
+}
+[data-signal="pink"]   { --signal: var(--signal-pink-vivid);   --signal-rgb: 240 66 140;  --signal-ui: var(--signal-pink-vivid);   --signal-text-dark: var(--signal-pink-light);   --signal-text-light: var(--signal-pink-deep); }
+[data-signal="orange"] { --signal: var(--signal-orange-vivid); --signal-rgb: 255 122 47;  --signal-ui: var(--signal-orange-vivid); --signal-text-dark: var(--signal-orange-light); --signal-text-light: var(--signal-orange-deep); }
+[data-signal="amber"]  { --signal: var(--signal-amber-vivid);  --signal-rgb: 245 165 36;  --signal-ui: var(--signal-amber-vivid);  --signal-text-dark: var(--signal-amber-light);  --signal-text-light: var(--signal-amber-text); }
+[data-signal="yellow"] { --signal: var(--signal-yellow-vivid); --signal-rgb: 235 203 31;  --signal-ui: var(--signal-yellow-vivid); --signal-text-dark: var(--signal-yellow-light); --signal-text-light: var(--signal-yellow-text); }
+[data-signal="green"]  { --signal: var(--signal-green-vivid);  --signal-rgb: 34 197 94;   --signal-ui: var(--signal-green-vivid);  --signal-text-dark: var(--signal-green-light);  --signal-text-light: var(--signal-green-deep); }
+[data-signal="sky"]    { --signal: var(--signal-sky-vivid);    --signal-rgb: 56 182 255;  --signal-ui: var(--signal-sky-vivid);    --signal-text-dark: var(--signal-sky-light);    --signal-text-light: var(--signal-sky-deep); }
+[data-signal="violet"] { --signal: var(--signal-violet-vivid); --signal-rgb: 123 97 255;  --signal-ui: var(--signal-violet-ui-fill); --signal-text-dark: var(--signal-violet-light); --signal-text-light: var(--signal-violet-deep); }
+
+/* Explicit mode switch (tokens.css only follows the system). */
+[data-mode="dark"] {
+  --ground: var(--neutral-dark-ground); --surface: var(--neutral-dark-surface); --raised: var(--neutral-dark-raised);
+  --edge: var(--neutral-dark-edge); --control-edge: var(--neutral-dark-control-edge);
+  --text: var(--neutral-dark-text); --text-muted: var(--neutral-dark-text-muted); --text-subtle: var(--neutral-dark-text-subtle);
+  --signal-text: var(--signal-text-dark); --glow-mode: 1; color-scheme: dark;
+}
+[data-mode="light"] {
+  --ground: var(--neutral-light-ground); --surface: var(--neutral-light-surface); --raised: var(--neutral-light-raised);
+  --edge: var(--neutral-light-edge); --control-edge: var(--neutral-light-control-edge);
+  --text: var(--neutral-light-text); --text-muted: var(--neutral-light-text-muted); --text-subtle: var(--neutral-light-text-subtle);
+  --signal-text: var(--signal-text-light); --glow-mode: 0.55; color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-mode]) { --signal-text: var(--signal-text-light); --glow-mode: 0.55; }
+}
+
+/* Status: always an icon and a word, never colour alone. Use *-text for text, the plain token for fills and icons. */
+:root { --ok: var(--status-ok); --warn: var(--status-warn); --danger: var(--status-danger); --info: var(--status-info);
+  --ok-text: var(--status-ok-text-dark); --warn-text: var(--status-warn-text-dark); --danger-text: var(--status-danger-text-dark); --info-text: var(--status-info-text-dark); }
+[data-mode="light"] { --ok-text: var(--status-ok-text-light); --warn-text: var(--status-warn-text-light); --danger-text: var(--status-danger-text-light); --info-text: var(--status-info-text-light); }
+@media (prefers-color-scheme: light) {
+  :root:not([data-mode]) { --ok-text: var(--status-ok-text-light); --warn-text: var(--status-warn-text-light); --danger-text: var(--status-danger-text-light); --info-text: var(--status-info-text-light); }
+}
+
+html { background: var(--ground); color: var(--text); font: var(--type-body); -webkit-font-smoothing: antialiased; }
+body { margin: 0; min-height: 100vh; }
+
+/* One backlight per view: the root surface only. Edge line, bloom, wide rise (brand.json glow.backlight_css). */
+.vdw-glow-low { --k: var(--glow-low); }
+.vdw-glow-middle { --k: var(--glow-middle); }
+.vdw-glow-high { --k: var(--glow-high); }
+.vdw-backlight {
+  --kk: calc(var(--k) * var(--glow-mode));
+  background:
+    radial-gradient(60% 3px at 50% 100%, rgb(var(--signal-rgb) / calc(1 * var(--kk))) 0%, rgb(var(--signal-rgb) / calc(.57 * var(--kk))) 45%, rgb(var(--signal-rgb) / calc(.14 * var(--kk))) 75%, rgb(var(--signal-rgb) / 0) 100%),
+    radial-gradient(46% 11% at 50% 100%, rgb(var(--signal-rgb) / calc(.34 * var(--kk))) 0%, rgb(var(--signal-rgb) / calc(.11 * var(--kk))) 55%, rgb(var(--signal-rgb) / 0) 100%),
+    radial-gradient(120% 72% at 50% 120%, rgb(var(--signal-rgb) / calc(.34 * var(--kk))) 0%, rgb(var(--signal-rgb) / calc(.12 * var(--kk))) 46%, rgb(var(--signal-rgb) / 0) 74%),
+    var(--ground);
+  background-attachment: fixed;
+}
+
+/* Type roles (tokens.css has the shorthand; sizes never go below 14 px for body text). */
+.vdw-display { font: var(--type-display); letter-spacing: -0.025em; }
+.vdw-display-s { font: var(--type-display-s); letter-spacing: -0.02em; }
+h1, .vdw-h1 { font: var(--type-heading-1); letter-spacing: -0.015em; }
+h2, .vdw-h2 { font: var(--type-heading-2); letter-spacing: -0.01em; }
+h3, .vdw-h3 { font: var(--type-heading-3); }
+h1, h2, h3, .vdw-h1, .vdw-h2, .vdw-h3, .vdw-display, .vdw-display-s { text-wrap: balance; } /* headlines break evenly */
+p { text-wrap: pretty; } /* no lone last word */
+.vdw-figures { font: var(--type-figures); letter-spacing: -0.01em; }
+.vdw-label { font: var(--type-label); letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+code, kbd, pre, .vdw-code { font: var(--type-code); }
+.vdw-figures, .vdw-tabular, td.num, [data-numeric] { font-variant-numeric: tabular-nums; }
+
+/* Focus: 2 px signal ring with a gap, on every interactive element. Never remove it. */
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; border-radius: var(--radius-control); }
+
+/* Motion: 120 / 200 / 300 ms. Reduced motion keeps a 120 ms fade and nothing else. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-property: opacity !important; transition-duration: var(--duration-fast) !important; }
+}

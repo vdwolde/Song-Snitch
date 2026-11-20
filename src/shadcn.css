@@ -1,0 +1,48 @@
+/* shadcn/ui's own Tailwind layer + component-token bindings — see root Development/CLAUDE.md
+   § Web UI baseline. Colours/fonts are not defined here: this app has its own
+   vdWolde Brand Guide v1.0 palette (src/brand/) with Sora/DM Sans, bridged in the "shadcn
+   bridge" section of styles.css instead of taking the generic `mist` preset + Inter. Regenerate the imports/bindings
+   below with `npx shadcn@latest apply --preset b7ClRmdZS --only theme`, then re-apply this
+   file's edits (dropping the oklch :root/.dark blocks and the Inter import it writes). */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Dark Mode is the default and Light Mode follows the system (src/brand/tokens.css), with no
+   toggle, so a seeded shadcn component's `dark:` utility applies under the system dark scheme. */
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent-surface);
+  --color-accent-foreground: var(--accent-surface-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+}
+
+:root {
+  --radius: 14px; /* matches this app's own --radius-md */
+}

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Secrets — never commit
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# Scratch and tool output stays inside the project folder
+.state/
+
+# Local config — copy .env.example to .env
+.env

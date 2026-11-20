@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>motion-probe bad fixture</title>
+<!--
+  Self-check for tools/motion-probe.js. Open it at 1280 wide, then in chrome-devtools:
+    1. evaluate_script { sourcePath: ".../tools/motion-probe.js", waitForStableDom: false }
+         -> animationsRunningNow 2, flaggedNow { infinite: 2, layoutProperties: 1 }
+    2. evaluate_script { function: "async () => { window.run(); await new Promise(r => setTimeout(r, 1800)); return window.__motionProbe.report(); }", waitForStableDom: false }
+         -> animations.flagged.infinite 2 and .layoutProperties 1 (the #bar width loop);
+            appearsWithNoEntrance includes div#menu;
+            anchorDrift includes div#menu (top and bottom both move when it grows);
+            jumps includes div#content (the banner pushes it down in one frame);
+            layoutShifts has at least one entry.
+  A missing key means the probe regressed.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font: 14px/1.5 Arial, sans-serif; color: #111; background: #fff; }
+  #spin { width: 24px; height: 24px; border-radius: 50%; background: #36c; animation: pulse 1s ease-in-out infinite alternate; }
+  @keyframes pulse { from { opacity: .3; } to { opacity: 1; } }
+  #bar { height: 12px; margin: 16px 0; background: #6a6; animation: grow 1.5s ease-in-out infinite alternate; }
+  @keyframes grow { from { width: 40px; } to { width: 200px; } }
+  #stage { position: relative; height: 300px; width: 320px; border: 1px solid #bbb; margin-bottom: 16px; }
+  #menu { display: none; position: absolute; left: 20px; width: 200px; background: #fff; border: 1px solid #888; }
+  #menu div { height: 30px; padding: 4px 8px; }
+  #content { padding: 12px; border: 1px solid #bbb; width: 320px; }
+  #banner { height: 60px; background: #fe9; padding: 18px 12px; }
+</style>
+</head>
+<body>
+<div id="spin"></div>
+<div id="bar"></div>
+<div id="stage">
+  <div id="menu" role="menu"><div>One</div><div>Two</div></div>
+</div>
+<div id="wrap"><div id="content"><p style="margin:0">Page content that a banner will push down.</p></div></div>
+<script>
+  function place() { const m = document.getElementById('menu'); m.style.top = ((300 - m.offsetHeight) / 2) + 'px'; }
+  function openMenu() {
+    const m = document.getElementById('menu');
+    m.style.display = 'block'; place();
+    setTimeout(() => { for (const t of ['Three', 'Four', 'Five']) { const d = document.createElement('div'); d.textContent = t; m.appendChild(d); } place(); }, 400);
+  }
+  function insertBanner() {
+    const b = document.createElement('div'); b.id = 'banner'; b.textContent = 'A banner arrived';
+    document.getElementById('wrap').insertBefore(b, document.getElementById('content'));
+  }
+  window.run = () => { openMenu(); setTimeout(insertBanner, 900); };
+</script>
+</body>
+</html>

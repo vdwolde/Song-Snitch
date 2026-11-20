@@ -1,0 +1,39 @@
+name: Deploy to GitHub Pages
+
+# Publishes ONLY the Spotify OAuth bounce page (github-pages/callback.html) for
+# top-tracks mode's player login — see .claude/DECISIONS.md ADR-006. Nothing else about
+# the game is deployed here: the actual client (both screens) and the game server all
+# still run on the host's own laptop, same-origin, same as before GitHub Pages was ever
+# involved. No build step, and deliberately NOT Vite's public/ dir — these files aren't
+# part of the app's own build (Vite's own docs warn against an index.html in public/
+# clobbering the real build output), so they live in their own folder untouched by it.
+
+on:
+  push:
+    branches: [main]
+    paths: ['github-pages/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: github-pages
+      - id: deployment
+        uses: actions/deploy-pages@v4

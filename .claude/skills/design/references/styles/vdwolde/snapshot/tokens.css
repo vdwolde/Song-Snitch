@@ -1,0 +1,125 @@
+/* vdWolde design tokens, version 1.1. Generated with the brand guide; edit the guide, not this file. */
+:root {
+  --neutral-dark-ground: #0F1115;
+  --neutral-dark-surface: #15171C;
+  --neutral-dark-raised: #1C1F26;
+  --neutral-dark-edge: #2C3039;
+  --neutral-dark-control-edge: #6B7280;
+  --neutral-dark-text: #F2F3F5;
+  --neutral-dark-text-muted: #A3A9B4;
+  --neutral-dark-text-subtle: #8A919E;
+  --neutral-light-ground: #F3F4F6;
+  --neutral-light-surface: #FFFFFF;
+  --neutral-light-raised: #F8F9FA;
+  --neutral-light-edge: #DDE0E5;
+  --neutral-light-control-edge: #8A919E;
+  --neutral-light-text: #15171C;
+  --neutral-light-text-muted: #545A66;
+  --neutral-light-text-subtle: #6A6E75;
+  --signal-pink-vivid: #F0428C;
+  --signal-pink-light: #F797C0;
+  --signal-pink-deep: #9C2B5B;
+  --signal-orange-vivid: #FF7A2F;
+  --signal-orange-light: #FFB68D;
+  --signal-orange-deep: #A64F1F;
+  --signal-amber-vivid: #F5A524;
+  --signal-amber-light: #FACE87;
+  --signal-amber-deep: #9F6B17;
+  --signal-amber-text: #956416;
+  --signal-yellow-vivid: #EBCB1F;
+  --signal-yellow-light: #F4E284;
+  --signal-yellow-deep: #998414;
+  --signal-yellow-text: #7F6E11;
+  --signal-green-vivid: #22C55E;
+  --signal-green-light: #85DFA6;
+  --signal-green-deep: #16803D;
+  --signal-sky-vivid: #38B6FF;
+  --signal-sky-light: #92D7FF;
+  --signal-sky-deep: #2476A6;
+  --signal-violet-vivid: #7B61FF;
+  --signal-violet-light: #B6A8FF;
+  --signal-violet-deep: #503FA6;
+  --signal-violet-ui-fill: #8269FF;
+  --status-ok: #22C55E;
+  --status-ok-text-dark: #22C55E;
+  --status-ok-text-light: #16803D;
+  --status-warn: #F5A524;
+  --status-warn-text-dark: #F5A524;
+  --status-warn-text-light: #956416;
+  --status-danger: #F2555A;
+  --status-danger-text-dark: #F2555A;
+  --status-danger-text-light: #9D373A;
+  --status-info: #3E63DD;
+  --status-info-text-dark: #95A9EC;
+  --status-info-text-light: #284090;
+  --free-lime: #9BD12E;
+  --free-teal: #12A594;
+  --free-blue: #3E63DD;
+  --free-purple: #AB4ABA;
+
+  /* glow intensity: multiply backlight opacities by this factor */
+  --glow-low: 0.6;
+  --glow-middle: 1;
+  --glow-high: 1.7;
+
+  /* type */
+  --font-display: 'Sora', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-code: 'Cascadia Mono', Consolas, 'SF Mono', Menlo, monospace;
+  --type-display: 700 84px/1.0 var(--font-display);  /* 84 px, tracking -2.5% */
+  --type-display-s: 700 56px/1.0 var(--font-display);  /* 56 px, tracking -2% */
+  --type-heading-1: 700 30px/1.05 var(--font-display);  /* 30 px, tracking -1.5% */
+  --type-heading-2: 700 22px/1.15 var(--font-display);  /* 22 px, tracking -1% */
+  --type-heading-3: 700 16px/1.2 var(--font-display);  /* 16 px, tracking 0 */
+  --type-figures: 700 28px/1.0 var(--font-display);  /* 28 to 40 px, tracking -1% */
+  --type-body-l: 400 16px/1.55 var(--font-body);  /* 16 to 18 px, tracking 0 */
+  --type-body: 400 14px/1.5 var(--font-body);  /* 14 px, tracking 0 */
+  --type-body-s: 400 12.5px/1.45 var(--font-body);  /* 12.5 to 13 px, tracking 0 */
+  --type-ui: 600 13px/1 var(--font-body);  /* 13 to 14 px, tracking 0 */
+  --type-label: 600 11px/1 var(--font-body);  /* 11 to 13 (uppercase) px, tracking +10% */
+  --type-code: 500 13px/1.5 var(--font-code);  /* 13 to 14 px, tracking 0 */
+
+  /* spacing and radius */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-48: 48px;
+  --radius-control: 8px;
+  --radius-window: 12px;
+  --radius-card: 14px;
+  --radius-pill: 999px;
+
+  /* motion */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-enter: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-leave: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Dark Mode is the default; Light Mode follows the system. */
+:root {
+  --ground: var(--neutral-dark-ground);
+  --surface: var(--neutral-dark-surface);
+  --raised: var(--neutral-dark-raised);
+  --edge: var(--neutral-dark-edge);
+  --control-edge: var(--neutral-dark-control-edge);
+  --text: var(--neutral-dark-text);
+  --text-muted: var(--neutral-dark-text-muted);
+  --text-subtle: var(--neutral-dark-text-subtle);
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --ground: var(--neutral-light-ground);
+    --surface: var(--neutral-light-surface);
+    --raised: var(--neutral-light-raised);
+    --edge: var(--neutral-light-edge);
+    --control-edge: var(--neutral-light-control-edge);
+    --text: var(--neutral-light-text);
+    --text-muted: var(--neutral-light-text-muted);
+    --text-subtle: var(--neutral-light-text-subtle);
+  }
+}

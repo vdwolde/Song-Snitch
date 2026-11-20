@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ui-audit bad fixture</title>
+<!--
+  Self-check for tools/ui-audit.js. One deliberate fault per check; open this file at 1280 wide in
+  chrome-devtools and run the script (evaluate_script, sourcePath). Expected `counts` keys (each at least 1):
+  page-overflow small-text words-cut clipped hit-target control-fit spills tight-inset uneven-padding
+  uneven-inset lopsided touching near-tangent tight-control unit-wrapped stack-gap fat-row loose-list
+  text-wrap tabular-nums mixed-icons emoji-icon clipped-glyph onion-skin translucent-icon tight-mark
+  squeezed gap-collapse double-corner overlay-room.
+  A key from this list that is missing means a check regressed. ui-audit-good.html must report none.
+-->
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; font: 14px/1.5 Arial, sans-serif; color: #111; background: #fff; }
+  section { margin: 0 0 28px; }
+  h1 { font-size: 20px; margin: 0 0 16px; }
+  .card { width: 300px; border: 1px solid #bbb; border-radius: 8px; background: #fafafa; }
+</style>
+</head>
+<body>
+<h1>ui-audit bad fixture</h1>
+
+<section id="small-text"><p style="font-size:9px;margin:0">tiny nine pixel text</p><p style="font-size:11px;margin:0">small eleven pixel text</p></section>
+
+<section id="clipped"><div style="width:80px;height:20px;overflow:hidden"><span style="white-space:nowrap">This text is much longer than its box</span></div></section>
+
+<section id="hit-target"><button style="width:16px;height:16px;padding:0">x</button></section>
+
+<section id="control-fit"><button style="height:26px;padding:10px 8px;line-height:1.5">Save changes</button></section>
+
+<section id="spills"><div class="card" style="height:40px"><div style="width:340px;height:20px;background:#ddd"></div></div></section>
+
+<section id="tight-inset"><div class="card" style="height:90px;padding:4px">Text jammed against the card edge</div></section>
+
+<section id="uneven-padding"><div class="card" style="height:110px;padding:0 24px 24px 24px">Title line<br>Second line of content</div></section>
+
+<section id="uneven-inset"><div style="display:flex;justify-content:space-between;width:400px;height:48px;align-items:center;border:1px solid #bbb;padding:0 4px 0 24px"><span>Name</span><span>Value</span></div></section>
+
+<section id="lopsided"><button style="padding:0 6px 0 20px;height:32px;background:#eee;border:1px solid #999">Label</button></section>
+
+<section id="touching"><div style="display:flex;align-items:center"><span>Label</span><span style="margin-left:2px;background:#ddd;padding:2px 6px">New</span></div></section>
+
+<section id="near-tangent"><div style="width:200px;height:40px;background:#dde;margin-bottom:10px"></div><div style="width:200px;height:40px;background:#dde;margin-left:2px"></div></section>
+
+<section id="tight-control"><textarea style="display:block;width:240px;height:50px"></textarea><button style="margin-top:4px;background:#222;color:#fff;height:32px;padding:0 12px;border:0">Post</button></section>
+
+<section id="unit-wrapped"><div style="width:60px;font-size:32px;line-height:1.2">12 min</div></section>
+
+<section id="stack-gap"><div><div style="font-size:16px;font-weight:600;line-height:1">Title</div><div style="font-size:13px;color:#666;line-height:1;margin-top:-4px">Subtitle sitting on the title</div></div></section>
+
+<section id="fat-row"><ul style="list-style:none;margin:0;padding:0;width:300px"><li style="height:80px;display:flex;align-items:center;border-bottom:1px solid #ddd">One line</li><li style="height:80px;display:flex;align-items:center;border-bottom:1px solid #ddd">One line</li><li style="height:80px;display:flex;align-items:center;border-bottom:1px solid #ddd">One line</li></ul></section>
+
+<section id="loose-list"><ul style="list-style:none;margin:0;padding:0;width:300px"><li style="height:40px;margin-bottom:60px;background:#eef">Row</li><li style="height:40px;margin-bottom:60px;background:#eef">Row</li><li style="height:40px;background:#eef">Row</li></ul></section>
+
+<section id="text-wrap"><h2 style="width:220px;font-size:28px;margin:0;text-wrap:wrap">A long heading that wraps onto several lines</h2></section>
+
+<section id="tabular-nums"><table><tr><td>1,234.50</td></tr><tr><td>98.10</td></tr></table></section>
+
+<section id="mixed-icons"><nav style="display:flex;gap:12px">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/></svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="10" height="10"/></svg>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="5"/></svg>
+</nav></section>
+
+<section id="emoji-icon"><div><span style="display:inline-block;width:24px">📅</span> Calendar</div></section>
+
+<section id="clipped-glyph"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M-4 8h24"/></svg></section>
+
+<section id="onion-skin"><div style="position:relative;height:40px"><span style="position:absolute;left:0;width:40px;height:40px;background:rgba(0,0,200,.4);border-radius:50%"></span><span style="position:absolute;left:24px;width:40px;height:40px;background:rgba(0,0,200,.4);border-radius:50%"></span></div></section>
+
+<section id="translucent-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="1.5"><path d="M2 8h12"/></svg></section>
+
+<section id="tight-mark"><div style="display:flex;align-items:center"><span style="display:block;width:8px;height:8px;border-radius:50%;background:#e33"></span><span style="margin-left:2px">Unread</span></div></section>
+
+<section id="squeezed"><div style="display:flex;width:200px"><span style="flex:1;white-space:nowrap">A long label that will not wrap anywhere</span><button style="width:32px;height:32px;padding:0"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M4 10h12"/></svg></button></div></section>
+
+<section id="gap-collapse"><div style="display:flex;gap:16px"><div style="width:60px;height:30px;background:#dfd">A</div><div style="width:60px;height:30px;background:#dfd;margin-left:-10px">B</div></div></section>
+
+<section id="double-corner"><div style="width:240px;border:1px solid #ccc;border-radius:16px;overflow:hidden"><div style="height:60px;background:#9cf;border-radius:6px"></div></div></section>
+
+<div id="overlay-room" role="dialog" style="position:fixed;left:6px;top:200px;width:200px;height:80px;background:#fff;border:1px solid #888;padding:12px">Dialog near the edge</div>
+
+<div id="words-cut" style="position:absolute;left:-40px;top:1900px;white-space:nowrap">Text crossing the left viewport edge</div>
+
+<div id="page-overflow" style="position:absolute;left:0;top:2200px;width:1700px;height:10px;background:#ccc"></div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!-- vdWolde Light Mode neutrals and status colours. Brand Guide v1.1; generated from Branding/tokens/tokens.css. Edit the guide, not this file.
+     Merge order in App.xaml: this file, then a signals\Signal.<name>.Light.xaml, then BrandParts.xaml.
+     Do not hard-code colours in views: use {DynamicResource VdW.Surface} and friends so a mode switch re-colours the window. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="VdW.Ground.Color">#F3F4F6</Color>
+    <SolidColorBrush x:Key="VdW.Ground" Color="{StaticResource VdW.Ground.Color}"/>
+    <Color x:Key="VdW.Surface.Color">#FFFFFF</Color>
+    <SolidColorBrush x:Key="VdW.Surface" Color="{StaticResource VdW.Surface.Color}"/>
+    <Color x:Key="VdW.Raised.Color">#F8F9FA</Color>
+    <SolidColorBrush x:Key="VdW.Raised" Color="{StaticResource VdW.Raised.Color}"/>
+    <Color x:Key="VdW.Edge.Color">#DDE0E5</Color>
+    <SolidColorBrush x:Key="VdW.Edge" Color="{StaticResource VdW.Edge.Color}"/>
+    <Color x:Key="VdW.ControlEdge.Color">#8A919E</Color>
+    <SolidColorBrush x:Key="VdW.ControlEdge" Color="{StaticResource VdW.ControlEdge.Color}"/>
+    <Color x:Key="VdW.Text.Color">#15171C</Color>
+    <SolidColorBrush x:Key="VdW.Text" Color="{StaticResource VdW.Text.Color}"/>
+    <Color x:Key="VdW.TextMuted.Color">#545A66</Color>
+    <SolidColorBrush x:Key="VdW.TextMuted" Color="{StaticResource VdW.TextMuted.Color}"/>
+    <Color x:Key="VdW.TextSubtle.Color">#6A6E75</Color>
+    <SolidColorBrush x:Key="VdW.TextSubtle" Color="{StaticResource VdW.TextSubtle.Color}"/>
+    <Color x:Key="VdW.Ok.Color">#22C55E</Color>
+    <SolidColorBrush x:Key="VdW.Ok" Color="{StaticResource VdW.Ok.Color}"/>
+    <Color x:Key="VdW.OkText.Color">#16803D</Color>
+    <SolidColorBrush x:Key="VdW.OkText" Color="{StaticResource VdW.OkText.Color}"/>
+    <Color x:Key="VdW.Warn.Color">#F5A524</Color>
+    <SolidColorBrush x:Key="VdW.Warn" Color="{StaticResource VdW.Warn.Color}"/>
+    <Color x:Key="VdW.WarnText.Color">#956416</Color>
+    <SolidColorBrush x:Key="VdW.WarnText" Color="{StaticResource VdW.WarnText.Color}"/>
+    <Color x:Key="VdW.Danger.Color">#F2555A</Color>
+    <SolidColorBrush x:Key="VdW.Danger" Color="{StaticResource VdW.Danger.Color}"/>
+    <Color x:Key="VdW.DangerText.Color">#9D373A</Color>
+    <SolidColorBrush x:Key="VdW.DangerText" Color="{StaticResource VdW.DangerText.Color}"/>
+    <Color x:Key="VdW.Info.Color">#3E63DD</Color>
+    <SolidColorBrush x:Key="VdW.Info" Color="{StaticResource VdW.Info.Color}"/>
+    <Color x:Key="VdW.InfoText.Color">#284090</Color>
+    <SolidColorBrush x:Key="VdW.InfoText" Color="{StaticResource VdW.InfoText.Color}"/>
+</ResourceDictionary>

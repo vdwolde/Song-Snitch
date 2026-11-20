@@ -1,0 +1,758 @@
+/* Song Snitch: vdWolde Brand Guide v1.0, signal Amber, glow High (large display type, vivid
+   player colours, a game shown on shared screens). Tokens, fonts and the backlight come from
+   src/brand/ (loaded before this file in main.tsx); this file holds only the app's own layout
+   and the shadcn bridge. Dark Mode is the default, Light Mode follows the system. */
+
+:root {
+  --radius-sm: var(--radius-control); /* 8px: inputs, small chips */
+  --radius-md: var(--radius-card); /* 14px: buttons, list rows */
+  --radius-lg: var(--radius-card);
+
+  /* Dark ink for any label that sits on a vivid fill (signal or player colour), in both modes. */
+  --ink: var(--neutral-dark-ground);
+
+  /* The 8 player colours: the guide's vivid signal set plus lime from its free colours.
+     Names live in shared/types.ts, hex values live only in src/brand/tokens.css. */
+  --c-pink: var(--signal-pink-vivid);
+  --c-orange: var(--signal-orange-vivid);
+  --c-amber: var(--signal-amber-vivid);
+  --c-yellow: var(--signal-yellow-vivid);
+  --c-green: var(--signal-green-vivid);
+  --c-sky: var(--signal-sky-vivid);
+  --c-violet: var(--signal-violet-ui-fill);
+  --c-lime: var(--free-lime);
+
+  /* --- shadcn bridge ----------------------------------------------------------------
+     Maps shadcn/ui's semantic token names onto the brand tokens, instead of the generic
+     `mist` preset + Inter. shadcn's own --accent means "hover/highlight surface", so it
+     is bridged as --accent-surface onto --raised; the app's signal maps to --primary. */
+  --background: var(--ground);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--signal-ui);
+  --primary-foreground: var(--ink);
+  --secondary: var(--raised);
+  --secondary-foreground: var(--text);
+  --muted: var(--raised);
+  --muted-foreground: var(--text-muted);
+  --accent-surface: var(--raised);
+  --accent-surface-foreground: var(--text);
+  --destructive: var(--danger);
+  --border: var(--edge);
+  --input: var(--control-edge);
+  --ring: var(--signal);
+}
+
+[data-colour='pink'] {
+  --player-colour: var(--c-pink);
+}
+[data-colour='orange'] {
+  --player-colour: var(--c-orange);
+}
+[data-colour='amber'] {
+  --player-colour: var(--c-amber);
+}
+[data-colour='yellow'] {
+  --player-colour: var(--c-yellow);
+}
+[data-colour='green'] {
+  --player-colour: var(--c-green);
+}
+[data-colour='sky'] {
+  --player-colour: var(--c-sky);
+}
+[data-colour='violet'] {
+  --player-colour: var(--c-violet);
+}
+[data-colour='lime'] {
+  --player-colour: var(--c-lime);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* The recipe sets html to the 14 px body size; this app is read across a room and held in a
+   hand, so it runs on the 16 px body-large size (never below 14 px). */
+html {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+h1,
+h2 {
+  margin: 0 0 0.5rem;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  display: inline-block; /* Tailwind's preflight makes svg block */
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  vertical-align: -0.2em;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+}
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+.brand-title {
+  margin: 0;
+  font: var(--type-heading-1);
+  font-size: 1.75rem;
+  letter-spacing: -0.015em;
+}
+
+.status-line {
+  color: var(--text-muted);
+}
+.status-line.pulsing::after {
+  content: '';
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: 0.4em;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  text-align: left;
+  color: var(--danger-text);
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8) var(--space-12);
+  cursor: pointer;
+}
+
+/* Buttons: secondary by default (hairline edge), the signal fill only on the one primary action. */
+button,
+a.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: 40px;
+  padding: 0 var(--space-16);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--control-edge);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background-color var(--duration-fast) var(--ease-enter),
+    transform var(--duration-fast) var(--ease-enter);
+}
+button.primary,
+a.button.primary {
+  min-height: 48px;
+  color: var(--ink);
+  background: var(--signal-ui);
+  border-color: transparent;
+}
+button:active:not(:disabled),
+a.button:active {
+  transform: translateY(1px);
+}
+@media (hover: hover) {
+  button:hover:not(:disabled),
+  a.button:hover {
+    background: var(--raised);
+  }
+  button.primary:hover:not(:disabled),
+  a.button.primary:hover {
+    background: color-mix(in srgb, white 14%, var(--signal-ui));
+  }
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+a.button {
+  text-decoration: none;
+  text-align: center;
+}
+
+input,
+select {
+  font-family: var(--font-body);
+  min-height: 40px;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--control-edge);
+  border-radius: var(--radius-control);
+  color: var(--text);
+  font-size: 16px; /* iOS zooms on focus below 16px and the layout never recovers */
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* A player's colour tile: the initial inside is the second cue, the name beside it the third. */
+.swatch {
+  display: inline-grid;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 6px;
+  background: var(--player-colour, var(--edge));
+  color: var(--ink);
+  font: 700 0.8em/1 var(--font-display);
+  vertical-align: middle;
+}
+
+.roster {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+.roster li {
+  padding: 0.3rem 0.75rem 0.3rem 0.35rem;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-pill);
+  animation: rise-in var(--duration-base) var(--ease-enter) backwards;
+}
+.roster li:nth-child(1) {
+  animation-delay: 0ms;
+}
+.roster li:nth-child(2) {
+  animation-delay: 40ms;
+}
+.roster li:nth-child(3) {
+  animation-delay: 80ms;
+}
+.roster li:nth-child(4) {
+  animation-delay: 120ms;
+}
+.roster li:nth-child(5) {
+  animation-delay: 160ms;
+}
+.roster li:nth-child(6) {
+  animation-delay: 200ms;
+}
+.roster li:nth-child(7) {
+  animation-delay: 240ms;
+}
+.roster li:nth-child(8) {
+  animation-delay: 280ms;
+}
+
+.leaderboard {
+  list-style: none;
+  padding: 0;
+}
+.leaderboard li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-16);
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  margin-bottom: var(--space-8);
+  font-size: 1.1rem;
+  font-weight: 600;
+  animation: rise-in var(--duration-base) var(--ease-enter) backwards;
+}
+.leaderboard li:nth-child(1) {
+  animation-delay: 0ms;
+}
+.leaderboard li:nth-child(2) {
+  animation-delay: 40ms;
+}
+.leaderboard li:nth-child(3) {
+  animation-delay: 80ms;
+}
+.leaderboard li:nth-child(4) {
+  animation-delay: 120ms;
+}
+.leaderboard li:nth-child(5) {
+  animation-delay: 160ms;
+}
+.leaderboard li:nth-child(6) {
+  animation-delay: 200ms;
+}
+.leaderboard li:nth-child(7) {
+  animation-delay: 240ms;
+}
+.leaderboard li:nth-child(8) {
+  animation-delay: 280ms;
+}
+.leaderboard li .num {
+  margin-left: auto;
+}
+.leaderboard li.winner {
+  border-color: var(--signal-ui);
+  border-width: 2px;
+  font-size: 1.3rem;
+  animation:
+    rise-in var(--duration-base) var(--ease-enter) backwards,
+    pop-in var(--duration-slow) var(--ease-enter) 0.15s backwards;
+}
+.leaderboard .trophy {
+  color: var(--signal-text);
+}
+
+.album-art {
+  width: 220px;
+  max-width: 100%;
+  aspect-ratio: 1; /* the box exists before the picture arrives, so nothing jumps */
+  background: var(--raised);
+  border-radius: var(--radius-card);
+}
+
+/* ---------- Motion (120 / 200 / 300 ms; the recipe collapses it for reduced motion) ---------- */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.card-enter {
+  animation: pop-in var(--duration-slow) var(--ease-enter) backwards;
+}
+
+/* ---------- Host screen: a shared display read from across the room ---------- */
+
+.host {
+  max-width: 1000px;
+  margin: 0 auto;
+  /* A shared screen can be a phone or tablet in landscape: keep text out from under the notch and rounded corners. */
+  padding: max(var(--space-32), env(safe-area-inset-top)) max(var(--space-32), env(safe-area-inset-right)) max(var(--space-32), env(safe-area-inset-bottom)) max(var(--space-32), env(safe-area-inset-left));
+  text-align: center;
+  font-size: 1.15rem;
+}
+.host-lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+.host-auth,
+.host-create {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+}
+/* The Connect screen is the first thing a room sees: centre it in the viewport instead of leaving an empty band
+   below it. 80px leaves room for the "By vdWolde" footer under <main>. */
+.host-auth {
+  min-height: calc(100dvh - 80px);
+  justify-content: center;
+}
+.room-code-card {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+  padding: var(--space-24) var(--space-48);
+}
+.room-code-card .room-code {
+  font: var(--type-display);
+  font-size: clamp(3.5rem, 14vw, 6.5rem);
+  letter-spacing: 0.1em;
+  margin: 0 0 var(--space-8);
+  color: var(--signal-text);
+}
+.room-code-card .lan-url {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  margin: 0;
+}
+.host .qr {
+  border-radius: var(--radius-card);
+  background: white;
+  padding: var(--space-8);
+}
+.host .round-counter {
+  margin: 0;
+  padding: var(--space-8) var(--space-16);
+  color: var(--text-muted);
+  font-weight: 600;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-pill);
+}
+.host-playing,
+.host-reveal,
+.host-finished {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+}
+.host-playing > *,
+.host-reveal > *,
+.host-finished > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.host-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.host-bar .brand {
+  margin-bottom: 0;
+}
+.track-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  width: 100%;
+  padding: var(--space-16) var(--space-24);
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-card);
+}
+.track-card h2,
+.track-card p {
+  margin: 0;
+}
+.track-card p {
+  color: var(--text-muted);
+}
+.track-card .album-art {
+  width: 96px;
+  height: 96px;
+}
+.host-question {
+  margin: var(--space-8) 0 var(--space-16);
+  font: var(--type-display-s);
+  font-size: clamp(2.25rem, 8vw, 4.5rem);
+  letter-spacing: -0.02em;
+}
+.host-question .accent {
+  color: var(--signal-text);
+}
+.host h2 {
+  font: var(--type-heading-1);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  letter-spacing: -0.015em;
+}
+.host h1:not(.brand-title) {
+  font: var(--type-display-s);
+  font-size: clamp(2.25rem, 8vw, 3.5rem);
+  letter-spacing: -0.02em;
+}
+.host .roster {
+  margin: 0;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.host-create label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+.host-create input {
+  width: 5rem;
+}
+
+.reveal-card {
+  background: var(--surface);
+  border: 2px solid var(--player-colour, var(--edge));
+  border-radius: var(--radius-card);
+  padding: var(--space-24) var(--space-32);
+  animation: pop-in var(--duration-slow) var(--ease-enter) backwards;
+}
+.host .reveal-card .reveal-answer {
+  margin: 0;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  font-weight: 700;
+}
+.reveal-who {
+  white-space: nowrap;
+}
+
+/* ---------- Player screen: a phone in someone's hand ---------- */
+
+.player {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-16) calc(var(--space-16) + env(safe-area-inset-bottom));
+}
+.player .brand {
+  justify-content: flex-start;
+}
+.player form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+.player .colour-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-8);
+  margin: var(--space-8) 0;
+}
+.swatch-button {
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: 56px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--radius-card);
+  background: var(--player-colour);
+  color: var(--ink);
+  font: 700 1.25rem/1 var(--font-display);
+}
+.swatch-button.selected {
+  border-color: var(--text);
+}
+@media (hover: hover) {
+  button.swatch-button:hover:not(:disabled) {
+    background: var(--player-colour);
+    filter: brightness(1.1);
+  }
+}
+
+.top-tracks-import {
+  margin: var(--space-12) 0;
+  text-align: center;
+}
+.top-tracks-import p {
+  margin: 0 0 var(--space-8);
+}
+
+.player .submissions,
+.player .results {
+  list-style: none;
+  padding: 0;
+}
+.player .submissions li,
+.player .results li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-control);
+  margin-bottom: var(--space-8);
+}
+.player .submissions li span,
+.player .results li span {
+  flex: 1;
+}
+.player .submissions li button,
+.player .results li button {
+  min-height: 32px;
+}
+.player .results img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-control);
+}
+
+.player .prompt {
+  margin: var(--space-16) 0 0;
+  font: var(--type-heading-1);
+  letter-spacing: -0.015em;
+}
+.player .guess-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  margin: var(--space-12) 0 var(--space-16);
+}
+.guess {
+  justify-content: flex-start;
+  min-height: 56px;
+  padding: 0 var(--space-12);
+  text-align: left;
+  border-radius: var(--radius-card);
+}
+.guess:disabled {
+  opacity: 0.65;
+}
+.guess .guess-name {
+  flex: 1;
+}
+.guess .swatch {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+.guess.selected,
+.guess.selected:disabled {
+  opacity: 1;
+  background: var(--player-colour);
+  border-color: transparent;
+  color: var(--ink);
+}
+.guess.selected .swatch {
+  background: var(--ink);
+  color: var(--player-colour);
+}
+@media (hover: hover) {
+  button.guess.selected:hover:not(:disabled) {
+    background: var(--player-colour);
+  }
+}
+
+.your-turn {
+  font: var(--type-heading-2);
+  letter-spacing: -0.01em;
+  color: var(--signal-text);
+}
+
+.player .reveal-card {
+  text-align: center;
+  padding: var(--space-24) var(--space-16);
+}
+.player .reveal-card .reveal-answer {
+  margin: 0 0 var(--space-12);
+  font-size: 1.2rem;
+}
+.player .reveal-card[data-result='yes'] {
+  background: color-mix(in srgb, var(--ok) 12%, var(--surface));
+  border-color: var(--ok);
+}
+.player .reveal-card[data-result='no'] {
+  border-color: var(--control-edge);
+}
+.player .reveal-card[data-result='own'] {
+  background: color-mix(in srgb, var(--signal-ui) 12%, var(--surface));
+  border-color: var(--signal-ui);
+}
+.you-scored {
+  margin: 0;
+  font: var(--type-heading-2);
+  letter-spacing: -0.01em;
+}
+.you-scored.yes {
+  color: var(--ok-text);
+}
+.you-scored.no {
+  color: var(--text-muted);
+}
+.you-scored.own {
+  color: var(--signal-text);
+}
+.your-score {
+  color: var(--text-muted);
+  margin: var(--space-8) 0 0;
+}
+
+.app-footer {
+  text-align: center;
+  margin: var(--space-24) 0;
+  color: var(--text-muted);
+  font-size: 0.9375rem; /* 15 px: the credit stays above the 14 px body floor */
+}
+.app-footer a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.app-footer a:hover {
+  color: var(--signal-text);
+}
+
+/* Loading placeholders (ui.tsx SkeletonRows): invisible for the first 300 ms, then fade in, so a fast answer shows none. */
+.skeleton-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: var(--space-8) 0;
+}
+.skeleton-row {
+  height: 2.5rem;
+  border-radius: var(--radius-control);
+  background: var(--raised);
+  animation: rise-in var(--duration-base) var(--ease-enter) 300ms backwards;
+}
+
+/* A finger needs 44 px: the small Add / Remove buttons in the song lists grow on touch screens. */
+@media (pointer: coarse) {
+  .player .submissions li button,
+  .player .results li button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Phase changes (src/transition.ts) cross-fade; none of it for reduced motion. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--duration-base);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
+  }
+}

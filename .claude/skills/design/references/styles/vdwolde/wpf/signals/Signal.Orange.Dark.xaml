@@ -1,0 +1,68 @@
+<!-- vdWolde signal: Orange, Dark Mode. Brand Guide v1.1. One signal per app: the primary action, the active state and the focus ring.
+     VdW.Signal = vivid (fills, rings, icons); VdW.SignalFill = fill behind labelled controls; VdW.SignalText = coloured text with 4.5:1 on this mode's surfaces.
+     VdW.OnSignal = text/icon on a signal fill (always the ground colour of Dark Mode, #0F1115, for contrast).
+     Edge light: a 3 px Border at the bottom edge of the window with Background={DynamicResource VdW.EdgeLightMiddle} (or Low/High). -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="VdW.Signal.Color">#FF7A2F</Color>
+    <SolidColorBrush x:Key="VdW.Signal" Color="{StaticResource VdW.Signal.Color}"/>
+    <Color x:Key="VdW.SignalFill.Color">#FF7A2F</Color>
+    <SolidColorBrush x:Key="VdW.SignalFill" Color="{StaticResource VdW.SignalFill.Color}"/>
+    <Color x:Key="VdW.SignalText.Color">#FFB68D</Color>
+    <SolidColorBrush x:Key="VdW.SignalText" Color="{StaticResource VdW.SignalText.Color}"/>
+    <Color x:Key="VdW.OnSignal.Color">#0F1115</Color>
+    <SolidColorBrush x:Key="VdW.OnSignal" Color="{StaticResource VdW.OnSignal.Color}"/>
+    <!-- Backlight, Low glow (x0.6). Put it on the window's root surface only; never on cards, never stacked, never animated. -->
+    <DrawingBrush x:Key="VdW.BacklightLow" Stretch="Fill" Viewbox="0,0,1,1" ViewboxUnits="Absolute" Viewport="0,0,1,1" ViewportUnits="RelativeToBoundingBox">
+      <DrawingBrush.Drawing>
+        <DrawingGroup>
+          <GeometryDrawing Geometry="M0,0 L1,0 L1,1 L0,1 Z"><GeometryDrawing.Brush>
+            <RadialGradientBrush Center="0.5,1.2" GradientOrigin="0.5,1.2" RadiusX="1.2" RadiusY="0.72">
+              <GradientStop Color="#34FF7A2F" Offset="0"/><GradientStop Color="#12FF7A2F" Offset="0.46"/><GradientStop Color="#00FF7A2F" Offset="0.74"/>
+            </RadialGradientBrush></GeometryDrawing.Brush></GeometryDrawing>
+          <GeometryDrawing Geometry="M0,0 L1,0 L1,1 L0,1 Z"><GeometryDrawing.Brush>
+            <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1" RadiusX="0.46" RadiusY="0.11">
+              <GradientStop Color="#34FF7A2F" Offset="0"/><GradientStop Color="#11FF7A2F" Offset="0.55"/><GradientStop Color="#00FF7A2F" Offset="1"/>
+            </RadialGradientBrush></GeometryDrawing.Brush></GeometryDrawing>
+        </DrawingGroup>
+      </DrawingBrush.Drawing>
+    </DrawingBrush>
+    <LinearGradientBrush x:Key="VdW.EdgeLightLow" StartPoint="0,0.5" EndPoint="1,0.5">
+      <GradientStop Color="#00FF7A2F" Offset="0"/><GradientStop Color="#15FF7A2F" Offset="0.2"/><GradientStop Color="#57FF7A2F" Offset="0.4"/><GradientStop Color="#99FF7A2F" Offset="0.5"/><GradientStop Color="#57FF7A2F" Offset="0.6"/><GradientStop Color="#15FF7A2F" Offset="0.8"/><GradientStop Color="#00FF7A2F" Offset="1"/>
+    </LinearGradientBrush>
+    <!-- Backlight, Middle glow (x1). Put it on the window's root surface only; never on cards, never stacked, never animated. -->
+    <DrawingBrush x:Key="VdW.BacklightMiddle" Stretch="Fill" Viewbox="0,0,1,1" ViewboxUnits="Absolute" Viewport="0,0,1,1" ViewportUnits="RelativeToBoundingBox">
+      <DrawingBrush.Drawing>
+        <DrawingGroup>
+          <GeometryDrawing Geometry="M0,0 L1,0 L1,1 L0,1 Z"><GeometryDrawing.Brush>
+            <RadialGradientBrush Center="0.5,1.2" GradientOrigin="0.5,1.2" RadiusX="1.2" RadiusY="0.72">
+              <GradientStop Color="#57FF7A2F" Offset="0"/><GradientStop Color="#1FFF7A2F" Offset="0.46"/><GradientStop Color="#00FF7A2F" Offset="0.74"/>
+            </RadialGradientBrush></GeometryDrawing.Brush></GeometryDrawing>
+          <GeometryDrawing Geometry="M0,0 L1,0 L1,1 L0,1 Z"><GeometryDrawing.Brush>
+            <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1" RadiusX="0.46" RadiusY="0.11">
+              <GradientStop Color="#57FF7A2F" Offset="0"/><GradientStop Color="#1CFF7A2F" Offset="0.55"/><GradientStop Color="#00FF7A2F" Offset="1"/>
+            </RadialGradientBrush></GeometryDrawing.Brush></GeometryDrawing>
+        </DrawingGroup>
+      </DrawingBrush.Drawing>
+    </DrawingBrush>
+    <LinearGradientBrush x:Key="VdW.EdgeLightMiddle" StartPoint="0,0.5" EndPoint="1,0.5">
+      <GradientStop Color="#00FF7A2F" Offset="0"/><GradientStop Color="#24FF7A2F" Offset="0.2"/><GradientStop Color="#91FF7A2F" Offset="0.4"/><GradientStop Color="#FFFF7A2F" Offset="0.5"/><GradientStop Color="#91FF7A2F" Offset="0.6"/><GradientStop Color="#24FF7A2F" Offset="0.8"/><GradientStop Color="#00FF7A2F" Offset="1"/>
+    </LinearGradientBrush>
+    <!-- Backlight, High glow (x1.7). Put it on the window's root surface only; never on cards, never stacked, never animated. -->
+    <DrawingBrush x:Key="VdW.BacklightHigh" Stretch="Fill" Viewbox="0,0,1,1" ViewboxUnits="Absolute" Viewport="0,0,1,1" ViewportUnits="RelativeToBoundingBox">
+      <DrawingBrush.Drawing>
+        <DrawingGroup>
+          <GeometryDrawing Geometry="M0,0 L1,0 L1,1 L0,1 Z"><GeometryDrawing.Brush>
+            <RadialGradientBrush Center="0.5,1.2" GradientOrigin="0.5,1.2" RadiusX="1.2" RadiusY="0.72">
+              <GradientStop Color="#93FF7A2F" Offset="0"/><GradientStop Color="#34FF7A2F" Offset="0.46"/><GradientStop Color="#00FF7A2F" Offset="0.74"/>
+            </RadialGradientBrush></GeometryDrawing.Brush></GeometryDrawing>
+          <GeometryDrawing Geometry="M0,0 L1,0 L1,1 L0,1 Z"><GeometryDrawing.Brush>
+            <RadialGradientBrush Center="0.5,1" GradientOrigin="0.5,1" RadiusX="0.46" RadiusY="0.11">
+              <GradientStop Color="#93FF7A2F" Offset="0"/><GradientStop Color="#30FF7A2F" Offset="0.55"/><GradientStop Color="#00FF7A2F" Offset="1"/>
+            </RadialGradientBrush></GeometryDrawing.Brush></GeometryDrawing>
+        </DrawingGroup>
+      </DrawingBrush.Drawing>
+    </DrawingBrush>
+    <LinearGradientBrush x:Key="VdW.EdgeLightHigh" StartPoint="0,0.5" EndPoint="1,0.5">
+      <GradientStop Color="#00FF7A2F" Offset="0"/><GradientStop Color="#3DFF7A2F" Offset="0.2"/><GradientStop Color="#F7FF7A2F" Offset="0.4"/><GradientStop Color="#FFFF7A2F" Offset="0.5"/><GradientStop Color="#F7FF7A2F" Offset="0.6"/><GradientStop Color="#3DFF7A2F" Offset="0.8"/><GradientStop Color="#00FF7A2F" Offset="1"/>
+    </LinearGradientBrush>
+</ResourceDictionary>

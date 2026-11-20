@@ -1,0 +1,33 @@
+# Normalize all text files to LF, both in the repository and on checkout.
+# Makes line-ending behavior explicit and machine-independent, instead of relying
+# on core.autocrlf (which Git for Windows sets to `true` at the system level,
+# causing "LF will be replaced by CRLF" warnings on every commit).
+* text=auto eol=lf
+
+# Never text-convert binaries, even if Git's heuristic misdetects one.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.pdf binary
+*.exe binary
+*.dll binary
+*.pdb binary
+
+# toolkit-begin
+.claude/toolkit/** linguist-generated
+.claude/rules/dev-core-rules.md linguist-generated
+.claude/agents/** linguist-generated
+.claude/tools/** linguist-generated
+.claude/skills/code/** linguist-generated
+.claude/skills/content/** linguist-generated
+.claude/skills/design/** linguist-generated
+.claude/skills/prompt/** linguist-generated
+.claude/skills/web-app-auth/** linguist-generated
+.claude/skills/web-ui-baseline/** linguist-generated
+# toolkit-end

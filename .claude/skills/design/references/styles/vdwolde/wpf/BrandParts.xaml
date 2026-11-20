@@ -1,0 +1,90 @@
+<!-- vdWolde WPF parts that do not depend on mode or signal: type, radii, motion, focus. Brand Guide v1.1.
+     Fonts: copy Branding\fonts\sora\static\*.ttf and Branding\fonts\dm-sans\static\*.ttf into the project as <Resource Include="Assets\Fonts\*.ttf" />.
+     WPF cannot read variable fonts, so always use the static files. Family names "Sora" and "DM Sans" were checked in a WPF probe
+     (weights 400, 500, 600, 700 resolve).
+     If a test host or a second process falls back to Segoe UI with the pack://application:,,,/Assets/Fonts/ form below, use the
+     component form pack://application:,,,/<Assembly>;component/Assets/Fonts/#Sora (ThinkTwice does; both resolve in the app). ThinkTwice also bundles Atkinson Hyperlegible (Branding\fonts\atkinson-hyperlegible).
+     Merge order in App.xaml: VdWolde.<Mode>.xaml, signals\Signal.<name>.<Mode>.xaml, then this file. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Type families -->
+    <FontFamily x:Key="VdW.FontDisplay">pack://application:,,,/Assets/Fonts/#Sora</FontFamily>
+    <FontFamily x:Key="VdW.FontBody">pack://application:,,,/Assets/Fonts/#DM Sans</FontFamily>
+    <FontFamily x:Key="VdW.FontCode">Cascadia Mono, Consolas</FontFamily>
+
+    <!-- Radii: controls 8, windows 12, cards and tiles 14, chips pill -->
+    <CornerRadius x:Key="VdW.RadiusControl">8</CornerRadius>
+    <CornerRadius x:Key="VdW.RadiusWindow">12</CornerRadius>
+    <CornerRadius x:Key="VdW.RadiusCard">14</CornerRadius>
+    <CornerRadius x:Key="VdW.RadiusPill">999</CornerRadius>
+
+    <!-- Spacing: 4 8 12 16 24 32 48 -->
+    <Thickness x:Key="VdW.Space4">4</Thickness>
+    <Thickness x:Key="VdW.Space8">8</Thickness>
+    <Thickness x:Key="VdW.Space12">12</Thickness>
+    <Thickness x:Key="VdW.Space16">16</Thickness>
+    <Thickness x:Key="VdW.Space24">24</Thickness>
+    <Thickness x:Key="VdW.Space32">32</Thickness>
+
+    <!-- Motion: 120 / 200 / 300 ms. Ease-out for enter is KeySpline 0.2,0.8,0.2,1; leave is 0.4,0,1,1.
+         Reduced motion (SystemParameters.ClientAreaAnimation = false): use only a FastDuration opacity fade. -->
+    <Duration x:Key="VdW.DurationFast">0:0:0.12</Duration>
+    <Duration x:Key="VdW.DurationBase">0:0:0.2</Duration>
+    <Duration x:Key="VdW.DurationSlow">0:0:0.3</Duration>
+    <KeySpline x:Key="VdW.EaseEnter">0.2,0.8,0.2,1</KeySpline>
+    <KeySpline x:Key="VdW.EaseLeave">0.4,0,1,1</KeySpline>
+
+    <!-- Text styles. Body text never goes below 14 px. Numbers: add the tabular-figures typography where the font has it. -->
+    <Style x:Key="VdW.Text.Heading1" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource VdW.FontDisplay}"/>
+        <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="30"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.Text}"/>
+    </Style>
+    <Style x:Key="VdW.Text.Heading2" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource VdW.FontDisplay}"/>
+        <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="22"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.Text}"/>
+    </Style>
+    <Style x:Key="VdW.Text.Heading3" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource VdW.FontDisplay}"/>
+        <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="16"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.Text}"/>
+    </Style>
+    <Style x:Key="VdW.Text.Figures" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource VdW.FontDisplay}"/>
+        <Setter Property="FontWeight" Value="Bold"/><Setter Property="FontSize" Value="28"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.Text}"/>
+    </Style>
+    <Style x:Key="VdW.Text.Body" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource VdW.FontBody}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.Text}"/>
+    </Style>
+    <Style x:Key="VdW.Text.Muted" TargetType="TextBlock" BasedOn="{StaticResource VdW.Text.Body}">
+        <Setter Property="Foreground" Value="{DynamicResource VdW.TextMuted}"/>
+    </Style>
+    <Style x:Key="VdW.Text.UI" TargetType="TextBlock" BasedOn="{StaticResource VdW.Text.Body}">
+        <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style x:Key="VdW.Text.Label" TargetType="TextBlock" BasedOn="{StaticResource VdW.Text.Body}">
+        <Setter Property="FontWeight" Value="SemiBold"/><Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.TextMuted}"/>
+    </Style>
+    <Style x:Key="VdW.Text.Code" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource VdW.FontCode}"/>
+        <Setter Property="FontWeight" Value="Medium"/><Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource VdW.Text}"/>
+    </Style>
+
+    <!-- Focus: 2 px signal ring with a gap, 8 px radius. Use as FocusVisualStyle on every interactive control. -->
+    <Style x:Key="VdW.FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border Margin="-3" BorderThickness="2" CornerRadius="10" BorderBrush="{DynamicResource VdW.Signal}" SnapsToDevicePixels="True" IsHitTestVisible="False"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

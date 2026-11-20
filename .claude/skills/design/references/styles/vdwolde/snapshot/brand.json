@@ -1,0 +1,1270 @@
+{
+  "about": {
+    "name": "vdWolde Brand Guide",
+    "version": "1.1",
+    "date": "2026-11-07",
+    "guide_pdf": "Brand Guide - V1.1.pdf",
+    "summary": "One visual language for every vdWolde app, tool and site: graphite surfaces, one signal colour per app and a soft light rising from a lit bottom edge. Every app comes in Dark Mode and Light Mode.",
+    "for_agents": [
+      "Use the values in this file; do not sample colours from images.",
+      "Every path is relative to the Branding folder.",
+      "Pick an app's colours from apps[].signal and colour.signals; never mix two signals on one screen.",
+      "Check new colour pairs against colour.contrast: 4.5:1 for text, 3:1 for rings and strokes.",
+      "Copy icons from icons/<slug>/; never redraw or crop them. Use the squircle or circle master for those shapes.",
+      "Write UI text by the writing rules: Title Case for names and titles, sentence case for everything else."
+    ],
+    "versioning": "Small edits raise the second number (1.0 to 1.1); bigger edits raise the first number (1.x to 2.0)."
+  },
+  "principles": [
+    {
+      "title": "Graphite Does the Work",
+      "rule": "Surfaces are graphite in Dark Mode and off-white in Light Mode. Cards use the icon tile colour, #15171C."
+    },
+    {
+      "title": "One Signal per App",
+      "rule": "Each app uses its icon colour, and only where it matters: the primary action, the active state and the focus ring."
+    },
+    {
+      "title": "One Backlight per View",
+      "rule": "A soft glow in the signal colour rises from the bottom of the window, and the edge itself lights up, just like on the icons. Never on cards, never stacked, never animated."
+    },
+    {
+      "title": "Hairline Edges",
+      "rule": "Edges are a single pixel, like the icon rim. Raised surfaces get lighter instead of casting a shadow."
+    },
+    {
+      "title": "Line Icons",
+      "rule": "A 24 px grid, 1.75 stroke, round caps and joins. Lucide on the web, Segoe Fluent in WPF."
+    },
+    {
+      "title": "Font Type",
+      "rule": "Sora for names and numbers, DM Sans for everything else, on every platform. Labels are small DM Sans capitals. Code uses the system monospace."
+    }
+  ],
+  "apps": [
+    {
+      "name": "Development Base",
+      "slug": "development-base",
+      "repository": "https://github.com/vdwolde/Development-Base",
+      "signal": "Rainbow",
+      "glyph": "Layers",
+      "glow_intensity": null,
+      "icons": {
+        "square_svg": "icons/development-base/development-base.svg",
+        "squircle_svg": "icons/development-base/development-base-squircle.svg",
+        "circle_svg": "icons/development-base/development-base-circle.svg",
+        "png": {
+          "square": [
+            "icons/development-base/development-base-1000.png",
+            "icons/development-base/development-base-88.png",
+            "icons/development-base/development-base-24.png"
+          ],
+          "squircle": [
+            "icons/development-base/development-base-squircle-1000.png",
+            "icons/development-base/development-base-squircle-88.png",
+            "icons/development-base/development-base-squircle-24.png"
+          ],
+          "circle": [
+            "icons/development-base/development-base-circle-1000.png",
+            "icons/development-base/development-base-circle-88.png",
+            "icons/development-base/development-base-circle-24.png"
+          ]
+        },
+        "ico": "icons/development-base/development-base.ico"
+      },
+      "social_preview": "github/social-preview/development-base.png"
+    },
+    {
+      "name": "Trash Scraper",
+      "slug": "trash-scraper",
+      "repository": "https://github.com/vdwolde/Trash-Scraper",
+      "signal": "Pink",
+      "glyph": "Trash can and arrow",
+      "glow_intensity": "Middle",
+      "icons": {
+        "square_svg": "icons/trash-scraper/trash-scraper.svg",
+        "squircle_svg": "icons/trash-scraper/trash-scraper-squircle.svg",
+        "circle_svg": "icons/trash-scraper/trash-scraper-circle.svg",
+        "png": {
+          "square": [
+            "icons/trash-scraper/trash-scraper-1000.png",
+            "icons/trash-scraper/trash-scraper-88.png",
+            "icons/trash-scraper/trash-scraper-24.png"
+          ],
+          "squircle": [
+            "icons/trash-scraper/trash-scraper-squircle-1000.png",
+            "icons/trash-scraper/trash-scraper-squircle-88.png",
+            "icons/trash-scraper/trash-scraper-squircle-24.png"
+          ],
+          "circle": [
+            "icons/trash-scraper/trash-scraper-circle-1000.png",
+            "icons/trash-scraper/trash-scraper-circle-88.png",
+            "icons/trash-scraper/trash-scraper-circle-24.png"
+          ]
+        },
+        "ico": "icons/trash-scraper/trash-scraper.ico"
+      },
+      "social_preview": "github/social-preview/trash-scraper.png",
+      "screen": {
+        "title": "Review Screen",
+        "dark": "screens/trash-scraper-dark.png",
+        "light": "screens/trash-scraper-light.png"
+      }
+    },
+    {
+      "name": "Fooocus",
+      "slug": "fooocus",
+      "repository": "https://github.com/vdwolde/Fooocus",
+      "signal": "Pink",
+      "glyph": "Focus frame",
+      "glow_intensity": "Middle",
+      "icons": {
+        "square_svg": "icons/fooocus/fooocus.svg",
+        "squircle_svg": "icons/fooocus/fooocus-squircle.svg",
+        "circle_svg": "icons/fooocus/fooocus-circle.svg",
+        "png": {
+          "square": [
+            "icons/fooocus/fooocus-1000.png",
+            "icons/fooocus/fooocus-88.png",
+            "icons/fooocus/fooocus-24.png"
+          ],
+          "squircle": [
+            "icons/fooocus/fooocus-squircle-1000.png",
+            "icons/fooocus/fooocus-squircle-88.png",
+            "icons/fooocus/fooocus-squircle-24.png"
+          ],
+          "circle": [
+            "icons/fooocus/fooocus-circle-1000.png",
+            "icons/fooocus/fooocus-circle-88.png",
+            "icons/fooocus/fooocus-circle-24.png"
+          ]
+        },
+        "ico": "icons/fooocus/fooocus.ico"
+      },
+      "social_preview": "github/social-preview/fooocus.png",
+      "screen": {
+        "title": "Inpaint Panel",
+        "dark": "screens/fooocus-dark.png",
+        "light": "screens/fooocus-light.png"
+      }
+    },
+    {
+      "name": "ThinkTwice",
+      "slug": "thinktwice",
+      "repository": "https://github.com/vdwolde/Think-Twice",
+      "signal": "Orange",
+      "glyph": "Shield and pause",
+      "glow_intensity": "Low",
+      "icons": {
+        "square_svg": "icons/thinktwice/thinktwice.svg",
+        "squircle_svg": "icons/thinktwice/thinktwice-squircle.svg",
+        "circle_svg": "icons/thinktwice/thinktwice-circle.svg",
+        "png": {
+          "square": [
+            "icons/thinktwice/thinktwice-1000.png",
+            "icons/thinktwice/thinktwice-88.png",
+            "icons/thinktwice/thinktwice-24.png"
+          ],
+          "squircle": [
+            "icons/thinktwice/thinktwice-squircle-1000.png",
+            "icons/thinktwice/thinktwice-squircle-88.png",
+            "icons/thinktwice/thinktwice-squircle-24.png"
+          ],
+          "circle": [
+            "icons/thinktwice/thinktwice-circle-1000.png",
+            "icons/thinktwice/thinktwice-circle-88.png",
+            "icons/thinktwice/thinktwice-circle-24.png"
+          ]
+        },
+        "ico": "icons/thinktwice/thinktwice.ico"
+      },
+      "social_preview": "github/social-preview/thinktwice.png",
+      "screen": {
+        "title": "Intercept Window",
+        "dark": "screens/thinktwice-dark.png",
+        "light": "screens/thinktwice-light.png"
+      }
+    },
+    {
+      "name": "Song Snitch",
+      "slug": "song-snitch",
+      "repository": "https://github.com/vdwolde/Song-Snitch",
+      "signal": "Amber",
+      "glyph": "Who added it",
+      "glow_intensity": "High",
+      "icons": {
+        "square_svg": "icons/song-snitch/song-snitch.svg",
+        "squircle_svg": "icons/song-snitch/song-snitch-squircle.svg",
+        "circle_svg": "icons/song-snitch/song-snitch-circle.svg",
+        "png": {
+          "square": [
+            "icons/song-snitch/song-snitch-1000.png",
+            "icons/song-snitch/song-snitch-88.png",
+            "icons/song-snitch/song-snitch-24.png"
+          ],
+          "squircle": [
+            "icons/song-snitch/song-snitch-squircle-1000.png",
+            "icons/song-snitch/song-snitch-squircle-88.png",
+            "icons/song-snitch/song-snitch-squircle-24.png"
+          ],
+          "circle": [
+            "icons/song-snitch/song-snitch-circle-1000.png",
+            "icons/song-snitch/song-snitch-circle-88.png",
+            "icons/song-snitch/song-snitch-circle-24.png"
+          ]
+        },
+        "ico": "icons/song-snitch/song-snitch.ico"
+      },
+      "social_preview": "github/social-preview/song-snitch.png",
+      "screen": {
+        "title": "Host and Player Screens",
+        "dark": "screens/song-snitch-dark.png",
+        "light": "screens/song-snitch-light.png"
+      }
+    },
+    {
+      "name": "Finance Dashboard",
+      "slug": "finance-dashboard",
+      "repository": "https://github.com/vdwolde/Finance-Dashboard",
+      "signal": "Yellow",
+      "glyph": "Line chart",
+      "glow_intensity": "Middle",
+      "icons": {
+        "square_svg": "icons/finance-dashboard/finance-dashboard.svg",
+        "squircle_svg": "icons/finance-dashboard/finance-dashboard-squircle.svg",
+        "circle_svg": "icons/finance-dashboard/finance-dashboard-circle.svg",
+        "png": {
+          "square": [
+            "icons/finance-dashboard/finance-dashboard-1000.png",
+            "icons/finance-dashboard/finance-dashboard-88.png",
+            "icons/finance-dashboard/finance-dashboard-24.png"
+          ],
+          "squircle": [
+            "icons/finance-dashboard/finance-dashboard-squircle-1000.png",
+            "icons/finance-dashboard/finance-dashboard-squircle-88.png",
+            "icons/finance-dashboard/finance-dashboard-squircle-24.png"
+          ],
+          "circle": [
+            "icons/finance-dashboard/finance-dashboard-circle-1000.png",
+            "icons/finance-dashboard/finance-dashboard-circle-88.png",
+            "icons/finance-dashboard/finance-dashboard-circle-24.png"
+          ]
+        },
+        "ico": "icons/finance-dashboard/finance-dashboard.ico"
+      },
+      "social_preview": "github/social-preview/finance-dashboard.png",
+      "screen": {
+        "title": "Overview",
+        "dark": "screens/finance-dashboard-dark.png",
+        "light": "screens/finance-dashboard-light.png"
+      }
+    },
+    {
+      "name": "Stay Awake",
+      "slug": "stay-awake",
+      "repository": "https://github.com/vdwolde/Stay-Awake",
+      "signal": "Green",
+      "glyph": "Laptop and on dot",
+      "glow_intensity": "Low",
+      "icons": {
+        "square_svg": "icons/stay-awake/stay-awake.svg",
+        "squircle_svg": "icons/stay-awake/stay-awake-squircle.svg",
+        "circle_svg": "icons/stay-awake/stay-awake-circle.svg",
+        "png": {
+          "square": [
+            "icons/stay-awake/stay-awake-1000.png",
+            "icons/stay-awake/stay-awake-88.png",
+            "icons/stay-awake/stay-awake-24.png"
+          ],
+          "squircle": [
+            "icons/stay-awake/stay-awake-squircle-1000.png",
+            "icons/stay-awake/stay-awake-squircle-88.png",
+            "icons/stay-awake/stay-awake-squircle-24.png"
+          ],
+          "circle": [
+            "icons/stay-awake/stay-awake-circle-1000.png",
+            "icons/stay-awake/stay-awake-circle-88.png",
+            "icons/stay-awake/stay-awake-circle-24.png"
+          ]
+        },
+        "ico": "icons/stay-awake/stay-awake.ico"
+      },
+      "social_preview": "github/social-preview/stay-awake.png",
+      "screen": {
+        "title": "Tray Menu",
+        "dark": "screens/stay-awake-dark.png",
+        "light": "screens/stay-awake-light.png"
+      }
+    },
+    {
+      "name": "Website Builder",
+      "slug": "website-builder",
+      "repository": "https://github.com/vdwolde/Website-Builder",
+      "signal": "Sky",
+      "glyph": "Globe and cursor",
+      "glow_intensity": "Middle",
+      "icons": {
+        "square_svg": "icons/website-builder/website-builder.svg",
+        "squircle_svg": "icons/website-builder/website-builder-squircle.svg",
+        "circle_svg": "icons/website-builder/website-builder-circle.svg",
+        "png": {
+          "square": [
+            "icons/website-builder/website-builder-1000.png",
+            "icons/website-builder/website-builder-88.png",
+            "icons/website-builder/website-builder-24.png"
+          ],
+          "squircle": [
+            "icons/website-builder/website-builder-squircle-1000.png",
+            "icons/website-builder/website-builder-squircle-88.png",
+            "icons/website-builder/website-builder-squircle-24.png"
+          ],
+          "circle": [
+            "icons/website-builder/website-builder-circle-1000.png",
+            "icons/website-builder/website-builder-circle-88.png",
+            "icons/website-builder/website-builder-circle-24.png"
+          ]
+        },
+        "ico": "icons/website-builder/website-builder.ico"
+      },
+      "social_preview": "github/social-preview/website-builder.png",
+      "screen": {
+        "title": "Inspiration Gallery",
+        "dark": "screens/website-builder-dark.png",
+        "light": "screens/website-builder-light.png"
+      }
+    },
+    {
+      "name": "Copilot 365 Agent Builder",
+      "slug": "copilot-365-agent-builder",
+      "repository": "https://github.com/vdwolde/Copilot-365-Agent-Builder",
+      "signal": "Sky",
+      "glyph": "Agent head",
+      "glow_intensity": null,
+      "icons": {
+        "square_svg": "icons/copilot-365-agent-builder/copilot-365-agent-builder.svg",
+        "squircle_svg": "icons/copilot-365-agent-builder/copilot-365-agent-builder-squircle.svg",
+        "circle_svg": "icons/copilot-365-agent-builder/copilot-365-agent-builder-circle.svg",
+        "png": {
+          "square": [
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-1000.png",
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-88.png",
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-24.png"
+          ],
+          "squircle": [
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-squircle-1000.png",
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-squircle-88.png",
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-squircle-24.png"
+          ],
+          "circle": [
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-circle-1000.png",
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-circle-88.png",
+            "icons/copilot-365-agent-builder/copilot-365-agent-builder-circle-24.png"
+          ]
+        },
+        "ico": "icons/copilot-365-agent-builder/copilot-365-agent-builder.ico"
+      },
+      "social_preview": "github/social-preview/copilot-365-agent-builder.png"
+    },
+    {
+      "name": "Computer Cleaner",
+      "slug": "computer-cleaner",
+      "repository": "https://github.com/vdwolde/Computer-Cleaner",
+      "signal": "Violet",
+      "glyph": "Chip and sparkle",
+      "glow_intensity": "Low",
+      "icons": {
+        "square_svg": "icons/computer-cleaner/computer-cleaner.svg",
+        "squircle_svg": "icons/computer-cleaner/computer-cleaner-squircle.svg",
+        "circle_svg": "icons/computer-cleaner/computer-cleaner-circle.svg",
+        "png": {
+          "square": [
+            "icons/computer-cleaner/computer-cleaner-1000.png",
+            "icons/computer-cleaner/computer-cleaner-88.png",
+            "icons/computer-cleaner/computer-cleaner-24.png"
+          ],
+          "squircle": [
+            "icons/computer-cleaner/computer-cleaner-squircle-1000.png",
+            "icons/computer-cleaner/computer-cleaner-squircle-88.png",
+            "icons/computer-cleaner/computer-cleaner-squircle-24.png"
+          ],
+          "circle": [
+            "icons/computer-cleaner/computer-cleaner-circle-1000.png",
+            "icons/computer-cleaner/computer-cleaner-circle-88.png",
+            "icons/computer-cleaner/computer-cleaner-circle-24.png"
+          ]
+        },
+        "ico": "icons/computer-cleaner/computer-cleaner.ico"
+      },
+      "social_preview": "github/social-preview/computer-cleaner.png",
+      "screen": {
+        "title": "Windows Optimizer",
+        "dark": "screens/computer-cleaner-dark.png",
+        "light": "screens/computer-cleaner-light.png"
+      }
+    },
+    {
+      "name": "TV Cleaner",
+      "slug": "tv-cleaner",
+      "repository": "https://github.com/vdwolde/TV-Cleaner",
+      "signal": "Violet",
+      "glyph": "TV and sparkle",
+      "glow_intensity": "Middle",
+      "icons": {
+        "square_svg": "icons/tv-cleaner/tv-cleaner.svg",
+        "squircle_svg": "icons/tv-cleaner/tv-cleaner-squircle.svg",
+        "circle_svg": "icons/tv-cleaner/tv-cleaner-circle.svg",
+        "png": {
+          "square": [
+            "icons/tv-cleaner/tv-cleaner-1000.png",
+            "icons/tv-cleaner/tv-cleaner-88.png",
+            "icons/tv-cleaner/tv-cleaner-24.png"
+          ],
+          "squircle": [
+            "icons/tv-cleaner/tv-cleaner-squircle-1000.png",
+            "icons/tv-cleaner/tv-cleaner-squircle-88.png",
+            "icons/tv-cleaner/tv-cleaner-squircle-24.png"
+          ],
+          "circle": [
+            "icons/tv-cleaner/tv-cleaner-circle-1000.png",
+            "icons/tv-cleaner/tv-cleaner-circle-88.png",
+            "icons/tv-cleaner/tv-cleaner-circle-24.png"
+          ]
+        },
+        "ico": "icons/tv-cleaner/tv-cleaner.ico"
+      },
+      "social_preview": "github/social-preview/tv-cleaner.png",
+      "screen": {
+        "title": "Home Screen",
+        "dark": "screens/tv-cleaner-dark.png",
+        "light": "screens/tv-cleaner-light.png"
+      }
+    }
+  ],
+  "mark": {
+    "name": "vdWolde master mark",
+    "description": "The letters vdW in white, Sora Bold, tracking -2%, letters fill 72% of the 64 grid, on the six-colour glow of the Development Base.",
+    "files": {
+      "square_svg": "mark/vdwolde-mark.svg",
+      "squircle_svg": "mark/vdwolde-mark-squircle.svg",
+      "circle_svg": "mark/vdwolde-mark-circle.svg",
+      "png": {
+        "square": [
+          "mark/vdwolde-mark-1000.png",
+          "mark/vdwolde-mark-88.png",
+          "mark/vdwolde-mark-24.png"
+        ],
+        "squircle": [
+          "mark/vdwolde-mark-squircle-1000.png",
+          "mark/vdwolde-mark-squircle-88.png",
+          "mark/vdwolde-mark-squircle-24.png"
+        ],
+        "circle": [
+          "mark/vdwolde-mark-circle-1000.png",
+          "mark/vdwolde-mark-circle-88.png",
+          "mark/vdwolde-mark-circle-24.png"
+        ]
+      },
+      "ico": "mark/vdwolde-mark.ico"
+    },
+    "minimum_size_px": 24,
+    "below_minimum": "Write \"By vdWolde\" in plain text.",
+    "uses": [
+      "GitHub avatar",
+      "README footer",
+      "toasts",
+      "Development Base launchers"
+    ]
+  },
+  "colour": {
+    "neutrals": {
+      "dark": {
+        "ground": "#0F1115",
+        "surface": "#15171C",
+        "raised": "#1C1F26",
+        "edge": "#2C3039",
+        "control-edge": "#6B7280",
+        "text": "#F2F3F5",
+        "text-muted": "#A3A9B4",
+        "text-subtle": "#8A919E"
+      },
+      "light": {
+        "ground": "#F3F4F6",
+        "surface": "#FFFFFF",
+        "raised": "#F8F9FA",
+        "edge": "#DDE0E5",
+        "control-edge": "#8A919E",
+        "text": "#15171C",
+        "text-muted": "#545A66",
+        "text-subtle": "#6A6E75"
+      }
+    },
+    "signals": {
+      "pink": {
+        "vivid": "#F0428C",
+        "light": "#F797C0",
+        "deep": "#9C2B5B",
+        "apps": [
+          "Trash Scraper",
+          "Fooocus"
+        ],
+        "swatches": "colours/swatches/signal-pink-*.png",
+        "coloured_text": {
+          "dark_mode": "#F797C0",
+          "light_mode": "#9C2B5B"
+        }
+      },
+      "orange": {
+        "vivid": "#FF7A2F",
+        "light": "#FFB68D",
+        "deep": "#A64F1F",
+        "apps": [
+          "ThinkTwice"
+        ],
+        "swatches": "colours/swatches/signal-orange-*.png",
+        "coloured_text": {
+          "dark_mode": "#FFB68D",
+          "light_mode": "#A64F1F"
+        }
+      },
+      "amber": {
+        "vivid": "#F5A524",
+        "light": "#FACE87",
+        "deep": "#9F6B17",
+        "apps": [
+          "Song Snitch"
+        ],
+        "swatches": "colours/swatches/signal-amber-*.png",
+        "coloured_text": {
+          "dark_mode": "#FACE87",
+          "light_mode": "#956416"
+        },
+        "text": "#956416"
+      },
+      "yellow": {
+        "vivid": "#EBCB1F",
+        "light": "#F4E284",
+        "deep": "#998414",
+        "apps": [
+          "Finance Dashboard"
+        ],
+        "swatches": "colours/swatches/signal-yellow-*.png",
+        "coloured_text": {
+          "dark_mode": "#F4E284",
+          "light_mode": "#7F6E11"
+        },
+        "text": "#7F6E11"
+      },
+      "green": {
+        "vivid": "#22C55E",
+        "light": "#85DFA6",
+        "deep": "#16803D",
+        "apps": [
+          "Stay Awake"
+        ],
+        "swatches": "colours/swatches/signal-green-*.png",
+        "coloured_text": {
+          "dark_mode": "#85DFA6",
+          "light_mode": "#16803D"
+        }
+      },
+      "sky": {
+        "vivid": "#38B6FF",
+        "light": "#92D7FF",
+        "deep": "#2476A6",
+        "apps": [
+          "Website Builder",
+          "Copilot 365 Agent Builder"
+        ],
+        "swatches": "colours/swatches/signal-sky-*.png",
+        "coloured_text": {
+          "dark_mode": "#92D7FF",
+          "light_mode": "#2476A6"
+        }
+      },
+      "violet": {
+        "vivid": "#7B61FF",
+        "light": "#B6A8FF",
+        "deep": "#503FA6",
+        "apps": [
+          "Computer Cleaner",
+          "TV Cleaner"
+        ],
+        "swatches": "colours/swatches/signal-violet-*.png",
+        "coloured_text": {
+          "dark_mode": "#B6A8FF",
+          "light_mode": "#503FA6"
+        },
+        "ui_fill": "#8269FF"
+      }
+    },
+    "rainbow": {
+      "colours": [
+        "#F0428C",
+        "#FF7A2F",
+        "#EBCB1F",
+        "#22C55E",
+        "#38B6FF",
+        "#7B61FF"
+      ],
+      "used_by": [
+        "Development Base",
+        "vdWolde master mark"
+      ],
+      "description": "Six overlapping glows, one for each signal in the family."
+    },
+    "status": {
+      "ok": {
+        "colour": "#22C55E",
+        "text_dark_mode": "#22C55E",
+        "text_light_mode": "#16803D",
+        "meaning": "Done, safe, on"
+      },
+      "warn": {
+        "colour": "#F5A524",
+        "text_dark_mode": "#F5A524",
+        "text_light_mode": "#956416",
+        "meaning": "Careful, medium risk"
+      },
+      "danger": {
+        "colour": "#F2555A",
+        "text_dark_mode": "#F2555A",
+        "text_light_mode": "#9D373A",
+        "meaning": "Stop, high risk, failed"
+      },
+      "info": {
+        "colour": "#3E63DD",
+        "text_dark_mode": "#95A9EC",
+        "text_light_mode": "#284090",
+        "meaning": "Neutral information"
+      }
+    },
+    "free": {
+      "lime": "#9BD12E",
+      "teal": "#12A594",
+      "blue": "#3E63DD",
+      "purple": "#AB4ABA"
+    },
+    "red_is_reserved": "Red is kept for danger and is never an app colour.",
+    "contrast": {
+      "standard": "WCAG 2.2 AA: 4.5:1 for text, 3:1 for rings, strokes and icons",
+      "light_mode_rule": "Measured on white and #F3F4F6; the lower score counts.",
+      "rows": [
+        {
+          "signal": "Pink",
+          "label_on_fill": 5.01,
+          "label_fill": "#F0428C",
+          "text_dark_mode": 8.66,
+          "text_light_mode": 6.56,
+          "text_light_colour": "#9C2B5B",
+          "focus_ring_on_white": 7.22
+        },
+        {
+          "signal": "Orange",
+          "label_on_fill": 6.9,
+          "label_fill": "#FF7A2F",
+          "text_dark_mode": 10.53,
+          "text_light_mode": 5.08,
+          "text_light_colour": "#A64F1F",
+          "focus_ring_on_white": 5.59
+        },
+        {
+          "signal": "Amber",
+          "label_on_fill": 8.79,
+          "label_fill": "#F5A524",
+          "text_dark_mode": 12.16,
+          "text_light_mode": 4.64,
+          "text_light_colour": "#956416",
+          "focus_ring_on_white": 4.58
+        },
+        {
+          "signal": "Yellow",
+          "label_on_fill": 11.18,
+          "label_fill": "#EBCB1F",
+          "text_dark_mode": 13.71,
+          "text_light_mode": 4.61,
+          "text_light_colour": "#7F6E11",
+          "focus_ring_on_white": 3.71
+        },
+        {
+          "signal": "Green",
+          "label_on_fill": 7.87,
+          "label_fill": "#22C55E",
+          "text_dark_mode": 11.19,
+          "text_light_mode": 4.56,
+          "text_light_colour": "#16803D",
+          "focus_ring_on_white": 5.01
+        },
+        {
+          "signal": "Sky",
+          "label_on_fill": 7.94,
+          "label_fill": "#38B6FF",
+          "text_dark_mode": 11.43,
+          "text_light_mode": 4.52,
+          "text_light_colour": "#2476A6",
+          "focus_ring_on_white": 4.98
+        },
+        {
+          "signal": "Violet",
+          "label_on_fill": 4.62,
+          "label_fill": "#8269FF",
+          "text_dark_mode": 8.57,
+          "text_light_mode": 7.33,
+          "text_light_colour": "#503FA6",
+          "focus_ring_on_white": 8.07
+        },
+        {
+          "status": "Ok",
+          "text_dark_mode": 7.87,
+          "text_light_mode": 4.56
+        },
+        {
+          "status": "Warn",
+          "text_dark_mode": 8.79,
+          "text_light_mode": 4.64
+        },
+        {
+          "status": "Danger",
+          "text_dark_mode": 5.31,
+          "text_light_mode": 6.27
+        },
+        {
+          "status": "Info",
+          "text_dark_mode": 7.82,
+          "text_light_mode": 8.57
+        }
+      ]
+    },
+    "files": {
+      "css": "tokens/tokens.css",
+      "json": "tokens/tokens.json",
+      "swatches": "colours/swatches/",
+      "palettes": [
+        "colours/vdwolde-palette.ase",
+        "colours/vdwolde-palette.gpl",
+        "colours/colours.csv"
+      ]
+    }
+  },
+  "glow": {
+    "intensities": {
+      "low": {
+        "factor": 0.6,
+        "type": "small",
+        "for": "utilities, tray apps and tools you open and forget"
+      },
+      "middle": {
+        "factor": 1.0,
+        "type": "standard",
+        "for": "apps you spend time working in (default)"
+      },
+      "high": {
+        "factor": 1.7,
+        "type": "large display type, vivid colours for players",
+        "for": "games and shared screens"
+      }
+    },
+    "backlight_css": "radial-gradient(60% 3px at 50% 100%, rgba(S,1×k) 0%, rgba(S,.57×k) 45%, rgba(S,.14×k) 75%, rgba(S,0) 100%), radial-gradient(46% 11% at 50% 100%, rgba(S,.34×k) 0%, rgba(S,.11×k) 55%, rgba(S,0) 100%), radial-gradient(120% 72% at 50% 120%, rgba(S,.34×k) 0%, rgba(S,.12×k) 46%, rgba(S,0) 74%), #0F1115",
+    "backlight_notes": "S is the signal colour, k the glow intensity. Only on the root surface of a view; never on cards, never stacked, never animated. Gentler in Light Mode.",
+    "icon_glow": "Radial fade in the app colour centred at (32, 66), radius 46, at 42%, 14% and 0% opacity.",
+    "icon_edge_light": "1.4 stroke on the rim, radial from (32, 66), radius 38, at 100%, 60%, 15% and 0% opacity, with a soft bloom into the tile."
+  },
+  "typography": {
+    "families": {
+      "display": {
+        "family": "Sora",
+        "weights": [
+          600,
+          700
+        ],
+        "files": "fonts/sora/",
+        "note": "Sora is wide, so display sizes are set 6% smaller than for a narrower face."
+      },
+      "body": {
+        "family": "DM Sans",
+        "weights": [
+          400,
+          500,
+          600,
+          700
+        ],
+        "files": "fonts/dm-sans/"
+      },
+      "code": {
+        "family": "system monospace (Cascadia Mono, Consolas, SF Mono, Menlo)"
+      },
+      "exception": {
+        "family": "Atkinson Hyperlegible",
+        "app": "ThinkTwice",
+        "sizes_px": [
+          30,
+          23,
+          18,
+          15
+        ],
+        "files": "fonts/atkinson-hyperlegible/",
+        "reason": "Read by older people or people with low vision, at a stressful moment."
+      }
+    },
+    "scale": [
+      {
+        "role": "Display",
+        "family": "Sora",
+        "weight": 700,
+        "size_px": "84",
+        "line_height": "1.0",
+        "tracking": "-2.5%"
+      },
+      {
+        "role": "Display S",
+        "family": "Sora",
+        "weight": 700,
+        "size_px": "56",
+        "line_height": "1.0",
+        "tracking": "-2%"
+      },
+      {
+        "role": "Heading 1",
+        "family": "Sora",
+        "weight": 700,
+        "size_px": "30",
+        "line_height": "1.05",
+        "tracking": "-1.5%"
+      },
+      {
+        "role": "Heading 2",
+        "family": "Sora",
+        "weight": 700,
+        "size_px": "22",
+        "line_height": "1.15",
+        "tracking": "-1%"
+      },
+      {
+        "role": "Heading 3",
+        "family": "Sora",
+        "weight": 700,
+        "size_px": "16",
+        "line_height": "1.2",
+        "tracking": "0"
+      },
+      {
+        "role": "Figures",
+        "family": "Sora",
+        "weight": 700,
+        "size_px": "28 to 40",
+        "line_height": "1.0",
+        "tracking": "-1%"
+      },
+      {
+        "role": "Body L",
+        "family": "DM Sans",
+        "weight": 400,
+        "size_px": "16 to 18",
+        "line_height": "1.55",
+        "tracking": "0"
+      },
+      {
+        "role": "Body",
+        "family": "DM Sans",
+        "weight": 400,
+        "size_px": "14",
+        "line_height": "1.5",
+        "tracking": "0"
+      },
+      {
+        "role": "Body S",
+        "family": "DM Sans",
+        "weight": 400,
+        "size_px": "12.5 to 13",
+        "line_height": "1.45",
+        "tracking": "0"
+      },
+      {
+        "role": "UI",
+        "family": "DM Sans",
+        "weight": 600,
+        "size_px": "13 to 14",
+        "line_height": "1",
+        "tracking": "0"
+      },
+      {
+        "role": "Label",
+        "family": "DM Sans",
+        "weight": 600,
+        "size_px": "11 to 13 (uppercase)",
+        "line_height": "1",
+        "tracking": "+10%"
+      },
+      {
+        "role": "Code",
+        "family": "System monospace",
+        "weight": 500,
+        "size_px": "13 to 14",
+        "line_height": "1.5",
+        "tracking": "0"
+      }
+    ],
+    "figures": "Set money, counts and times that must line up in Sora with font-variant-numeric: tabular-nums; DM Sans has no tabular figures. Right-align amounts so decimal commas line up.",
+    "dutch_number_format": "€ 1.240,50 — full stop for thousands, comma for decimals, a space after the euro sign. A negative amount starts with a hyphen directly before the euro sign: -€ 3,00 (positive amounts that need a sign: +€ 3.410,55).",
+    "subsets": "Load latin and latin-ext."
+  },
+  "icons": {
+    "anatomy": {
+      "tile": "64 × 64 grid, corner radius 14, fill #15171C",
+      "rim": "1 px #2C3039 inset 0.5, lit along the bottom (edge light)",
+      "glyph_box": "24 px grid scaled by 1.5 at (14, 14), fills 36 of 64",
+      "line": "white #F2F3F5, stroke 1.75 (2.6 on the tile), round caps and joins",
+      "detail": "one part of the glyph in the app colour, never more"
+    },
+    "shapes": {
+      "square": "default; Windows, favicons, README banners",
+      "squircle": "superellipse exponent 4, radius 32; macOS, iOS-style and Android icons, stores",
+      "circle": "radius 32, glyph at scale 1.4 from (15.2, 15.2), master mark at 90%; avatars, round and maskable icons"
+    },
+    "where_each_size_goes": [
+      {
+        "where": "Title bar, window header",
+        "shape": "Square",
+        "size": "18 to 22 px"
+      },
+      {
+        "where": "App header, rail, menu pill",
+        "shape": "Square",
+        "size": "24 to 36 px"
+      },
+      {
+        "where": "Windows taskbar at 150% scale",
+        "shape": "Square",
+        "size": "24 px"
+      },
+      {
+        "where": "Tray",
+        "shape": "Square",
+        "size": "16 to 24 px"
+      },
+      {
+        "where": "Start menu tile",
+        "shape": "Square",
+        "size": "48 px"
+      },
+      {
+        "where": "Web favicon",
+        "shape": "Square",
+        "size": "16, 32 px"
+      },
+      {
+        "where": "README banner",
+        "shape": "Square",
+        "size": "220 px in 1600"
+      },
+      {
+        "where": "Social preview",
+        "shape": "Square",
+        "size": "300, 224 or 132 px in 1280"
+      },
+      {
+        "where": "macOS and iOS-style app icon",
+        "shape": "Squircle",
+        "size": "16 to 1024 px"
+      },
+      {
+        "where": "Android adaptive icon, store listing",
+        "shape": "Squircle",
+        "size": "48 to 512 px"
+      },
+      {
+        "where": "GitHub and social avatar",
+        "shape": "Circle",
+        "size": "460 px upload, shown at 20 to 260"
+      },
+      {
+        "where": "PWA maskable and Android round icon",
+        "shape": "Circle",
+        "size": "192, 512 px"
+      }
+    ],
+    "files_per_icon": {
+      "pattern": "icons/<app>/<app>.svg, <app>-squircle.svg, <app>-circle.svg, <app>[-squircle|-circle]-1000.png, -88.png, -24.png, <app>.ico",
+      "ico_sizes_px": [
+        16,
+        20,
+        24,
+        32,
+        40,
+        48,
+        64,
+        96,
+        128,
+        256
+      ]
+    },
+    "states": {
+      "stay_awake_tray": [
+        "icons/states/stay-awake-tray-awake.svg",
+        "icons/states/stay-awake-tray-idle.svg"
+      ],
+      "chat_toasts": [
+        "icons/states/toast-done.svg",
+        "icons/states/toast-needs-you.svg",
+        "icons/states/toast-failed.svg",
+        "icons/states/toast-paused.svg",
+        "icons/states/toast-plan-ready.svg",
+        "icons/states/toast-waiting.svg"
+      ]
+    }
+  },
+  "layout": {
+    "spacing_px": [
+      4,
+      8,
+      12,
+      16,
+      24,
+      32,
+      48
+    ],
+    "radius_px": {
+      "controls": 8,
+      "windows": 12,
+      "cards_and_tiles": 14,
+      "chips_and_filters": "pill (999)"
+    },
+    "buttons_height_px": [
+      54,
+      40,
+      32
+    ],
+    "edges": "1 px hairlines; elevation by lightness, no drop shadows"
+  },
+  "components": {
+    "sections": [
+      "Surfaces and Spacing",
+      "Buttons",
+      "Controls",
+      "Forms",
+      "Cards, Lists and Status",
+      "Empty and Loading",
+      "Overlays and Window Chrome"
+    ],
+    "references": {
+      "Surfaces and Spacing": [
+        "components/surfaces-and-spacing-dark.png",
+        "components/surfaces-and-spacing-light.png"
+      ],
+      "Buttons": [
+        "components/buttons-dark.png",
+        "components/buttons-light.png"
+      ],
+      "Controls": [
+        "components/controls-dark.png",
+        "components/controls-light.png"
+      ],
+      "Forms": [
+        "components/forms-dark.png",
+        "components/forms-light.png"
+      ],
+      "Cards, Lists and Status": [
+        "components/cards-lists-and-status-dark.png",
+        "components/cards-lists-and-status-light.png"
+      ],
+      "Empty and Loading": [
+        "components/empty-and-loading-dark.png",
+        "components/empty-and-loading-light.png"
+      ],
+      "Overlays and Window Chrome": [
+        "components/overlays-and-window-chrome-dark.png",
+        "components/overlays-and-window-chrome-light.png"
+      ]
+    },
+    "focus": "2 px signal outline with a gap in the surface colour",
+    "status_badge": "status colour, always an icon and a word"
+  },
+  "github": {
+    "profile_banner": [
+      "github/profile/profile-banner-dark.png",
+      "github/profile/profile-banner-light.png"
+    ],
+    "avatar": "github/profile/avatar-460.png",
+    "social_preview_layouts": {
+      "Icon Left (default)": "github/social-preview/layouts/icon-left.png",
+      "Centred": "github/social-preview/layouts/centred.png",
+      "Interface Peek": "github/social-preview/layouts/interface-peek.png"
+    },
+    "social_preview_template": "github/social-preview/new-app-template.png",
+    "readme_banners": {
+      "computer-cleaner": [
+        "github/readme/computer-cleaner-banner-dark.png",
+        "github/readme/computer-cleaner-banner-light.png"
+      ],
+      "development-base": [
+        "github/readme/development-base-banner-dark.png",
+        "github/readme/development-base-banner-light.png"
+      ]
+    },
+    "readme_parts": {
+      "badges": [
+        "github/readme/badges-dark.png",
+        "github/readme/badges-light.png"
+      ],
+      "divider": [
+        "github/readme/divider-violet-dark.png",
+        "github/readme/divider-pink-light.png"
+      ],
+      "footer": [
+        "github/readme/footer-dark.png",
+        "github/readme/footer-light.png"
+      ]
+    },
+    "full_readme": [
+      "github/readme/full-readme-computer-cleaner-dark.png",
+      "github/readme/full-readme-computer-cleaner-light.png"
+    ],
+    "repository_location": "In each repository, put the README banner, divider and footer in .github/brand/ (banner-dark, banner-light, divider, footer-dark, footer-light)."
+  },
+  "writing": [
+    {
+      "topic": "Capitals",
+      "rule": "Title Case for names and titles: apps, screens and sections. Sentence case for everything else: buttons, labels and messages.",
+      "do": "Windows Optimizer · Apply 3 changes",
+      "dont": "Apply 3 Changes"
+    },
+    {
+      "topic": "Language",
+      "rule": "One language per app. Dutch for apps made for Dutch users, like Finance Dashboard. English everywhere else, in UK spelling.",
+      "do": "Overzicht · Colour · Centre",
+      "dont": "Overview next to Belasting"
+    },
+    {
+      "topic": "Buttons",
+      "rule": "Start with a verb and say what will happen. Add the number when it helps people know what they are agreeing to.",
+      "do": "Apply 3 changes · Close it",
+      "dont": "OK · Submit"
+    },
+    {
+      "topic": "Tone",
+      "rule": "Calm, plain and direct. Say what happens next and whether it can be undone. No exclamation marks, no jargon.",
+      "do": "Every change can be undone one by one.",
+      "dont": "Oops! Something went wrong!"
+    },
+    {
+      "topic": "Numbers",
+      "rule": "Follow the app's language and set figures that must line up in Sora, which has tabular figures (DM Sans has none). A space between the euro sign and the amount in Dutch; a negative amount starts with a hyphen: -€ 3,00.",
+      "do": "€ 1.240,50 · -€ 3,00 · €1,240.50",
+      "dont": "1240.5 EUR"
+    },
+    {
+      "topic": "Credit",
+      "rule": "Every app is signed \"By vdWolde\", in the footer or the menu, linked to vdwolde.com. Below 24 px, the credit is text only.",
+      "do": "By vdWolde",
+      "dont": "Made with a heart by vdWolde"
+    }
+  ],
+  "motion": {
+    "durations_ms": {
+      "hover_and_press": 120,
+      "menus_tooltips_toasts": 200,
+      "dialogs_and_page_changes": 300
+    },
+    "easing": {
+      "enter": "cubic-bezier(0.2, 0.8, 0.2, 1) (ease-out)",
+      "leave": "ease-in, a little faster than the entrance"
+    },
+    "never_moves": "The backlight, the edge light and the icons stay still. Nothing pulses, loops or flashes.",
+    "reduced_motion": "When the system asks for less motion, every slide becomes a 120 ms fade."
+  },
+  "accessibility": [
+    {
+      "check": "Contrast",
+      "rule": "4.5:1 for text, 3:1 for rings, strokes and icons."
+    },
+    {
+      "check": "Never Colour Alone",
+      "rule": "A status always shows an icon and a word."
+    },
+    {
+      "check": "Visible Focus",
+      "rule": "A 2 px ring in the signal colour with a small gap, on everything you can click or type in."
+    },
+    {
+      "check": "Keyboard",
+      "rule": "Every action works with the keyboard, and the tab order follows the reading order."
+    },
+    {
+      "check": "Target Size",
+      "rule": "Click targets are at least 32 px high, and 40 px for the main action on a screen."
+    },
+    {
+      "check": "Text Size",
+      "rule": "Body text is at least 14 px. Only labels go smaller, down to 11 px."
+    },
+    {
+      "check": "Labels",
+      "rule": "Icons that carry meaning get an accessible name. Decorative ones are hidden from screen readers."
+    },
+    {
+      "check": "Both Modes",
+      "rule": "Every screen works in Dark Mode and Light Mode and follows the system setting."
+    },
+    {
+      "check": "Calm Motion",
+      "rule": "Respect reduced motion. Nothing flashes more than three times a second."
+    }
+  ],
+  "dos_and_donts": [
+    {
+      "kind": "Don't",
+      "text": "A glow on every card"
+    },
+    {
+      "kind": "Do",
+      "text": "One backlight on the root surface"
+    },
+    {
+      "kind": "Don't",
+      "text": "White label on a vivid fill"
+    },
+    {
+      "kind": "Do",
+      "text": "Ink label on every vivid fill"
+    },
+    {
+      "kind": "Don't",
+      "text": "Three signals on one screen"
+    },
+    {
+      "kind": "Do",
+      "text": "One signal, everything else neutral"
+    },
+    {
+      "kind": "Don't",
+      "text": "Vivid yellow as text on white"
+    },
+    {
+      "kind": "Do",
+      "text": "Ink text with the signal as a marker"
+    },
+    {
+      "kind": "Don't",
+      "text": "A monospace label"
+    },
+    {
+      "kind": "Do",
+      "text": "DM Sans, uppercase, tracked"
+    },
+    {
+      "kind": "Don't",
+      "text": "Sora for running text"
+    },
+    {
+      "kind": "Do",
+      "text": "DM Sans for running text"
+    },
+    {
+      "kind": "Don't",
+      "text": "Code in the body face"
+    },
+    {
+      "kind": "Do",
+      "text": "Code in the system mono"
+    }
+  ]
+}
