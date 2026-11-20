@@ -1,7 +1,7 @@
 {
   "notice": "Generated copy from Development-Base (Scripts/SyncToolkit.ps1). Do not edit these files here: change them in Development-Base and sync. A file edited here is skipped, never overwritten.",
   "source": "Development-Base",
-  "sourceCommit": "988df42",
+  "sourceCommit": "86f1670",
   "files": {
     "agents/references/languages/cpp.md": "BF00C7E0695C21C612698F0845CB74030C11EEE1F4F25EBFB392B70A7D838C85",
     "agents/references/languages/csharp.md": "63AC9B2A88EC496F5F75226735292B10F47CEDD661A0E715753715ECBFB5D4D1",
