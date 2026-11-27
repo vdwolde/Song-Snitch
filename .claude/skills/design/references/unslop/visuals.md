@@ -51,7 +51,7 @@ Besides whole scenes, generate single objects to place into the interface, like 
 
 ## Generate it
 
-Look for an image generation tool among the tools you have, for example an MCP server for fal, Replicate, OpenAI images, Higgsfield or a design tool. On this machine the GetLayers plugin (`getlayers_generate`, credits) is installed; Fooocus (`Projects/Fooocus`) generates locally at no cost. If there is one:
+Look for an image generation tool among the tools you have, for example an MCP server for fal, Replicate, OpenAI images, Higgsfield or a design tool. On this machine the GetLayers plugin (`getlayers_generate`, credits) is installed; Fooocus (`projects/Fooocus`) generates locally at no cost. If there is one:
 
 - Show the user the prompt, the model, the size and the cost, and ask before running. A paid generation is a stop in this base (root `CLAUDE.md` § Stop and ask before; [conflicts.md](conflicts.md) X11), even mid-pass.
 - Run once. Judge the result against the one sentence and the palette before trying again, and change the prompt rather than rerolling the same one.

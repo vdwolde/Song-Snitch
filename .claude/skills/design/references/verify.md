@@ -108,4 +108,4 @@ record the frame and why it stands.
 End every report with a `Not checked:` line: the states, widths, modes (dark, forced colours), interactions and
 screens you did not look at, and what the tools covered against what you looked at yourself. A clean tool
 result is not approval; it says only that its checks found nothing. The line goes in the report and, when a
-mode writes it, in the changelog line of `.claude/DESIGN.md`; no separate handover file.
+mode writes it, in the changelog line of `branding/DESIGN.md`; no separate handover file.

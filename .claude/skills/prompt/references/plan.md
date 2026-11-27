@@ -38,7 +38,7 @@ of the job: a brief that failed or changed an assumption, and the rest of the pl
    leaves for the next brief (the files, names or contracts the next brief relies on). A brief must make sense
    with no other brief and no conversation open next to it.
 7. **Carry state between sessions in `.claude/HANDOFF.md`**, the project's own convention (template:
-   `Development Base/Templates/docs/HANDOFF.md`). Each brief's Scope lists `.claude/HANDOFF.md` as writable, and its
+   `Development Base/templates/docs/HANDOFF.md`). Each brief's Scope lists `.claude/HANDOFF.md` as writable, and its
    last step appends one entry: what changed, and what the next brief relies on (its Hands off). Each later
    brief's Context begins "Read `.claude/HANDOFF.md` first". For a project with no `.claude/`, drop this and
    let the user paste the Hands off lines forward.

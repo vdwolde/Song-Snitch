@@ -3,8 +3,8 @@
 <!-- HEADER -->
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/banner-dark.png" />
-    <img src=".github/brand/banner-light.png" alt="Song Snitch: turn a room's own Spotify library into a party guessing game." width="800" />
+    <source media="(prefers-color-scheme: dark)" srcset="branding/readme/banner-dark.png" />
+    <img src="branding/readme/banner-light.png" alt="Song Snitch: turn a room's own Spotify library into a party guessing game." width="800" />
   </picture>
 
   <p>🔒 Personal project — <a href="https://vdwolde.com/">By vdWolde</a></p>
@@ -15,7 +15,7 @@
   </p>
 </div>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 <details open>
   <summary><strong>Table of Contents</strong></summary>
@@ -43,7 +43,7 @@
   </ol>
 </details>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## About The Project
 
@@ -72,7 +72,7 @@ no server to deploy, no data that outlives the process (see
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Architecture at a Glance
 
@@ -90,7 +90,7 @@ final leaderboard.** Full diagrams and the round-end race condition live in
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Built With
 
@@ -106,7 +106,7 @@ final leaderboard.** Full diagrams and the round-end race condition live in
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Getting Started
 
@@ -176,7 +176,7 @@ Copy `.env.example` to `.env` and fill in `SPOTIFY_CLIENT_ID`, then run
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Project Workflow
 
@@ -201,7 +201,7 @@ gitGraph
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Deployment
 
@@ -223,7 +223,7 @@ to a LAN address on every browser, and some — iOS notably — block it outrigh
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Design Language & Brand
 
@@ -231,11 +231,11 @@ Song Snitch follows the vdWolde Brand Guide v1.0: graphite surfaces, one signal 
 glow High, Sora and DM Sans self-hosted, Dark Mode by default and Light Mode following the system. Tokens and
 fonts are copied into `src/brand/` and used through `src/styles.css`; never hardcode a hex value in a
 component. The eight player colours are the guide's vivid set and always come with an initial or number. Full
-rules and the colour and type tables live in [.claude/DESIGN.md](.claude/DESIGN.md).
+rules and the colour and type tables live in [branding/DESIGN.md](branding/DESIGN.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Project Structure
 
@@ -254,7 +254,7 @@ A fully annotated file map and code patterns live in
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Contributing & Code Quality
 
@@ -266,7 +266,7 @@ A fully annotated file map and code patterns live in
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Documentation
 
@@ -279,13 +279,13 @@ A fully annotated file map and code patterns live in
 | [.claude/API.md](.claude/API.md) | HTTP routes and the full WebSocket protocol |
 | [.claude/STACK.md](.claude/STACK.md) | Conventions, patterns, commands, quality gates |
 | [.claude/SECURITY.md](.claude/SECURITY.md) | Threat model, controls, secrets |
-| [.claude/DESIGN.md](.claude/DESIGN.md) | Brand tokens, layout, accessibility |
+| [branding/DESIGN.md](branding/DESIGN.md) | Brand tokens, layout, accessibility |
 | [.claude/DECISIONS.md](.claude/DECISIONS.md) | ADR log — why things are the way they are |
 | [.claude/GLOSSARY.md](.claude/GLOSSARY.md) | Project-specific terms |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## License
 
@@ -294,7 +294,7 @@ for reuse or redistribution.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="center"><img src=".github/brand/divider.png" alt="" width="800" /></p>
+<p align="center"><img src="branding/readme/divider.png" alt="" width="800" /></p>
 
 ## Contact
 
@@ -303,8 +303,8 @@ for reuse or redistribution.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/brand/footer-dark.png" />
-  <img src=".github/brand/footer-light.png" alt="By vdWolde, vdwolde.com" width="800" />
+  <source media="(prefers-color-scheme: dark)" srcset="branding/readme/footer-dark.png" />
+  <img src="branding/readme/footer-light.png" alt="By vdWolde, vdwolde.com" width="800" />
 </picture>
 
 <!-- MARKDOWN LINKS & IMAGES -->

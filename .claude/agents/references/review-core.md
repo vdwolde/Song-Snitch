@@ -24,7 +24,7 @@ code is out of scope, however tempting.
 ## Load the rules (a short list, in this order)
 
 1. The project's `CLAUDE.md`, and the `Development Base/CLAUDE.md` rules if the project lives under
-   `Development Base/Projects/`. Both always apply. **A `/code` reviewer runs without CLAUDE.md files loaded**
+   `Development Base/projects/`. Both always apply. **A `/code` reviewer runs without CLAUDE.md files loaded**
    (they would cost far more than the code you review), so the brief's "Project rules" section inlines the project's
    file and the base sections for your lens and files, and lists the base sections it left out with their line
    ranges: if a file you review falls under one, read just that range. A `CLAUDE.md` already in your context

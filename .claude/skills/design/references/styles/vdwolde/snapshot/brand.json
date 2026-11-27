@@ -1118,7 +1118,7 @@
       "github/readme/full-readme-computer-cleaner-dark.png",
       "github/readme/full-readme-computer-cleaner-light.png"
     ],
-    "repository_location": "In each repository, put the README banner, divider and footer in .github/brand/ (banner-dark, banner-light, divider, footer-dark, footer-light)."
+    "repository_location": "In each repository, put the README banner, divider and footer in branding/readme/ (banner-dark, banner-light, divider, footer-dark, footer-light)."
   },
   "writing": [
     {

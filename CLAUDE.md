@@ -88,7 +88,7 @@ Delete the rows this project doesn't have; don't create an empty file to fill a 
 | [.claude/STACK.md](.claude/STACK.md) | Writing code — conventions, imports, patterns, commands, quality gates |
 | [.claude/API.md](.claude/API.md) | Adding or changing an endpoint |
 | [.claude/SECURITY.md](.claude/SECURITY.md) | Touching auth, validation, rate limiting, input handling, logging, secrets |
-| [.claude/DESIGN.md](.claude/DESIGN.md) | Changing templates, styling, or client-side UX |
+| [branding/DESIGN.md](branding/DESIGN.md) | Changing templates, styling, or client-side UX |
 | [.claude/DECISIONS.md](.claude/DECISIONS.md) | Questioning why something is built a certain way (ADR log) |
 | [.claude/GLOSSARY.md](.claude/GLOSSARY.md) | Unsure what a term means |
 | [.claude/REVIEW.md](.claude/REVIEW.md) | Running `/code` — this project's quality gate and excluded items |
@@ -103,7 +103,7 @@ Delete the rows this project doesn't have; don't create an empty file to fill a 
   (integration points) — it belongs in `server/spotify.ts` only; see Hard rule 3 for the
   narrow browser-side exceptions.
 - Changing the host or player screen's layout/colours →
-  [.claude/DESIGN.md](.claude/DESIGN.md).
+  [branding/DESIGN.md](branding/DESIGN.md).
 - Questioning why players don't log into Spotify, or why there's no database →
   [.claude/DECISIONS.md](.claude/DECISIONS.md).
 

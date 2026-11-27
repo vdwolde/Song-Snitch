@@ -13,7 +13,7 @@ export const PLAYER_COLOURS = [
 ] as const;
 export type PlayerColour = (typeof PLAYER_COLOURS)[number];
 
-// The colour set IS the player cap — see .claude/DESIGN.md.
+// The colour set IS the player cap — see branding/DESIGN.md.
 export const MAX_PLAYERS = PLAYER_COLOURS.length;
 export const DEFAULT_SONGS_PER_PLAYER = 3;
 

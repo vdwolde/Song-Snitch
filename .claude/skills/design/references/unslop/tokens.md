@@ -3,7 +3,7 @@
 > [!important] Not for a vdWolde project
 > These are Unslop's starting values for a project with **no brand and no tokens of its own** (a client site, a
 > vendored template). In a vdWolde project every value below that the Brand Guide owns (neutrals, signal, spacing,
-> radii, type families and scale, motion, depth) comes from `Branding/tokens/tokens.css` instead; the clashes are
+> radii, type families and scale, motion, depth) comes from `branding/tokens/tokens.css` instead; the clashes are
 > listed in [conflicts.md](conflicts.md). The app-layout proportions and the button heights still apply.
 
 Starting values for each pass. When the project already has a good system, keep its values and only fix how they are used. These are starting points, not a house style, so let the direction move them.

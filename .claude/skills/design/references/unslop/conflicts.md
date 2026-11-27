@@ -1,7 +1,7 @@
 # Conflicts with the vdWolde Brand Guide
 
 Unslop is written for a product with no brand, or a weak one, and tells the agent to invent a direction. A vdWolde
-project already has one: the Brand Guide v1.1 (`Branding/brand.json`, applied through
+project already has one: the Brand Guide v1.1 (`branding/brand.json`, applied through
 [../styles/vdwolde/SPEC.md](../styles/vdwolde/SPEC.md)). Root `CLAUDE.md` § Brand makes it win over every Unslop
 rule. This file lists each place they disagree, so neither an audit nor a fix pass "unslops" the brand away.
 
@@ -14,7 +14,7 @@ template, a vendored template, a frozen work project), these rows do not apply a
 |---|---|---|---|---|
 | X1 | Remove radial colour washes and glows behind content (C1, C4) | One soft backlight per view, on the root surface, rising from the bottom edge (rule 3) | Keep the one backlight. Flag a second one, one on a card, one that is stacked or animated: those break rule 3 and Unslop alike | It is the signature of every vdWolde app; Unslop's own "Signature" slot is already filled by it |
 | X2 | Remove coloured glows (C3) | The "vdW" mark sits on the six-colour glow | The mark is never a finding. Any other glow is | The mark is a copied kit asset (rule 6) |
-| X3 | Redraw a slop logo flat: wordmark or one solid glyph (K8, K9) | Icons are copied from `Branding/icons/<slug>/`, never redrawn, recoloured or cropped (rule 6) | Replace a non-kit logo with the kit icon. Never redraw the kit icon | One identity across every app |
+| X3 | Redraw a slop logo flat: wordmark or one solid glyph (K8, K9) | Icons are copied from `branding/icons/<slug>/`, never redrawn, recoloured or cropped (rule 6) | Replace a non-kit logo with the kit icon. Never redraw the kit icon | One identity across every app |
 | X4 | Direction: invent Character and World, tint the neutrals toward the world, take the accent from it | Graphite surfaces, one fixed signal colour per app (`brand.json`), Dark Mode and Light Mode | Write only Product, Moments and Signature ([passes.md](passes.md) § Direction). Character, World, ramp and accent are given | The palette is the brand; a per-product tint would make every app look different |
 | X5 | One accent, used rarely; on dark the primary button may be off-white | One signal: the primary action, the active state and the focus ring, never two on a screen; red only for danger (rule 1) | The primary action uses the signal. The rest of Unslop's accent discipline (few percent of the screen, neutral chart steps) applies as written | Rule 1 fixes where the signal goes; Unslop only says how little |
 | X6 | Its own spacing scale (4 … 128), radii (controls 8 to 10, cards 12 to 16, pill nowhere), easing `cubic-bezier(0.22, 1, 0.36, 1)`, durations 120 to 500 ms, light-mode shadows | Spacing 4 8 12 16 24 32 48; radii controls 8, windows 12, cards and tiles 14, chips pill; 120 / 200 / 300 ms, enter `cubic-bezier(0.2, 0.8, 0.2, 1)`, leave `cubic-bezier(0.4, 0, 1, 1)`; elevation by lightness, no drop shadows | Use the brand tokens from `tokens.css`. A value off the brand scale is the S1 finding; the fix lands on the brand scale, not Unslop's | Tokens are owned by the guide; a project never edits its copy of one |
@@ -32,7 +32,7 @@ element, quiet chrome; chart hierarchy and one highlight per chart; stat cards a
 `transition-all`, no `hover:scale`, no looping motion; the template check.
 
 A fix that would break a row above is a stop: ask before making it (root `CLAUDE.md` § Brand). A departure the
-owner approves is recorded in the project's `.claude/DESIGN.md` with the reason (SPEC.md § Departures).
+owner approves is recorded in the project's `branding/DESIGN.md` with the reason (SPEC.md § Departures).
 
 ---
 

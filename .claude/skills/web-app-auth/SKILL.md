@@ -8,7 +8,7 @@ description: "Login pattern for personal web apps that are deployed beyond this 
 Moved out of the root `Development Base/CLAUDE.md` on 2026-10-16 to keep that file lean; the root file keeps
 only the always-on rule (default to no auth).
 
-Distilled from Finance Dashboard's ADR-029 (`Projects/Finance
+Distilled from Finance Dashboard's ADR-029 (`projects/Finance
 Dashboard/.claude/DECISIONS.md`) — read that ADR for the full reasoning, the rejected
 alternatives (a centralized `auth.vdwolde.com` broker shared across every project, one
 password reused across every project, a third-party hosted identity provider), and the

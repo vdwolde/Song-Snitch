@@ -8,7 +8,7 @@ any phase that does not apply and say so in one line ("no first-run flow, skippi
 Read [discover.md](discover.md) (stack, fingerprint, surface). Infer product, audience and platform from
 `README.md`, `.claude/PRODUCT.md`, `CLAUDE.md` and any existing UI. Then decide:
 
-- **Greenfield** — no `.claude/DESIGN.md` and no real UI. Run every phase.
+- **Greenfield** — no `branding/DESIGN.md` and no real UI. Run every phase.
 - **Extend** — a DESIGN.md or UI exists (a new screen, flow or component). Reuse its system. **Skip
   phases 3, 4 and 10.** Run 1 (one or two questions), 2, 5–9, 11 and 12 (add to DESIGN.md, do not rewrite
   it). Never change an existing token or component.
@@ -136,7 +136,7 @@ first screen (it runs once, after the audit's fixes), and end the report with `N
 
 ## Phase 12 — Document
 
-1. Write `.claude/DESIGN.md` from `Development Base/Templates/docs/DESIGN.md`: the `Read:` line, the
+1. Write `branding/DESIGN.md` from `Development Base/templates/docs/DESIGN.md`: the `Read:` line, the
    fingerprint, Components, Motion, Voice, Extending this system. Extend: add sections, do not rewrite.
    Link `.claude/instructions/styling.md` instead of copying tokens when it exists.
 2. Add an ADR to `.claude/DECISIONS.md` (or the project's decision section) with a **Rejected** field

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // vdWolde contrast gate (Brand Guide v1.0). Zero dependencies.
 // Run: node contrast-check.mjs [--tokens <tokens.css>] [--self-test]
-// Reads the colour tokens from tokens.css (default: ./snapshot/tokens.css, a copy of Branding/tokens/tokens.css) and checks
+// Reads the colour tokens from tokens.css (default: ./snapshot/tokens.css, a copy of branding/tokens/tokens.css) and checks
 // the pairs the guide promises: 4.5:1 for text, 3:1 for rings, strokes and icons, in Dark Mode and Light Mode.
 // Light Mode is measured on white and #F3F4F6; the lower score counts. Exit code 1 on any failure.
 import { readFileSync } from 'node:fs';

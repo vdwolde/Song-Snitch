@@ -24,7 +24,7 @@ Every project targets **Baseline Widely available** unless its own docs state an
 
 ## What wins when sources disagree
 
-1. The project's own hard rules and `.claude/DESIGN.md`.
+1. The project's own hard rules and `branding/DESIGN.md`.
 2. The standing stack: a React project uses shadcn/ui on Base UI for dialogs, popovers, menus, selects and
    tooltips (`web-ui-baseline`). Do not replace a Base UI primitive with a native element, and do not hand-roll one
    either. The overlay recipes below apply to vanilla projects and to anything Base UI does not ship.

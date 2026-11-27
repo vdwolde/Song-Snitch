@@ -15,7 +15,7 @@ shadcn dependency set below is pre-justified under root CLAUDE.md § Minimal dep
 sentence" rule by this section existing.
 
 - **Base:** `base` (Base UI), matching the one headless library already in use on this machine
-  (`Projects/Website Builder/tools/Website Cloner/`). Never Radix, never React Aria — `asChild`
+  (`projects/Website Builder/tools/Website Cloner/`). Never Radix, never React Aria — `asChild`
   is a Radix-only prop; Base UI composes via a `render` prop instead (`shadcn.csv` rows 59/68).
 - **Provisioning:** `npx shadcn@latest init --preset b7ClRmdZS` (or `add <component>` /
   `apply --preset b7ClRmdZS` on an existing project). `npx` is the provider — it runs inside the

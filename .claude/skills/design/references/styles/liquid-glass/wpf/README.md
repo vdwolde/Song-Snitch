@@ -1,6 +1,6 @@
 # Liquid Glass for WPF: drop-in recipe
 
-Verified 2026-10 on .NET 8 WPF (`net8.0-windows`, x64): built from the `Templates/archetypes/dotnet-wpf` archetype in a scratch copy, 0 errors and 0 warnings under its analyzers, rendered to a PNG with `RenderTargetBitmap`. Evidence, gotchas and what WPF cannot do: [`../anywhere.md`](../anywhere.md) §3.7. Proof render: `playbook/styles/liquid-glass/proof/wpf/` in Website Builder. Tokens come from [`../tokens.json`](../tokens.json); if a token changes, change it there first, then here.
+Verified 2026-10 on .NET 8 WPF (`net8.0-windows`, x64): built from the `templates/archetypes/dotnet-wpf` archetype in a scratch copy, 0 errors and 0 warnings under its analyzers, rendered to a PNG with `RenderTargetBitmap`. Evidence, gotchas and what WPF cannot do: [`../anywhere.md`](../anywhere.md) §3.7. Proof render: `playbook/styles/liquid-glass/proof/wpf/` in Website Builder. Tokens come from [`../tokens.json`](../tokens.json); if a token changes, change it there first, then here.
 
 | File | What it is |
 | --- | --- |

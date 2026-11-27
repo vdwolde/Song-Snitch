@@ -2,7 +2,7 @@
 
 One continuous pass. State the Design Read once, with its `scope` (whole app, named screens, or one
 component). Everything stays inside the **language fingerprint** (SKILL.md): style, type pairing, colour
-strategy and layout archetype are locked; token values and motion tier are free. If `.claude/DESIGN.md`
+strategy and layout archetype are locked; token values and motion tier are free. If `branding/DESIGN.md`
 has no fingerprint, infer it ([discover.md](discover.md) § 2), mark it `inferred`, and show it before
 editing. **Collateral lock:** the diff touches style, token, copy and motion files only. Structural markup
 changes are limited to `distill` removals.
@@ -87,7 +87,7 @@ Then offer **one more step**, **back off one step** (using the recorded old valu
 
 ## Phase 5 — Document
 
-Update the changed token values in `.claude/DESIGN.md` (or link `.claude/instructions/styling.md` if it
+Update the changed token values in `branding/DESIGN.md` (or link `.claude/instructions/styling.md` if it
 owns them), update the motion tier line if it moved, and add a one-line dated changelog entry. Add any
 remaining design gap to `.claude/PRODUCT.md`. If the result looks ready to ship, suggest `/design polish`.
 Suggest only.

@@ -8,7 +8,7 @@ details in [ux-details.md](ux-details.md) are behaviour of existing features, so
 only for `audit`, run Phases 1 and 4 plus the look ([verify.md](verify.md)), edit nothing, and return the
 findings list.
 
-Read `.claude/DESIGN.md` first; it owns the system. If it has no fingerprint, infer one
+Read `branding/DESIGN.md` first; it owns the system. If it has no fingerprint, infer one
 ([discover.md](discover.md) § 2), mark it `inferred`, and add it in Phase 9.
 
 **Checkpoints** (SKILL.md § Checkpoints): items `phase-1` … `phase-9`, minus the ones you skip. Phases 1 to 3
@@ -110,7 +110,7 @@ an ESLint Tailwind rule) adds a dependency, so ask before adding one.
 
 ## Phase 9 — Document
 
-1. Update `.claude/DESIGN.md`: the `Read:` line, the final token set (or a link to
+1. Update `branding/DESIGN.md`: the `Read:` line, the final token set (or a link to
    `.claude/instructions/styling.md`), the fingerprint, **Components** (name, variants, states, location),
    **Extending this system** (the recipe an agent follows for a new screen), the Do/Don't table with any
    rule this pass revealed, and a dated changelog line.

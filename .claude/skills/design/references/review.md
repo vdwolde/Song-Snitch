@@ -22,9 +22,9 @@ geometry audit, and again only if the first review found a structural problem.
    project's own gitignored `.state/` folder (never `%TEMP%`; root `CLAUDE.md` § Windows dev-machine hygiene): desktop (1280 or
    1440) and `390x844x3,mobile,touch`, both colour modes when the app has them. Desktop apps: the screenshots
    the user supplied.
-2. A reference, if there is one: the "before" shots (improve and polish), `Branding/screens/<slug>-dark.png`
+2. A reference, if there is one: the "before" shots (improve and polish), `branding/screens/<slug>-dark.png`
    and `-light.png` (a vdWolde project), or the user's reference screenshot. Same scale as the new ones.
-3. The Design Read line and, if it exists, `.claude/DESIGN.md`. **Nothing else**: not your plan, not why you did
+3. The Design Read line and, if it exists, `branding/DESIGN.md`. **Nothing else**: not your plan, not why you did
    it, not the audit report.
 4. The sign list as vocabulary, not as findings: [unslop/signs.md](unslop/signs.md), and in a vdWolde project
    [unslop/conflicts.md](unslop/conflicts.md) so the brand's own backlight, mark and signal are not sent back.

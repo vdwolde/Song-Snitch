@@ -26,7 +26,7 @@ the client build.
 | Concurrent dev processes | `concurrently` | `10.0.5` |
 | Cross-platform env vars in scripts | `cross-env` | `10.1.0` |
 | Spotify Web Playback SDK types | `@types/spotify-web-playback-sdk` (dev) | `0.1.19` — the SDK is a global injected by a `<script>` tag; without this, `window.Spotify` is `any` at the riskiest boundary |
-| UI primitives (2026-09-22) | `tw-animate-css`, `shadcn` (imported by `src/shadcn.css`) | `1.4.0` / `4.23.0` — no `components/ui/*` is in use, so `@base-ui/react`, `class-variance-authority` and `cn` were removed 2026-11-20; `npx shadcn add` brings them back with the first component. Personal-dev-base-wide shadcn/ui adoption, root `Development/CLAUDE.md` § Web UI baseline; base=`base` (Base UI), never Radix. Bridged onto the vdWolde Brand Guide v1.0 tokens and Sora/DM Sans, not the generic preset — see `.claude/DESIGN.md` |
+| UI primitives (2026-09-22) | `tw-animate-css`, `shadcn` (imported by `src/shadcn.css`) | `1.4.0` / `4.23.0` — no `components/ui/*` is in use, so `@base-ui/react`, `class-variance-authority` and `cn` were removed 2026-11-20; `npx shadcn add` brings them back with the first component. Personal-dev-base-wide shadcn/ui adoption, root `Development/CLAUDE.md` § Web UI baseline; base=`base` (Base UI), never Radix. Bridged onto the vdWolde Brand Guide v1.0 tokens and Sora/DM Sans, not the generic preset — see `branding/DESIGN.md` |
 | Styling (2026-09-22) | `tailwindcss`, `@tailwindcss/vite` | `4.3.3` / `4.3.3` — required by shadcn's generated components; isolated to `src/shadcn.css`, `src/styles.css` stays the one hand-written source of truth for this app's own colours |
 | Brand tokens and fonts (2026-11-07) | `src/brand/` — `tokens.css` and the recipe `vdwolde.css` (Brand Guide v1.0), Sora and DM Sans woff2 (SIL OFL) | Copied from the Development Base's `Branding/`, not an npm dependency; self-hosted, no CDN. The Base is the source: refresh by copying, do not edit `tokens.css` |
 | Icons in the UI | `lucide-react` | Check, cross, trophy, music note and alert icons next to status words (status is never colour alone); already a dependency |
@@ -37,7 +37,7 @@ sentence in this table, in the same change that adds it.
 **Not in the stack:** no database (game state is in-memory, see ADR-001), no ORM, no
 router (the whole client "route" is `location.pathname.startsWith('/host')`, see
 `src/main.tsx`), no state-management library (the server's next broadcast is the only
-source of truth — see `.claude/DESIGN.md`), no test framework beyond Node's built-in
+source of truth — see `branding/DESIGN.md`), no test framework beyond Node's built-in
 `node:test`, no client Spotify SDK dependency beyond the SDK's own script tag
 (`src/spotify-player.ts` loads it directly — no npm wrapper package).
 
@@ -68,7 +68,7 @@ src/
                   connecting keeps failing
   spotify-player.ts     Web Playback SDK singleton loader (host tab)
   spotify-top-tracks.ts A player's own Spotify PKCE login + top-tracks import (top-tracks mode only)
-  styles.css      All styling; the 8 player-colour tokens live here (see .claude/DESIGN.md)
+  styles.css      All styling; the 8 player-colour tokens live here (see branding/DESIGN.md)
 github-pages/
   callback.html   The Spotify OAuth bounce page for a top-tracks player's own login —
                   deliberately NOT in Vite's public/ (an index.html there can clobber the

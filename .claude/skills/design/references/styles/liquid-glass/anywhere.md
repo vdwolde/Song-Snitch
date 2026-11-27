@@ -382,7 +382,7 @@ struct LGGel: View {   // untested sketch
 
 **Verified 2026-10 on .NET 8 WPF.** A real window in the style (gel bento with dot-matrix numerals, pill tabs and glass icon buttons; a frost-plate stack over a multi-blob ground; a dark node board) was built from the `dotnet-wpf` archetype in a scratch copy, compiled (0 errors, 0 warnings under the archetype's `latest-recommended` analyzers) and rendered with `RenderTargetBitmap`: `playbook/styles/liquid-glass/proof/wpf/lg-proof-wpf.png` in Website Builder. The canonical, drop-in recipe is the `wpf/` folder next to this file (`LiquidGlass.xaml`, `SquircleBorder.cs`, `GlassParts.cs`, `README.md`); the excerpts below are copied from it. "Verified" below means seen in that build or render, not read from docs.
 
-Template shape (`Templates/archetypes/dotnet-wpf`): `net8.0-windows`, x64, MVVM, no UI library by default. The recipe adds **no NuGet package**: two `.cs` files and one `ResourceDictionary`.
+Template shape (`templates/archetypes/dotnet-wpf`): `net8.0-windows`, x64, MVVM, no UI library by default. The recipe adds **no NuGet package**: two `.cs` files and one `ResourceDictionary`.
 
 | Surface | WPF reality (verified) |
 | --- | --- |

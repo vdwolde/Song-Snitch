@@ -4,10 +4,10 @@ The owner's brand and the **default house style for every vdWolde project, app, 
 not vdwolde.com). It applies without being named. Liquid Glass (`../liquid-glass/`) is a different, opt-in style and
 wins only when the user names it.
 
-**Source of truth: the Development Base's `Branding/brand.json`** (machine-readable: every colour, size, rule and file path;
+**Source of truth: the Development Base's `branding/brand.json`** (machine-readable: every colour, size, rule and file path;
 never sample colours from images). The guide itself is the Claude artifact https://claude.ai/artifact/GbdGiKQUbkFCJRBXEudk6P (the PDF is generated from it, so the artifact always wins; if it cannot be read, ask the owner for the new URL or for permission to use the PDF, never fall back silently). `snapshot/brand.json` and
 `snapshot/tokens.css` here are version-stamped copies (v1.1, 2026-11-07) for projects and cloud sessions that cannot see
-`Branding/`; when both exist, `Branding/` wins. This file holds no value the guide owns: it says how to apply it.
+`branding/`; when both exist, `branding/` wins. This file holds no value the guide owns: it says how to apply it.
 
 ## Identity
 
@@ -40,18 +40,18 @@ Radii: controls 8, windows 12, cards and tiles 14, chips pill. Spacing 4 8 12 16
 | Stack | Use |
 | --- | --- |
 | Any, to find the recipe | [anywhere.md](anywhere.md) |
-| Web (vanilla, Vite, Next, Tailwind + shadcn) | `web/vdwolde.css` + `Branding/tokens/tokens.css` + `Branding/fonts/*` |
+| Web (vanilla, Vite, Next, Tailwind + shadcn) | `web/vdwolde.css` + `branding/tokens/tokens.css` + `branding/fonts/*` |
 | WPF / WinForms tray | `wpf/` dictionaries + static TTFs |
 | Gradio (Fooocus) | [gradio.md](gradio.md) |
 | Android TV | static TTFs as `res/font`, tokens as `colors.xml` (anywhere.md) |
-| README / GitHub | `Branding/github/readme/*`, `Scripts/BrandAssets.mjs`, `Scripts/SyncBranding.ps1` |
+| README / GitHub | `branding/github/readme/*`, `scripts/BrandAssets.mjs`, `scripts/SyncBranding.ps1` |
 
 ## Gate
 
 `node contrast-check.mjs` (0 failing pairs; one accepted deviation, the Light Mode control edge on the light ground, is listed in the script) and a screenshot of the finished
-screen in both modes compared with `Branding/screens/<slug>-dark.png` / `-light.png` and `Branding/components/*`.
+screen in both modes compared with `branding/screens/<slug>-dark.png` / `-light.png` and `branding/components/*`.
 
 ## Departures that are part of the brand
 
 ThinkTwice reads in Atkinson Hyperlegible (older people, low vision, a stressful moment). Finance Dashboard is Dutch.
-Anything else that departs is recorded in the project's `.claude/DESIGN.md` with the reason.
+Anything else that departs is recorded in the project's `branding/DESIGN.md` with the reason.

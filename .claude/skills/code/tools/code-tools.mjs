@@ -1474,7 +1474,7 @@ function sharedFor(dir, lenses) {
 // ---- project rules. The reviewers run with omitClaudeMd, so no CLAUDE.md is loaded into them (the 86 KB base file alone was
 // about 34,000 tokens per agent, measured on 2026-11-08); the brief carries what they may quote instead.
 
-// The Development Base folder: the nearest folder at or above `root` that holds Projects/, CLAUDE.md and .claude/projects.json.
+// The Development Base folder: the nearest folder at or above `root` that holds projects/, CLAUDE.md and .claude/projects.json.
 function findBase(root) {
   for (let a = path.resolve(root); ; a = path.dirname(a)) {
     if (fs.existsSync(path.join(a, 'Projects')) && fs.existsSync(path.join(a, 'CLAUDE.md')) && fs.existsSync(path.join(a, '.claude', 'projects.json'))) return a;
@@ -1485,11 +1485,11 @@ function findBase(root) {
 const BASE_ALWAYS = /^(Hard rules|Coding principles|Data handling|Security defaults|Testing philosophy|Minimal dependencies|Naming per language|Git)\b/i;
 const BASE_DOCS = /^(Docs-first|The README convention|Attribution|Decision log|ADR-0NN|Known gaps register)\b/i;
 const BASE_BY_PATH = [
-  [/\.(ps1|psm1|bat|cmd)$|launcher|\.code-workspace$|(^|\/)Scripts\//i, /^(Windows dev-machine hygiene|One-click launchers)\b/i],
+  [/\.(ps1|psm1|bat|cmd)$|launcher|\.code-workspace$|(^|\/)scripts\//i, /^(Windows dev-machine hygiene|One-click launchers)\b/i],
   [/Dockerfile|railway|startup\.|\.github\/workflows\/|health/i, /^Deployment\b/i],
   [/\.(css|scss|tsx|jsx|xaml|axaml|html|vue|svelte)$|components\.json|tailwind/i, /^(Web UI baseline|Brand|Named styles)\b/i],
   [/(^|\/)\.claude\/(skills|agents|tools)\/|SKILL\.md$|(^|\/)CLAUDE\.md$/i, /^(Subagents and skills|Context economy|Claiming a measurement|Briefing an agent)\b/i],
-  [/projects\.json|(^|\/)Scripts\/Sync/i, /^Syncing two machines\b/i],
+  [/projects\.json|(^|\/)scripts\/Sync/i, /^Syncing two machines\b/i],
   [/auth|login|session|password/i, /^Authentication for personal web apps\b/i],
 ];
 // The sections of the base CLAUDE.md for these lenses and files, whole, plus an index of the ones left out (with their line

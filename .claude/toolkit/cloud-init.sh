@@ -1,5 +1,5 @@
 #!/bin/bash
-# Claude Code cloud sessions only. Vendored into each personal project by Development-Base/Scripts/SyncToolkit.ps1;
+# Claude Code cloud sessions only. Vendored into each personal project by Development-Base/scripts/SyncToolkit.ps1;
 # edit it in Development-Base, never in a project. Started by the SessionStart hook "toolkit-bootstrap".
 #
 # A cloud session reads this repo's .claude/ but not ~/.claude, and the skills and agents name their

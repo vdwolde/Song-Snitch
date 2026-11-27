@@ -28,7 +28,7 @@ surfaces (a site and an app): read each one's stack.
 
 ## 2. The fingerprint: read it, or infer it with evidence
 
-**The default house style is `vdwolde`.** In a project under the Development Base (or any new vdWolde project) load `references/styles/vdwolde/SPEC.md` (4.6 KB, whole) and the matching section of `anywhere.md` (`section references/styles/vdwolde/anywhere.md "<stack>"`) without waiting for a name, and write the Style line of `.claude/DESIGN.md` as `vdWolde Brand Guide v1.1 (house style, references/styles/vdwolde/)`. Treat it like a brand book (skip create Phase 3 and overhaul's three-directions step unless asked). It does not apply to client sites, vdwolde.com, vendored third-party templates or frozen work projects (AIRA, Sales Intelligence Dashboard); say so when you skip it. Another named house style below still wins when the user names it.
+**The default house style is `vdwolde`.** In a project under the Development Base (or any new vdWolde project) load `references/styles/vdwolde/SPEC.md` (4.6 KB, whole) and the matching section of `anywhere.md` (`section references/styles/vdwolde/anywhere.md "<stack>"`) without waiting for a name, and write the Style line of `branding/DESIGN.md` as `vdWolde Brand Guide v1.1 (house style, references/styles/vdwolde/)`. Treat it like a brand book (skip create Phase 3 and overhaul's three-directions step unless asked). It does not apply to client sites, vdwolde.com, vendored third-party templates or frozen work projects (AIRA, Sales Intelligence Dashboard); say so when you skip it. Another named house style below still wins when the user names it.
 
 **House styles first.** A named house style (a folder under `references/styles/<id>/` with a `SPEC.md`) takes
 precedence over catalog keyword matching. When the user's words contain a house style's name or alias
@@ -36,7 +36,7 @@ precedence over catalog keyword matching. When the user's words contain a house 
 `references/styles/<id>/SPEC.md` and, for the current stack, the matching section of `anywhere.md`. **Both can be
 large (Liquid Glass: 95 KB and 72 KB): run `toc` on each and read the sections the Design Read needs with `section`
 (identity and tokens first, then the surfaces and components the screen uses), not the files whole.** Write the
-Style line of `.claude/DESIGN.md` as `<name> (house style, references/styles/<id>/)`; treat the spec like a brand
+Style line of `branding/DESIGN.md` as `<name> (house style, references/styles/<id>/)`; treat the spec like a brand
 book: skip create Phase 3 direction-picking and skip overhaul's three-directions step unless the user asks for
 alternatives; "apply <style> to this app" is an overhaul-class change to the Style line, ask once to confirm
 scope if it would restyle an existing UI; for a web project on the user's baseline (Tailwind v4 + shadcn on Base
@@ -46,7 +46,7 @@ it follows the catalog path below. "Apple Liquid Glass", or a SwiftUI/UIKit/AppK
 `liquid-glass` catalog row (Apple's lens material), a different thing; the house style's row is
 `liquid-glass-gel`. Aliases live in that row and in SPEC § 0.
 
-If `.claude/DESIGN.md` has `## Design language`, use it. If not, infer each line from the code, cite one
+If `branding/DESIGN.md` has `## Design language`, use it. If not, infer each line from the code, cite one
 `path:line` of evidence for each, tag the block `inferred`, and show it to the user before any edit:
 
 | Line | Evidence to read | Map to |
@@ -57,7 +57,7 @@ If `.claude/DESIGN.md` has `## Design language`, use it. If not, infer each line
 | Layout archetype | the root shell component or window | see `directions.md` axis 4 |
 | Motion tier | transitions only = Subtle; keyframes, stagger, scroll reveal = Standard; GSAP, springs, WebGL, shaders, parallax = Complex | `motion.csv` tiers |
 
-The block to write (copy it; `Templates/docs/DESIGN.md` has the commented version). For a house style the Style
+The block to write (copy it; `templates/docs/DESIGN.md` has the commented version). For a house style the Style
 value is the house-style line from above, the first four rows are fixed by the spec, and `Status` is `applied`
 once the build uses the style's layer:
 

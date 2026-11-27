@@ -9,7 +9,7 @@ what `create`'s "show me visually" and a user's "quick overhaul" use. Phases are
 
 ## Phase 1 — Analyse, with a baseline
 
-Read [discover.md](discover.md), the UI code and `.claude/DESIGN.md`. Then measure and look:
+Read [discover.md](discover.md), the UI code and `branding/DESIGN.md`. Then measure and look:
 
 - **Numbers (report-only):** `design-tools.mjs inventory <ui paths>` (stray literals, near-duplicate
   colours, repeated sizes and radii), `contrast` on the token pairs, and the fingerprint (`inferred` when
@@ -127,7 +127,7 @@ canvas URL. One round only; after it the user picks.
   `npx shadcn init` against a stylesheet with content — scratch project, hand-merge. Ask before any new
   dependency or deleted file. Afterwards rerun `inventory` (report-only) to count leftover legacy literals.
 - **Record as target:** change no code.
-- **Either way, document:** rewrite `.claude/DESIGN.md` including the new fingerprint, add an ADR whose
+- **Either way, document:** rewrite `branding/DESIGN.md` including the new fingerprint, add an ADR whose
   **Rejected** field holds the two unchosen options. For "target" add `Status: target, not applied` to
   DESIGN.md and a row in `.claude/PRODUCT.md`'s known-gaps table.
 

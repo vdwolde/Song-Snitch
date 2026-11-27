@@ -81,7 +81,7 @@ vdWolde project the brand's value always wins over the fix in this list.
 | K5 | Every chart in several shades of the accent, so nothing leads | eye | Neutral steps; the accent on the one thing that matters | |
 | K6 | Sparklines, tallies or mini bars in every stat card | eye; `Sparkline\|<Area\|<Line` inside a stat card | Label, figure, change | |
 | K7 | Equal cards side by side, each with the same chart | eye; `grid-cols-[34]` | One main chart, compact stats, varied widths | |
-| K8 | Logo as a gradient tile with a sparkle and a gradient wordmark | C1, C2 in the logo component | Name as text plus a flat mark | The kit icon from `Branding/icons/<slug>/`, never redrawn (X3) |
+| K8 | Logo as a gradient tile with a sparkle and a gradient wordmark | C1, C2 in the logo component | Name as text plus a flat mark | The kit icon from `branding/icons/<slug>/`, never redrawn (X3) |
 | K9 | Logo mark as a glossy orb or glowing dot | eye | Flat glyph, one colour, or the wordmark | As K8 |
 
 ## Landing pages and heroes (L)

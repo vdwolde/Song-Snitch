@@ -1,5 +1,5 @@
 /* vdWolde, web recipe. Brand Guide v1.1.
- * Load order: fonts/sora/sora.css, fonts/dm-sans/dm-sans.css, tokens/tokens.css (all from Branding/), then this file.
+ * Load order: fonts/sora/sora.css, fonts/dm-sans/dm-sans.css, tokens/tokens.css (all from branding/), then this file.
  * Set <html data-signal="pink"> for the app's signal colour (pink, orange, amber, yellow, green, sky, violet) and, when the
  * app lets the person choose, <html data-mode="dark|light"> (without it the system colour scheme decides; Dark Mode is the default).
  * Glow: add .vdw-glow-low | .vdw-glow-middle | .vdw-glow-high to the element that carries .vdw-backlight (default Middle).

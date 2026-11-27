@@ -1,9 +1,9 @@
 <!-- vdWolde WPF parts that do not depend on mode or signal: type, radii, motion, focus. Brand Guide v1.1.
-     Fonts: copy Branding\fonts\sora\static\*.ttf and Branding\fonts\dm-sans\static\*.ttf into the project as <Resource Include="Assets\Fonts\*.ttf" />.
+     Fonts: copy branding\fonts\sora\static\*.ttf and branding\fonts\dm-sans\static\*.ttf into the project as <Resource Include="Assets\Fonts\*.ttf" />.
      WPF cannot read variable fonts, so always use the static files. Family names "Sora" and "DM Sans" were checked in a WPF probe
      (weights 400, 500, 600, 700 resolve).
      If a test host or a second process falls back to Segoe UI with the pack://application:,,,/Assets/Fonts/ form below, use the
-     component form pack://application:,,,/<Assembly>;component/Assets/Fonts/#Sora (ThinkTwice does; both resolve in the app). ThinkTwice also bundles Atkinson Hyperlegible (Branding\fonts\atkinson-hyperlegible).
+     component form pack://application:,,,/<Assembly>;component/Assets/Fonts/#Sora (ThinkTwice does; both resolve in the app). ThinkTwice also bundles Atkinson Hyperlegible (branding\fonts\atkinson-hyperlegible).
      Merge order in App.xaml: VdWolde.<Mode>.xaml, signals\Signal.<name>.<Mode>.xaml, then this file. -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">

@@ -3,7 +3,7 @@
 Finished screens by Damir Sokolovsky ([@heydamir](https://x.com/heydamir)). Look at them (the `Read` tool shows
 `.webp`) before the Visuals pass and when a reviewer needs a picture of "one bright element, quiet chrome". Take
 their qualities, never their subject, palette or layout. In a vdWolde project the brand's own finished screens come
-first: `Branding/screens/<slug>-dark.png` and `-light.png`.
+first: `branding/screens/<slug>-dark.png` and `-light.png`.
 
 | File | What it shows | Why it works |
 |---|---|---|

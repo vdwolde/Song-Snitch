@@ -28,7 +28,7 @@ web *and* Windows desktop UI.
 the options, each "use it when" line as its description. Never guess a mode for a vague request and never
 run several on one request; two modes run in sequence, each with its own Design Read.
 
-**The default house style is `vdwolde`** (Brand Guide v1.1, `references/styles/vdwolde/`): in any project under the Development Base (and any new vdWolde project, app, tool or site) it applies without being named, for `create`, `improve`, `polish` and `overhaul` alike. The spec points at `Branding/brand.json`; follow it, do not re-derive a look from the catalog. It is skipped only for client sites, vdwolde.com, vendored third-party templates and frozen work projects, or when the user names another house style or an explicit departure.
+**The default house style is `vdwolde`** (Brand Guide v1.1, `references/styles/vdwolde/`): in any project under the Development Base (and any new vdWolde project, app, tool or site) it applies without being named, for `create`, `improve`, `polish` and `overhaul` alike. The spec points at `branding/brand.json`; follow it, do not re-derive a look from the catalog. It is skipped only for client sites, vdwolde.com, vendored third-party templates and frozen work projects, or when the user names another house style or an explicit departure.
 
 **A named house style takes precedence over catalog keyword matching** (today `vdwolde`, the default, and
 `liquid-glass`, which answers to "in Liquid Glass", "glassmorphism 2.0", "gel glass"). Load its spec before
@@ -47,7 +47,11 @@ Old verbs still work as shortcuts: `bolder`, `quieter`, `overdrive`, `distill`, 
 - **polish** — adds no routes, screens or features (missing *states* are fine). A token value changes only
   to fix a defect (failed contrast, near-duplicate values).
 
-**The fingerprint** is five lines in `.claude/DESIGN.md` under `## Design language`: style, type pairing,
+**Where DESIGN.md lives.** `branding/DESIGN.md`. A project outside the Development Base, or a generated build (Website
+Builder's `builds/`), may keep it at `.claude/DESIGN.md`: use the one that exists, never make a second.
+In a project with `branding/README.md`, update that overview when you add, move or remove a design file.
+
+**The fingerprint** is five lines in `branding/DESIGN.md` under `## Design language`: style, type pairing,
 colour strategy, layout archetype, motion tier. `improve` may change the motion tier and every token value,
 accent hue included, but not the other four; to cross the line it asks (overhaul, stay inside, or amend
 one line). With none on file, infer one with evidence ([discover.md](references/discover.md) § 2), mark it
@@ -90,7 +94,7 @@ shared helper (`node ~/.claude/tools/checkpoint.mjs <command> design ... --root 
    phases are re-entrant: polish's inventory and normalise phases are driven by `inventory`, so re-running it
    shows exactly what is left.
 5. **On a usage-limit error:** `fail`, stop, and report what is done and how to resume (repeat the request).
-   A limit never means retrying in a loop. Where the mode ends by updating `.claude/DESIGN.md` and it did not
+   A limit never means retrying in a loop. Where the mode ends by updating `branding/DESIGN.md` and it did not
    get that far, say "DESIGN.md not yet updated"; the resume writes it.
 6. **When the last phase is done:** `finish design`.
 
@@ -162,7 +166,7 @@ candidates, never verdicts; `tools/fixtures/` holds the self-check pages of the 
 Check the result against the Design Read, the mode's rule above and Step 3. Report each gate as `pass`,
 `fail`, `unavailable` or `blocked`; a gate that could not run did not pass. Every mode ends (unless cut off,
 see Checkpoints) by updating
-`.claude/DESIGN.md` (template: `Development Base/Templates/docs/DESIGN.md`). **Code owns values, DESIGN.md owns
+`branding/DESIGN.md` (template: `Development Base/templates/docs/DESIGN.md`). **Code owns values, DESIGN.md owns
 meaning**; if `.claude/instructions/styling.md` exists, link it instead of copying tokens. Remaining design
 gaps go in `.claude/PRODUCT.md`'s known-gaps table, never only in chat. A mode may *suggest* the next one
 (create → polish), never start it: hard rule 11.

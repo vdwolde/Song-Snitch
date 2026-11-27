@@ -2,7 +2,7 @@
 
 Visual identity, UX patterns, and client-side interaction rules. Read this before changing
 templates, styling, or front-end behavior. Front-end *code* conventions live in
-[STACK.md](STACK.md).
+[STACK.md](../.claude/STACK.md).
 
 ## Design language
 
@@ -81,7 +81,7 @@ The mark comes from `Branding/icons/song-snitch/` (copied, never redrawn): `publ
 `public/icons/mark.svg` (squircle), `public/favicon.ico`, `public/apple-touch-icon.png` (180),
 `public/icons/pwa-192.png`, `pwa-512.png`, `pwa-maskable-512.png`, wired in `index.html` and
 `public/manifest.webmanifest`. The mark sits at 40 px beside the title (`Brand` in `src/ui.tsx`); never below
-24 px. `launcher.ico` is in the project root. The README banner, divider and footer are in `.github/brand/`.
+24 px. `launcher.ico` is in the project root. The README banner, divider and footer are in `branding/readme/`.
 `github-pages/*.html` inline the guide's colours because that single file is published on its own.
 
 ### Writing
@@ -140,7 +140,7 @@ for errors, which say what happened and what to do ("Lost the connection, check 
 - Errors are a dismissible `ErrorBanner`, never a browser `alert()`.
 - No skeletons: a pulsing status line is enough.
 - Round progress is a count ("3/7 voted"), never a per-player list (a submitter-identity leak; see ADR-003 and
-  [SECURITY.md](SECURITY.md)).
+  [SECURITY.md](../.claude/SECURITY.md)).
 - The host's `.reveal-card` borders in the submitter's colour (safe, the reveal has happened); the player's uses
   `data-result="yes" | "no" | "own"` (green with a check, neutral with a cross, amber with a note) because the
   player cares whether they were right.
